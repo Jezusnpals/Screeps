@@ -25,15 +25,21 @@ function moveToALinkedHarvestPosition(creep, harvestInfo)
 function moveToSourceByHarvestInfo(creep, source, harvestInfo)
 {
     creep.memory.harvestPathFromId = -1;
-    var moveBySavedPathResult = creep.moveByPath(pathManager.getHarvestPathToByIndex(creep.memory.harvestInfo.pathToId));
+    
+    var harvestPositionOpen = creep.room.lookAt(harvestInfo.collectionPosition).length <= 1;
+    var movedSuccessfully = -1;
 
-    if (moveBySavedPathResult != OK)
+    if (harvestPositionOpen)
     {
-        var moveToLinkedHarvestPositionResult = moveToALinkedHarvestPosition(creep, harvestInfo);
-        if(moveToLinkedHarvestPositionResult != OK)
-        {
-            creep.moveTo(source.pos);
-        }
+        movedSuccessfully = creep.moveByPath(pathManager.getHarvestPathToByIndex(harvestInfo.pathToId));
+    }
+    if (movedSuccessfully != OK)
+    {
+        movedSuccessfully = moveToALinkedHarvestPosition(creep, harvestInfo);
+    }
+    if (movedSuccessfully != OK)
+    {
+        creep.moveTo(source.pos);
     }
 }
 
