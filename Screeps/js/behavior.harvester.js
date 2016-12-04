@@ -63,7 +63,7 @@ function moveToStructureByHarvestInfo(creep, structure, harvestInfo)
     {
         creep.memory.harvestPathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, creep.memory.harvestInfo.sourceId).harvestPathFromId;
     }
-    var creepFollowHarvestPathFromResult = creep.moveByPath(pathManager.getHarvestPathFromByIndex(creep.memory.harvestPathFromId));
+    var creepFollowHarvestPathFromResult = creepUtils.tryMoveByPath(creep, pathManager.getHarvestPathFromByIndex(creep.memory.harvestPathFromId));
     if (creepFollowHarvestPathFromResult != OK)
     {
         creep.moveTo(structure);
