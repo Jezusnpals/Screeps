@@ -25,7 +25,7 @@ var pathManager =
     },
     getHarvestPathFromByIndex:function(index)
     {
-        return mapUtils.refreshRoomPositionArray(Memory.pathManager.harvestPathTo[index]);
+        return mapUtils.refreshRoomPositionArray(Memory.pathManager.harvestPathFrom[index]);
     }
 };
 
