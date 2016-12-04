@@ -2,73 +2,107 @@ var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
 var roomManager = require('roomManager');
 
-var harvester = {
-    run: function (creep) {
-        if (creep.memory.harvestInfo) {
-            if (creep.carry.energy < creep.carryCapacity) {
-                creep.memory.harvestPathFromId = -1;
-                var source = Game.getObjectById(creep.memory.harvestInfo.sourceId);
-                if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+const INCOMPLETE_PATH = -20;
 
-                    var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
-                        return Game.creeps[key];
-                    }).filter(c => c.id != creep.id).map(c => c.pos);
+function moveToALinkedHarvestPosition(creep, harvestInfo)
+{
+    var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
+        return Game.creeps[key];
+    }).filter(c => c.id != creep.id).map(c => c.pos);
 
-                    var pathToCollectionResults = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(creep.memory.harvestInfo.linkedCollectionPositions), otherCreepPositions);
+    var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(harvestInfo.linkedCollectionPositions), otherCreepPositions);
 
-                    if (!pathToCollectionResults.incomplete) {
+    if (pathToLinkedHarvestPosition.incomplete)
+    {
+        return INCOMPLETE_PATH;
+    }
+    else
+    {
+        return creep.moveByPath(pathToCollectionResults.path);
+    }
+}
 
-                        creep.moveByPath(pathToCollectionResults.path);
-                    }
-                    else {
-                        creep.moveByPath(pathManager.getHarvestPathToByIndex(creep.memory.harvestInfo.pathToId));
-                    }
+function moveToSourceByHarvestInfo(creep, source, harvestInfo)
+{
+    creep.memory.harvestPathFromId = -1;
+    var moveBySavedPathResult = creep.moveByPath(pathManager.getHarvestPathToByIndex(creep.memory.harvestInfo.pathToId));
 
-
-                }
-            }
-            else {
-                var spawn = Game.getObjectById(creep.memory.harvestInfo.spawnId);
-                if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    if (!creep.memory.harvestPathFromId || creep.memory.harvestPathFromId == -1)
-                    {
-                        creep.memory.harvestPathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, creep.memory.harvestInfo.sourceId).harvestPathFromId;
-                    }
-                    if (creep.memory.harvestPathFromId == -1)
-                    {
-                        creep.moveTo(spawn);
-                    }
-                    else
-                    {
-                        creep.moveByPath(pathManager.getHarvestPathFromByIndex(creep.memory.harvestPathFromId));
-                    }
-                }
-            }
+    if (moveBySavedPathResult != OK)
+    {
+        var moveToLinkedHarvestPositionResult = moveToALinkedHarvestPosition(creep, harvestInfo);
+        if(moveToLinkedHarvestPositionResult != OK)
+        {
+            creep.moveTo(source.pos);
         }
-        else {
-            if (creep.carry.energy < creep.carryCapacity) {
+    }
+}
 
-                var sources = creep.room.find(FIND_SOURCES);
-                if (creep.harvest(sources[3]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources[3]);
-                }
-            }
-            else {
+function harvestEnergy(creep)
+{
+    var creepHarvestInfo = creep.memory.harvestInfo;
+    var source = creepHarvestInfo ? Game.getObjectById(creep.memory.harvestInfo.sourceId) : 
+        creep.room.find(FIND_SOURCES);
+    var harvestResult = creep.harvest(source)
 
-                var targets = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_EXTENSION ||
-                                structure.structureType == STRUCTURE_SPAWN ||
-                                structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
-                    }
-                });
-                creep.say(targets.length)
-                if (targets.length > 0) {
-                    if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(targets[0]);
-                    }
-                }
-            }
+    if (harvestResult == ERR_NOT_IN_RANGE)
+    {
+        if (creepHarvestInfo)
+        {
+            moveToSourceByHarvestInfo(creep, source, creepHarvestInfo);
+        }
+        else
+        {
+            creep.moveTo(source);
+        }
+    }
+}
+
+function moveToStructureByHarvestInfo(creep, structure, harvestInfo)
+{
+    if (!creep.memory.harvestPathFromId || creep.memory.harvestPathFromId == -1)
+    {
+        creep.memory.harvestPathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, creep.memory.harvestInfo.sourceId).harvestPathFromId;
+        var creepFollowHarvestPathFromResult = creep.moveByPath(pathManager.getHarvestPathFromByIndex(creep.memory.harvestPathFromId));
+
+        if(creepFollowHarvestPathFromResult != OK)
+        {
+            creep.moveTo(structure);
+        }
+    }
+}
+
+function transferEnergy(creep)
+{
+    var creepHarvestInfo = creep.memory.harvestInfo;
+    var structure = creep.memory.harvestInfo ? Game.getObjectById(creep.memory.harvestInfo.spawnId) : 
+        creep.room.find(STRUCTURE_SPAWN)[0];
+    var transferResults = creep.transfer(spawn, RESOURCE_ENERGY);
+
+    if(transferResults = ERR_NOT_IN_RANGE)
+    {
+        if(creepHarvestInfo)
+        {
+            moveToStructureByHarvestInfo(creep, structure, creepHarvestInfo)
+        }
+        else
+        {
+            creep.moveTo(structure);
+        }
+    }
+}
+
+var harvester =
+{
+    run: function (creep)
+    {
+        var creepNeedsEnergy = creep.carry.energy < creep.carryCapacity;
+        if (creepNeedsEnergy)
+        {
+            harvestEnergy(creep);
+        }
+        else 
+        {
+            transferEnergy(creep);
         }
     }
 };
