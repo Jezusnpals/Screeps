@@ -18,8 +18,6 @@ module.exports.loop = function () {
 
     var start = Date.now();
 
-    console.log('auto test' + Game.constructionSites);
-
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
         behavior.run(creep);

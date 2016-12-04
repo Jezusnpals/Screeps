@@ -1,6 +1,6 @@
 var mapUtils = require('mapUtils');
 
-var harvestCreepCostToDivisor = 10;
+var harvestCreepCostToDivisor = 12;
 
 function getHarvestInfo(spawnPosition, collectionPosition, sourceId, spawnId, linkedCollectionPositions) {
     var harvestInfo = {

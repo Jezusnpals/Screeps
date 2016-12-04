@@ -1,31 +1,12 @@
 var mapUtils = require('mapUtils');
 
 var harvester = {
-
-    /** @param {Creep} 
-        var harvestInfo = {
-        spawnPosition: spawnPosition,
-        collectionPosition: collectionPosition,
-        creepIds: [],
-        pathTo: [],
-        costTo: -1,
-        returnPath: [],
-        isSeperateReturnPath: false,
-        returnPathBlockers: [],
-        canGetTo: false,
-        maxHarvesters: 0
-    };
-    
-    creep **/
     run: function (creep) {
         if (creep.memory.harvestInfo) {
             if (creep.carry.energy < creep.carryCapacity) {
                 var source = Game.getObjectById(creep.memory.harvestInfo.sourceId);
                 if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                    //console.log(creep.moveByPath(creep.memory.harvestInfo.pathTo));
-                    //var pathToCollectionResults = PathFinder.search(creep.pos, creep.memory.harvestInfo.collectionPosition,{
-                    //    maxRooms: 1
-                    //});
+
                     var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
                         return Game.creeps[key];
                     }).filter(c => c.id != creep.id).map(c => c.pos);
