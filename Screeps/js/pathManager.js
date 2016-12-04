@@ -21,7 +21,7 @@ var pathManager =
     },
     getHarvestPathToByIndex:function(index)
     {
-        if (index <= 0 || index >= Memory.pathManager.harvestPathTo.length)
+        if (index < 0 || index >= Memory.pathManager.harvestPathTo.length)
         {
             return [];
         }
@@ -29,7 +29,7 @@ var pathManager =
     },
     getHarvestPathFromByIndex:function(index)
     {
-        if (index <= 0 || index >= Memory.pathManager.harvestPathFrom.length)
+        if (index < 0 || index >= Memory.pathManager.harvestPathFrom.length)
         {
             return [];
         }

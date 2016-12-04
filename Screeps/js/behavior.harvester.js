@@ -18,7 +18,7 @@ function moveToALinkedHarvestPosition(creep, harvestInfo)
     }
     else
     {
-        return creep.moveByPath(pathToCollectionResults.path);
+        return creep.moveByPath(pathToLinkedHarvestPosition.path);
     }
 }
 
