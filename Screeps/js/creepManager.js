@@ -1,4 +1,4 @@
-var behavior = require('behavior');
+var behaviorEnum = require('behaviorEnum');
 
 function calculateHarvestCost(info) {
     return info.costTo + (info.costTo / (info.maxHarvesters - info.creepIds.length));
@@ -32,7 +32,7 @@ var creepManager =
 
                 if (bestHarvestInfo != null) {
                     var creepName = 'H' + new Date().getTime();
-                    var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, { behavior: behavior.HARVESTER, harvestInfo: bestHarvestInfo });
+                    var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, { behavior: behaviorEnum.HARVESTER, harvestInfo: bestHarvestInfo });
                     if (creepResult == creepName) {
                         bestHarvestInfo.creepIds.push(Game.creeps[creepName].id);
                     }

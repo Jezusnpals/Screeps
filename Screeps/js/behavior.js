@@ -1,12 +1,10 @@
 var harvester = require('behavior.harvester');
 var upgrader = require('behavior.upgrader');
 var builder = require('behavior.builder');
+var behaviorEnum = require('behaviorEnum');
 
 var behavior =
 {
-    HARVESTER: 'harvester',
-    UPGRADER: 'upgrader',
-    BUILDER: 'builder',
     Dictonary: {},
     run: function (creep) {
         this.Dictonary[creep.memory.behavior].run(creep);
@@ -15,8 +13,8 @@ var behavior =
 };
 
 //Create dictonary
-behavior.Dictonary[behavior.HARVESTER] = harvester;
-behavior.Dictonary[behavior.UPGRADER] = upgrader;
-behavior.Dictonary[behavior.BUILDER] = builder;
+behavior.Dictonary[behaviorEnum.HARVESTER] = harvester;
+behavior.Dictonary[behaviorEnum.UPGRADER] = upgrader;
+behavior.Dictonary[behaviorEnum.BUILDER] = builder;
 
 module.exports = behavior;
