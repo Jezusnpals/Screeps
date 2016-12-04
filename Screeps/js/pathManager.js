@@ -34,6 +34,17 @@ var pathManager =
             return [];
         }
         return mapUtils.refreshRoomPositionArray(Memory.pathManager.harvestPathFrom[index]);
+    },
+    getNextPathPosition:function(pos, path)
+    {
+        var comparablePos = mapUtils.getComparableRoomPosition(pos);
+        path.forEach(function (p, i)
+        {
+            if(mapUtils.getComparableRoomPosition(p) == comparablePos)
+            {
+                return (i + 1) < path.length ? path[i + 1] : null;
+            }
+        });
     }
 };
 

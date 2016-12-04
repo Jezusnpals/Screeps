@@ -1,6 +1,7 @@
 var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
 var roomManager = require('roomManager');
+var creepUtils = require('creepUtils');
 
 const INCOMPLETE_PATH = -20;
 
@@ -23,7 +24,7 @@ function moveToSourceByHarvestInfo(creep, source, harvestInfo)
 
     if (harvestPositionOpen)
     {
-        movedSuccessfully = creep.moveByPath(pathManager.getHarvestPathToByIndex(harvestInfo.pathToId));
+        movedSuccessfully = creepUtils.tryMoveByPath(creep, pathManager.getHarvestPathToByIndex(harvestInfo.pathToId));
     }
     if (movedSuccessfully != OK)
     {
