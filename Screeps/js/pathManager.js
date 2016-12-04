@@ -21,10 +21,18 @@ var pathManager =
     },
     getHarvestPathToByIndex:function(index)
     {
+        if (index <= 0 || index >= Memory.pathManager.harvestPathTo.length)
+        {
+            return [];
+        }
         return mapUtils.refreshRoomPositionArray(Memory.pathManager.harvestPathTo[index]);
     },
     getHarvestPathFromByIndex:function(index)
     {
+        if (index <= 0 || index >= Memory.pathManager.harvestPathFrom.length)
+        {
+            return [];
+        }
         return mapUtils.refreshRoomPositionArray(Memory.pathManager.harvestPathFrom[index]);
     }
 };
