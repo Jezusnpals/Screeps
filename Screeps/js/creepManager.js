@@ -26,7 +26,7 @@ var creepManager =
         return openHarvestInfos[lowestCostIndex];
     },
     run: function (room) {
-        if (Object.keys(Game.creeps).length < 200) {
+        if (Object.keys(Game.creeps).length < 200 && Game.spawns['Spawn1'].energy >= 200) {
             if (room.memory.harvestInfos) {
                 var bestHarvestInfo = this.calculateHarvestSource(room.memory.harvestInfos);
 
