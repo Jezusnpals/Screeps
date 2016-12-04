@@ -10,7 +10,7 @@ function moveToALinkedHarvestPosition(creep, harvestInfo)
         return Game.creeps[key];
     }).filter(c => c.id != creep.id).map(c => c.pos);
 
-    var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(harvestInfo.linkedCollectionPositions), otherCreepPositions);
+    var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(harvestInfo.linkedCollectionPositions), otherCreepPositions, [], 50);
     return creep.moveByPath(pathToLinkedHarvestPosition.path);
 }
 

@@ -22,10 +22,16 @@ var mapUtils = {
         var currentTerrain = Game.map.getTerrainAt(roomPos);
         return walkableTerrain.includes(currentTerrain);
     },
-    findPath: function (startPos, goals, ignorePositions, avoidPositions) {
+    findPath: function (startPos, goals, ignorePositions, avoidPositions, maxOperations)
+    {
+        if (!maxOperations)
+        {
+            maxOperations = 1000;
+        }
         var pathResults = PathFinder.search(startPos, goals,
         {
             maxRooms: 1,
+            maxOps: maxOperations,
 
             roomCallback: function (roomName) {
                 var costs = new PathFinder.CostMatrix;
