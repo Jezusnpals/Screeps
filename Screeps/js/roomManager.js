@@ -13,7 +13,7 @@ var roomManager =
 
         var sources = room.find(FIND_SOURCES);
         for (var index in sources) {
-            var mappedSource = sourceMapper.mapSource(sources[index], spawns);
+            var mappedSource = sourceMapper.mapSource(sources[index]);
             room.memory.mappedSources.push(mappedSource);
         }
 
@@ -30,7 +30,7 @@ var roomManager =
             harvestPathFromId: -1
         };
 
-        var matchingSources = room.memory.mappedSources.filter(ms => ms.sourceId);
+        var matchingSources = room.memory.mappedSources.filter(ms => ms.sourceId == sourceId);
         if (matchingSources.length > 0) {
             var matchingPositions = matchingSources[0].collectionPositionInfos.filter(cpi =>
                 mapUtils.getComparableRoomPosition(cpi.originalPos) == mapUtils.getComparableRoomPosition(pos));
