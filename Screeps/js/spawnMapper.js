@@ -3,7 +3,7 @@ var pathManager = require('pathManager');
 
 var harvestCreepCostToDivisor = 12;
 
-function getHarvestInfo(spawnPosition, collectionPosition) {
+function getHarvestInfo(spawnPosition, collectionPosition, linkedCollectionPositions) {
     var pathFromId = -1;
     var harvestInfo = {
         spawnPosition: spawnPosition,
@@ -16,6 +16,7 @@ function getHarvestInfo(spawnPosition, collectionPosition) {
         returnPathBlockers: [],
         canGetTo: false,
         maxHarvesters: 0,
+        linkedCollectionPositions: linkedCollectionPositions
     };
 
     var pathToResults = mapUtils.findPath(spawnPosition, collectionPosition);
