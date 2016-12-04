@@ -27,12 +27,12 @@ var roomManager =
         var positionInfo = {
             originalPos: null,
             linkedCollectionPositions: null,
-            harvestFromId: -1
+            harvestPathFromId: -1
         };
 
         var matchingSources = room.memory.mappedSources.filter(ms => ms.sourceId);
-        if (matchingSources.length == 1) {
-            var matchingPositions = matchingInfos[0].collectionPositionInfos.filter(cpi =>
+        if (matchingSources.length > 0) {
+            var matchingPositions = matchingSources[0].collectionPositionInfos.filter(cpi =>
                 mapUtils.getComparableRoomPosition(cpi.originalPos) == mapUtils.getComparableRoomPosition(pos));
             if (matchingPositions.length == 1) {
                 positionInfo = matchingPositions[0];

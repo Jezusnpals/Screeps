@@ -29,17 +29,17 @@ var harvester = {
             else {
                 var spawn = Game.getObjectById(creep.memory.harvestInfo.spawnId);
                 if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    if(!creep.memory.harvestFromId || creep.memory.harvestFromId == -1)
+                    if (!creep.memory.harvestPathFromId || creep.memory.harvestPathFromId == -1)
                     {
-                        creep.memory.harvestFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, creep.memory.harvestInfo.sourceId).harvestFromId;
+                        creep.memory.harvestPathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, creep.memory.harvestInfo.sourceId).harvestPathFromId;
                     }
-                    if(creep.memory.harvestFromId == -1)
+                    if (creep.memory.harvestPathFromId == -1)
                     {
                         creep.moveTo(spawn);
                     }
                     else
                     {
-                        creep.moveByPath(pathManager.getHarvestPathFromByIndex(creep.memory.harvestFromId));
+                        creep.moveByPath(pathManager.getHarvestPathFromByIndex(creep.memory.harvestPathFromId));
                     }
                 }
             }
