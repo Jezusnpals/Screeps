@@ -23,18 +23,9 @@ var pathManager =
     {
         return mapUtils.refreshRoomPositionArray(Memory.pathManager.harvestPathTo[index]);
     },
-    getHarvestPathFromByStartPosition:function(startPosition)
+    getHarvestPathFromByIndex:function(index)
     {
-        var matchingPathsFrom = Memory.pathManager.harvestPathFrom.filter(path => path.length > 0 &&
-            mapUtils.getComparableRoomPosition(path[0]) == startPosition);
-        if (matchingPathsFrom.length == 1)
-        {
-            return mapUtils.refreshRoomPositionArray(matchingPathsFrom[0]);
-        }
-        else
-        {
-            return null;
-        }
+        return mapUtils.refreshRoomPositionArray(Memory.pathManager.harvestPathTo[index]);
     }
 };
 

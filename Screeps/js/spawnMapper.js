@@ -3,7 +3,8 @@ var pathManager = require('pathManager');
 
 var harvestCreepCostToDivisor = 12;
 
-function getHarvestInfo(spawnPosition, collectionPosition, sourceId, spawnId, linkedCollectionPositions) {
+function getHarvestInfo(spawnPosition, collectionPosition) {
+    var pathFromId = -1;
     var harvestInfo = {
         spawnPosition: spawnPosition,
         collectionPosition: collectionPosition,
@@ -15,9 +16,6 @@ function getHarvestInfo(spawnPosition, collectionPosition, sourceId, spawnId, li
         returnPathBlockers: [],
         canGetTo: false,
         maxHarvesters: 0,
-        sourceId: sourceId,
-        spawnId: spawnId,
-        linkedCollectionPositions: linkedCollectionPositions
     };
 
     var pathToResults = mapUtils.findPath(spawnPosition, collectionPosition);
@@ -38,16 +36,19 @@ function getHarvestInfo(spawnPosition, collectionPosition, sourceId, spawnId, li
 
             pathFromResults = mapUtils.findPath(collectionPosition, spawnPosition, [], pathToAvoid);
             harvestInfo.returnPathBlockers = mapUtils.getSameRoomPositionsFromArray(pathFromResults.path, pathToAvoid);
-            pathManager.addHarvestPathFrom(pathFromResults.path);
+            pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
         }
         else {
-            pathManager.addHarvestPathFrom(pathFromResults.path);
+            pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
             harvestInfo.isSeperateReturnPath = true;
             harvestInfo.maxHarvesters = 1 + Math.floor(harvestInfo.costTo / harvestCreepCostToDivisor);
         }
     }
 
-    return harvestInfo;
+    return {
+        harvestInfo: harvestInfo,
+        pathFromId: pathFromId
+    };
 }
 
 
@@ -86,7 +87,11 @@ var spawnMapper = {
 
         mappedSources.forEach(function (mappedSource) {
             mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
-                harvestInfos.push(getHarvestInfo(spawn.pos, collectionPositionInfo.originalPos, mappedSource.sourceId, spawn.id, collectionPositionInfo.linkedCollectionPositions))
+                var harvestInfoResults = getHarvestInfo(spawn.pos, collectionPositionInfo.originalPos, collectionPositionInfo.linkedCollectionPositions);
+                collectionPositionInfo.harvestPathFromId = harvestInfoResults.pathFromId;
+                harvestInfoResults.harvestInfo.sourceId = mappedSource.sourceId; 
+                harvestInfoResults.harvestInfo.spawnId = spawn.id;
+                harvestInfos.push(harvestInfoResults.harvestInfo);
             });
 
         });

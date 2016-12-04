@@ -1,5 +1,6 @@
 var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
+var roomManager = require('roomManager');
 
 var harvester = {
     run: function (creep) {
@@ -28,7 +29,18 @@ var harvester = {
             else {
                 var spawn = Game.getObjectById(creep.memory.harvestInfo.spawnId);
                 if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveByPath(pathManager.getHarvestPathFromByStartPosition(creep.pos));
+                    if(!creep.memory.harvestFromId || creep.memory.harvestFromId == -1)
+                    {
+                        creep.memory.harvestFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, creep.memory.harvestInfo.sourceId).harvestFromId;
+                    }
+                    if(creep.memory.harvestFromId == -1)
+                    {
+                        creep.moveTo(spawn);
+                    }
+                    else
+                    {
+                        creep.moveByPath(pathManager.getHarvestPathFromByIndex(creep.memory.harvestFromId));
+                    }
                 }
             }
         }
