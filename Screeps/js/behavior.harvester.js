@@ -38,7 +38,7 @@ function moveToSourceByHarvestInfo(creep, source, harvestInfo)
 
 function harvestEnergy(creep)
 {
-    var creepHarvestInfo = creep.memory.harvestInfo;
+    var creepHarvestInfo = creep.memory.harvestInfoIndex ? room.memory.harvestInfos[creep.memory.harvestInfoIndex] : null;
     var source = creepHarvestInfo ? Game.getObjectById(creep.memory.harvestInfo.sourceId) : 
         creep.room.find(FIND_SOURCES);
     var harvestResult = creep.harvest(source)
@@ -72,7 +72,7 @@ function moveToStructureByHarvestInfo(creep, structure, harvestInfo)
 
 function transferEnergy(creep)
 {
-    var creepHarvestInfo = creep.memory.harvestInfo;
+    var creepHarvestInfo = creep.memory.harvestInfoIndex ? room.memory.harvestInfos[creep.memory.harvestInfoIndex] : null;
     var structure = creep.memory.harvestInfo ? Game.getObjectById(creep.memory.harvestInfo.spawnId) : 
         creep.room.find(STRUCTURE_SPAWN)[0];
     var transferResults = creep.transfer(structure, RESOURCE_ENERGY);

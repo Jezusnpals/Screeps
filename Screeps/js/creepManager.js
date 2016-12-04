@@ -23,18 +23,21 @@ var creepManager =
             }
         }
 
-        return openHarvestInfos[lowestCostIndex];
+        return lowestCostIndex;
     },
     run: function (room) {
-        if (Object.keys(Game.creeps).length < 200 && Game.spawns['Spawn1'].energy >= 200) {
-            if (room.memory.harvestInfos) {
-                var bestHarvestInfo = this.calculateHarvestSource(room.memory.harvestInfos);
-
-                if (bestHarvestInfo != null) {
+        if (Object.keys(Game.creeps).length < 200 && Game.spawns['Spawn1'].energy >= 200)
+        {
+            if (room.memory.harvestInfos)
+            {
+                var bestHarvestInfoIndex = this.calculateHarvestSource(room.memory.harvestInfos);
+                if (bestHarvestInfoIndex != null)
+                {
                     var creepName = 'H' + new Date().getTime();
-                    var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, { behavior: behaviorEnum.HARVESTER, harvestInfo: bestHarvestInfo });
-                    if (creepResult == creepName) {
-                        bestHarvestInfo.creepIds.push(Game.creeps[creepName].id);
+                    var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, { behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestHarvestInfoIndex });
+                    if (creepResult == creepName)
+                    {
+                        room.memory.harvestInfos[bestHarvestInfoIndex].creepIds.push(Game.creeps[creepName].id);
                     }
                 }
             }
