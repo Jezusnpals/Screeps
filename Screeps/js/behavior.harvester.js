@@ -26,7 +26,7 @@ function moveToSourceByHarvestInfo(creep, source, harvestInfo)
 {
     creep.memory.harvestPathFromId = -1;
     
-    var harvestPositionOpen = creep.room.lookAt(harvestInfo.collectionPosition).length <= 1;
+    var harvestPositionOpen = creep.room.lookAt(mapUtils.refreshRoomPosition(harvestInfo.collectionPosition)).length <= 1;
     var movedSuccessfully = -1;
 
     if (harvestPositionOpen)
