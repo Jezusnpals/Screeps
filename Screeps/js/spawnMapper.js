@@ -1,4 +1,5 @@
 var mapUtils = require('mapUtils');
+var pathManager = require('pathManager');
 
 var harvestCreepCostToDivisor = 12;
 
@@ -7,7 +8,7 @@ function getHarvestInfo(spawnPosition, collectionPosition, sourceId, spawnId, li
         spawnPosition: spawnPosition,
         collectionPosition: collectionPosition,
         creepIds: [],
-        pathTo: [],
+        pathToId: -1,
         costTo: -1,
         returnPath: [],
         isSeperateReturnPath: false,
@@ -22,7 +23,7 @@ function getHarvestInfo(spawnPosition, collectionPosition, sourceId, spawnId, li
     var pathToResults = mapUtils.findPath(spawnPosition, collectionPosition);
 
     if (!pathToResults.incomplete) {
-        harvestInfo.pathTo = pathToResults.path;
+        harvestInfo.pathToId = pathManager.addHarvestPathTo(pathToResults.path);
         harvestInfo.costTo = pathToResults.cost;
         harvestInfo.canGetTo = true;
 
@@ -37,10 +38,10 @@ function getHarvestInfo(spawnPosition, collectionPosition, sourceId, spawnId, li
 
             pathFromResults = mapUtils.findPath(collectionPosition, spawnPosition, [], pathToAvoid);
             harvestInfo.returnPathBlockers = mapUtils.getSameRoomPositionsFromArray(pathFromResults.path, pathToAvoid);
-            harvestInfo.pathFrom = pathFromResults.path;
+            pathManager.addHarvestPathFrom(pathFromResults.path);
         }
         else {
-            harvestInfo.pathFrom = pathFromResults.path;
+            pathManager.addHarvestPathFrom(pathFromResults.path);
             harvestInfo.isSeperateReturnPath = true;
             harvestInfo.maxHarvesters = 1 + Math.floor(harvestInfo.costTo / harvestCreepCostToDivisor);
         }
