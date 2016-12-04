@@ -6,6 +6,7 @@ var harvester = {
     run: function (creep) {
         if (creep.memory.harvestInfo) {
             if (creep.carry.energy < creep.carryCapacity) {
+                creep.memory.harvestPathFromId = -1;
                 var source = Game.getObjectById(creep.memory.harvestInfo.sourceId);
                 if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
 
