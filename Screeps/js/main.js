@@ -88,5 +88,5 @@ module.exports.loop = function () {
 
 
     }
-    console.log(Date.now() - start);
+    //console.log(Date.now() - start);
 }

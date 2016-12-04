@@ -24,20 +24,22 @@ var roomManager =
     },
     getCollectionPositionInfo:function(room, pos, sourceId)
     {
-        var matchingPositions = room.memory.mappedSources.filter(ms => ms.sourceId).collectionPositionInfos.filter(cpi => 
-            mapUtils.getComparableRoomPosition(cpi.originalPos) == mapUtils.getComparableRoomPosition(pos));
-        if(matchingPositions.length == 1)
-        {
-            return matchingPositions[0];
-        }
-        else
-        {
-            return {
-                originalPos: null,
-                linkedCollectionPositions: null,
-                harvestFromId: -1
+        var positionInfo = {
+            originalPos: null,
+            linkedCollectionPositions: null,
+            harvestFromId: -1
+        };
+
+        var matchingSources = room.memory.mappedSources.filter(ms => ms.sourceId);
+        if (matchingSources.length == 1) {
+            var matchingPositions = matchingInfos[0].collectionPositionInfos.filter(cpi =>
+                mapUtils.getComparableRoomPosition(cpi.originalPos) == mapUtils.getComparableRoomPosition(pos));
+            if (matchingPositions.length == 1) {
+                positionInfo = matchingPositions[0];
             }
         }
+
+        return positionInfo;
     },
     run: function (room) {
 
