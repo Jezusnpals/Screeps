@@ -76,7 +76,7 @@ function transferEnergy(creep)
     var creepHarvestInfo = creep.memory.harvestInfo;
     var structure = creep.memory.harvestInfo ? Game.getObjectById(creep.memory.harvestInfo.spawnId) : 
         creep.room.find(STRUCTURE_SPAWN)[0];
-    var transferResults = creep.transfer(spawn, RESOURCE_ENERGY);
+    var transferResults = creep.transfer(structure, RESOURCE_ENERGY);
 
     if(transferResults = ERR_NOT_IN_RANGE)
     {
