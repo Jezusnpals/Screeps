@@ -18,7 +18,7 @@ var harvester = {
                         creep.moveByPath(pathToCollectionResults.path);
                     }
                     else {
-                        creep.moveTo(creep.memory.harvestInfo.collectionPosition.x, creep.memory.harvestInfo.collectionPosition.y);
+                        creep.moveByPath(mapUtils.refreshRoomPositionArray(creep.memory.harvestInfo.pathTo));
                     }
 
 
@@ -27,7 +27,7 @@ var harvester = {
             else {
                 var spawn = Game.getObjectById(creep.memory.harvestInfo.spawnId);
                 if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(spawn);
+                    creep.moveByPath(mapUtils.refreshRoomPositionArray(creep.memory.harvestInfo.pathFrom));
                 }
             }
         }

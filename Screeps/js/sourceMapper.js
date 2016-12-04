@@ -1,6 +1,6 @@
 var mapUtils = require('mapUtils');
 
-var linkingMaxCost = 6;
+var linkingMaxCost = 4;
 
 var sourceMapper = {
     mapSource: function (originalSource) {
@@ -14,7 +14,6 @@ var sourceMapper = {
             }
         }
         mappedSource.collectionPositionInfos = [];
-
 
         collectionPositions.forEach(function (originalPos) {
             var linkedCollectionPositions = [];
