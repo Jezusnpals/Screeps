@@ -30,7 +30,7 @@ var harvester = {
                         return Game.creeps[key];
                     }).filter(c => c.id != creep.id).map(c => c.pos);
 
-                    var pathToCollectionResults = mapUtils.getPath(creep.pos, mapUtils.refreshRoomPositionArray(creep.memory.harvestInfo.linkedCollectionPositions), otherCreepPositions);
+                    var pathToCollectionResults = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(creep.memory.harvestInfo.linkedCollectionPositions), otherCreepPositions);
 
                     if (!pathToCollectionResults.incomplete) {
 

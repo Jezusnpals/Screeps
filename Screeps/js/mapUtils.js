@@ -22,7 +22,7 @@ var mapUtils = {
         var currentTerrain = Game.map.getTerrainAt(roomPos);
         return walkableTerrain.includes(currentTerrain);
     },
-    getPath: function (startPos, goals, ignorePositions, avoidPositions) {
+    findPath: function (startPos, goals, ignorePositions, avoidPositions) {
         var pathResults = PathFinder.search(startPos, goals,
         {
             maxRooms: 1,

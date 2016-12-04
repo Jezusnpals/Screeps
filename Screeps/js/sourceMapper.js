@@ -19,7 +19,7 @@ var sourceMapper = {
         collectionPositions.forEach(function (originalPos) {
             var linkedCollectionPositions = [];
             collectionPositions.forEach(function (linkPos) {
-                var linkPathResults = mapUtils.getPath(originalPos, linkPos);
+                var linkPathResults = mapUtils.findPath(originalPos, linkPos);
                 if (!linkPathResults.incomplete && linkPathResults.cost <= linkingMaxCost) {
                     linkedCollectionPositions.push(linkPos);
                 }

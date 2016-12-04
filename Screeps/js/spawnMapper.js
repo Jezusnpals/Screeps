@@ -19,7 +19,7 @@ function getHarvestInfo(spawnPosition, collectionPosition, sourceId, spawnId, li
         linkedCollectionPositions: linkedCollectionPositions
     };
 
-    var pathToResults = mapUtils.getPath(spawnPosition, collectionPosition);
+    var pathToResults = mapUtils.findPath(spawnPosition, collectionPosition);
 
     if (!pathToResults.incomplete) {
         harvestInfo.pathTo = pathToResults.path;
@@ -30,12 +30,12 @@ function getHarvestInfo(spawnPosition, collectionPosition, sourceId, spawnId, li
         mapUtils.removeRoomPositionFromArray(pathToAvoid, spawnPosition);
         mapUtils.removeRoomPositionFromArray(pathToAvoid, collectionPosition);
 
-        var pathFromResults = mapUtils.getPath(collectionPosition, spawnPosition, pathToAvoid);
+        var pathFromResults = mapUtils.findPath(collectionPosition, spawnPosition, pathToAvoid);
 
         if (pathFromResults.incomplete) {
             harvestInfo.isSeperateReturnPath = false;
 
-            pathFromResults = mapUtils.getPath(collectionPosition, spawnPosition, [], pathToAvoid);
+            pathFromResults = mapUtils.findPath(collectionPosition, spawnPosition, [], pathToAvoid);
             harvestInfo.returnPathBlockers = mapUtils.getSameRoomPositionsFromArray(pathFromResults.path, pathToAvoid);
             harvestInfo.pathFrom = pathFromResults.path;
         }
