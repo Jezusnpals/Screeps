@@ -73,7 +73,7 @@ function moveToStructureByHarvestInfo(creep, structure, harvestInfo)
 function transferEnergy(creep)
 {
     var creepHarvestInfo = creep.memory.harvestInfoIndex >= 0 ? creep.room.memory.harvestInfos[creep.memory.harvestInfoIndex] : null;
-    var structure = creep.memory.harvestInfo ? Game.getObjectById(creep.memory.harvestInfo.spawnId) : 
+    var structure = creepHarvestInfo ? Game.getObjectById(creepHarvestInfo.spawnId) :
         creep.room.find(STRUCTURE_SPAWN)[0];
     var transferResults = creep.transfer(structure, RESOURCE_ENERGY);
 
