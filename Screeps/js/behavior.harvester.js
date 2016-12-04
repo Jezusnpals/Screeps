@@ -38,9 +38,9 @@ function moveToSourceByHarvestInfo(creep, source, harvestInfo)
 
 function harvestEnergy(creep)
 {
-    var creepHarvestInfo = creep.memory.harvestInfoIndex ? room.memory.harvestInfos[creep.memory.harvestInfoIndex] : null;
-    var source = creepHarvestInfo ? Game.getObjectById(creep.memory.harvestInfo.sourceId) : 
-        creep.room.find(FIND_SOURCES);
+    var creepHarvestInfo = creep.memory.harvestInfoIndex >= 0 ? creep.room.memory.harvestInfos[creep.memory.harvestInfoIndex]: null;
+    var source = creepHarvestInfo ? Game.getObjectById(creepHarvestInfo.sourceId) :
+        creep.room.find(FIND_SOURCES)[0];
     var harvestResult = creep.harvest(source)
 
     if (harvestResult == ERR_NOT_IN_RANGE)
@@ -61,7 +61,7 @@ function moveToStructureByHarvestInfo(creep, structure, harvestInfo)
     var harvestIdNotSet = !creep.memory.harvestPathFromId || creep.memory.harvestPathFromId == -1
     if (harvestIdNotSet)
     {
-        creep.memory.harvestPathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, creep.memory.harvestInfo.sourceId).harvestPathFromId;
+        creep.memory.harvestPathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, harvestInfo.sourceId).harvestPathFromId;
     }
     var creepFollowHarvestPathFromResult = creepUtils.tryMoveByPath(creep, pathManager.getHarvestPathFromByIndex(creep.memory.harvestPathFromId));
     if (creepFollowHarvestPathFromResult != OK)
@@ -72,7 +72,7 @@ function moveToStructureByHarvestInfo(creep, structure, harvestInfo)
 
 function transferEnergy(creep)
 {
-    var creepHarvestInfo = creep.memory.harvestInfoIndex ? room.memory.harvestInfos[creep.memory.harvestInfoIndex] : null;
+    var creepHarvestInfo = creep.memory.harvestInfoIndex >= 0 ? creep.room.memory.harvestInfos[creep.memory.harvestInfoIndex] : null;
     var structure = creep.memory.harvestInfo ? Game.getObjectById(creep.memory.harvestInfo.spawnId) : 
         creep.room.find(STRUCTURE_SPAWN)[0];
     var transferResults = creep.transfer(structure, RESOURCE_ENERGY);
