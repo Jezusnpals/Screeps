@@ -8,7 +8,7 @@ function getHarvestInfo(spawnPosition, collectionPosition, linkedCollectionPosit
     var harvestInfo = {
         spawnPosition: spawnPosition,
         collectionPosition: collectionPosition,
-        creepIds: [],
+        creepNames: [],
         pathToId: -1,
         costTo: -1,
         returnPath: [],

@@ -1,13 +1,13 @@
 var behaviorEnum = require('behaviorEnum');
 
 function calculateHarvestCost(info) {
-    return info.costTo + (info.costTo / (info.maxHarvesters - info.creepIds.length));
+    return info.costTo + (info.costTo / (info.maxHarvesters - info.creepNames.length));
 }
 
 var creepManager =
 {
     calculateHarvestSource: function (harvestInfos) {
-        var openHarvestInfos = harvestInfos.filter(info => info.creepIds.length < info.maxHarvesters); //maxHarvesters
+        var openHarvestInfos = harvestInfos.filter(info => info.creepNames.length < info.maxHarvesters); //maxHarvesters
         if (openHarvestInfos.length == 0) {
             return null;
         }
@@ -38,7 +38,7 @@ var creepManager =
                     var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, { behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestHarvestInfoIndex });
                     if (creepResult == creepName)
                     {
-                        room.memory.harvestInfos[bestHarvestInfoIndex].creepIds.push(Game.creeps[creepName].id);
+                        room.memory.harvestInfos[bestHarvestInfoIndex].creepNames.push(creepName);
                     }
                 }
             }
