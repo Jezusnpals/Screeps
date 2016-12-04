@@ -55,16 +55,16 @@
     <SDKReference Include="Microsoft.WinJS.2.0, Version=1.0" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="behavior.builder.js" />
-    <Content Include="behavior.harvester.js" />
-    <Content Include="behavior.js" />
-    <Content Include="behavior.upgrader.js" />
-    <Content Include="creepManager.js" />
-    <Content Include="main.js" />
-    <Content Include="mapUtils.js" />
-    <Content Include="roomManager.js" />
-    <Content Include="sourceMapper.js" />
-    <Content Include="spawnMapper.js" />
+    <Content Include="js\behavior.builder.js" />
+    <Content Include="js\behavior.harvester.js" />
+    <Content Include="js\behavior.js" />
+    <Content Include="js\behavior.upgrader.js" />
+    <Content Include="js\creepManager.js" />
+    <Content Include="js\main.js" />
+    <Content Include="js\mapUtils.js" />
+    <Content Include="js\roomManager.js" />
+    <Content Include="js\sourceMapper.js" />
+    <Content Include="js\spawnMapper.js" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment
