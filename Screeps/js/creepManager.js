@@ -30,9 +30,10 @@ var creepManager =
         {
             if (room.memory.harvestInfos)
             {
-                var bestHarvestInfoIndex = room.memory.harvestInfos.indexOf(this.calculateHarvestSource(room.memory.harvestInfos));
-                if (bestHarvestInfoIndex != null)
+                var bestHarvestInfo = this.calculateHarvestSource(room.memory.harvestInfos);
+                if (bestHarvestInfo != null)
                 {
+                    var bestHarvestInfoIndex = room.memory.harvestInfos.indexOf(bestHarvestInfo);
                     var creepName = 'H' + new Date().getTime();
                     var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, { behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestHarvestInfoIndex });
                     if (creepResult == creepName)
