@@ -18,8 +18,7 @@ module.exports.loop = function () {
 
     var start = Date.now();
 
-    console.log('commit test');
-
+    console.log('auto test' + Game.constructionSites);
 
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];

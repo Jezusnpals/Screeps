@@ -65,6 +65,26 @@
     <Content Include="js\roomManager.js" />
     <Content Include="js\sourceMapper.js" />
     <Content Include="js\spawnMapper.js" />
+    <Content Include="ScreepsAutocomplete-master\.gitignore" />
+    <Content Include="ScreepsAutocomplete-master\ConstructionSite.js" />
+    <Content Include="ScreepsAutocomplete-master\Creep.js" />
+    <Content Include="ScreepsAutocomplete-master\Flag.js" />
+    <Content Include="ScreepsAutocomplete-master\Game.js" />
+    <Content Include="ScreepsAutocomplete-master\Memory.js" />
+    <Content Include="ScreepsAutocomplete-master\Mineral.js" />
+    <Content Include="ScreepsAutocomplete-master\Nuke.js" />
+    <Content Include="ScreepsAutocomplete-master\OwnedStructure.js" />
+    <Content Include="ScreepsAutocomplete-master\package.json" />
+    <Content Include="ScreepsAutocomplete-master\PathFinder.js" />
+    <Content Include="ScreepsAutocomplete-master\RawMemory.js" />
+    <Content Include="ScreepsAutocomplete-master\Readme.md" />
+    <Content Include="ScreepsAutocomplete-master\Resource.js" />
+    <Content Include="ScreepsAutocomplete-master\Room.js" />
+    <Content Include="ScreepsAutocomplete-master\RoomObject.js" />
+    <Content Include="ScreepsAutocomplete-master\RoomPosition.js" />
+    <Content Include="ScreepsAutocomplete-master\Source.js" />
+    <Content Include="ScreepsAutocomplete-master\Structure.js" />
+    <Content Include="ScreepsAutocomplete-master\_reference.js" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
   <!-- To modify your build process, add your task inside one of the targets below then uncomment
