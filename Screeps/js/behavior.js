@@ -1,7 +1,6 @@
 var harvester = require('behavior.harvester');
 var upgrader = require('behavior.upgrader');
 var builder = require('behavior.builder');
-var BEHAVIORS = require('BEHAVIORS');
 
 var behavior =
 {
