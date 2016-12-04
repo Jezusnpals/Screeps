@@ -2,6 +2,7 @@ var behavior = require('behavior');
 var roomManager = require('roomManager');
 var mapUtils = require('mapUtils');
 var creepManager = require('creepManager');
+var pathManager = require('pathManager');
 
 
 var showFlagsForPaths = false;
@@ -13,10 +14,17 @@ var showFlagForHarvestInfo = 'pathFrom';
 
 
 module.exports.loop = function () {
+    var start = Date.now();
 
     PathFinder.use(true);
 
-    var start = Date.now();
+    if (!Memory.initialized)
+    {
+        pathManager.initialize();
+        Memory.initialized = true;
+    }
+
+    
 
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];

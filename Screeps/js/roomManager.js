@@ -7,7 +7,7 @@ var roomManager =
 {
     createdConstructionSites: false,
     initialize: function (room, spawns) {
-        room.memory.initialized = 1;
+        room.memory.initialized = true;
         room.memory.mappedSources = [];
         room.memory.harvestInfos = [];
 
