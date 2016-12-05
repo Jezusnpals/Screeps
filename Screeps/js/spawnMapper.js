@@ -33,7 +33,7 @@ function calculateMappedInfo(startPosition, collectionPosition) {
 
             pathFromResults = mapUtils.findPath(collectionPosition, startPosition, [], pathToAvoid);
             mappedInfo.returnPathBlockers = mapUtils.getSameRoomPositionsFromArray(pathFromResults.path, pathToAvoid);
-            pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
+            mappedInfo.pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
         }
         else {
             mappedInfo.pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
