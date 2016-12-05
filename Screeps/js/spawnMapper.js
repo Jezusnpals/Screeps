@@ -1,6 +1,7 @@
 var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
 var infoMapper = require('infoMapper');
+var infoEnum = require('infoEnum');
 
 var harvestCreepCostToDivisor = 12;
 
@@ -10,21 +11,10 @@ var spawnMapper = {
 
         mappedSources.forEach(function (mappedSource) {
             mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
-                var mappedInfo = infoMapper.calculateMappedInfo(spawn.pos, collectionPositionInfo.originalPos);
-                var harvestInfo = {
-                    sourceId: mappedSource.sourceId,
-                    spawnId: spawn.id,
-                    creepNames: [],
-                    maxCreeps: 1 + Math.floor(mappedInfo.costTo / harvestCreepCostToDivisor),
-                    pathToId: mappedInfo.pathToId,
-                    linkedCollectionPositions: collectionPositionInfo.linkedCollectionPositions,
-                    costTo: mappedInfo.costTo,
-                    isSeperateReturnPath: mappedInfo.isSeperateReturnPath,
-                    canGetTo: mappedInfo.canGetTo,
-                    returnPathBlockers: mappedInfo.returnPathBlockers,
-                    collectionPosition: mappedInfo.collectionPosition
-                }
-                harvestInfos.push(harvestInfo);
+                var mappedInfo = infoMapper.calculateMappedInfo(spawn.pos, collectionPositionInfo.originalPos, infoEnum.SPAWN,
+                    harvestCreepCostToDivisor, mappedSource.sourceId);
+                mappedInfo.spawnId = spawn.id;
+                harvestInfos.push(mappedInfo);
             });
         });
 

@@ -2,9 +2,11 @@ var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
 
 var infoMapper = {
-    calculateMappedInfo: function (startPosition, collectionPosition, infoType) {
+    calculateMappedInfo: function (startPosition, collectionPositionInfo, infoType, baseCreepCostDivisor, sourceId)
+    {
+        var collectionPosition = collectionPositionInfo.originalPos;
         var mappedInfo = {
-            startPosition: startPosition,
+            creepNames: [],
             collectionPosition: collectionPosition,
             pathToId: -1,
             costTo: -1,
@@ -12,7 +14,9 @@ var infoMapper = {
             returnPathBlockers: [],
             canGetTo: false,
             pathFromId: -1,
-            type: infoType
+            type: infoType,
+            sourceId: sourceId,
+            linkedCollectionPositions: collectionPositionInfo.linkedCollectionPositions
         };
 
         var pathToResults = mapUtils.findPath(startPosition, collectionPosition);
@@ -42,6 +46,8 @@ var infoMapper = {
             }
             pathManager.addPathFrom(infoType, collectionPosition, pathFromResults.path)
         }
+
+        mappedInfo.maxCreeps = 1 + Math.floor(mappedInfo.costTo / baseCreepCostDivisor);
 
         return mappedInfo;
     },

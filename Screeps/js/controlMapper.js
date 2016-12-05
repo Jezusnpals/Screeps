@@ -1,6 +1,7 @@
 var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
 var infoMapper = require('infoMapper');
+var infoEnum = require('infoEnum');
 
 var controlCostDivisor = 12;
 
@@ -11,20 +12,9 @@ var controlMapper =
             var controlInfos = [];
             mappedSources.forEach(function (mappedSource) {
                 mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
-                    var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo.originalPos);
-                    var controlInfo = {
-                        sourceId: mappedSource.sourceId,
-                        creepNames: [],
-                        maxCreeps: 1 + Math.floor(mappedInfo.costTo / controlCostDivisor),
-                        pathToId: mappedInfo.pathToId,
-                        linkedCollectionPositions: collectionPositionInfo.linkedCollectionPositions,
-                        costTo: mappedInfo.costTo,
-                        isSeperateReturnPath: mappedInfo.isSeperateReturnPath,
-                        canGetTo: mappedInfo.canGetTo,
-                        returnPathBlockers: mappedInfo.returnPathBlockers,
-                        collectionPosition: mappedInfo.collectionPosition
-                    }
-                    controlInfos.push(controlInfo);
+                    var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
+                        controlCostDivisor, mappedSources.sourceId);
+                    controlInfos.push(mappedInfo);
                 });
             });
 
