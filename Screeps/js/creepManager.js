@@ -52,7 +52,7 @@ var creepManager =
                     var bestControlInfo = this.calculateBestSource(room.memory.controlInfos);
                     if (bestControlInfo != null)
                     {
-                        var bestControlInfoIndex = room.memory.controlInfos.indexOf(bestControlInfoIndex);
+                        var bestControlInfoIndex = room.memory.controlInfos.indexOf(bestControlInfo);
                         var creepName = 'U' + new Date().getTime();
                         var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, { behavior: behaviorEnum.UPGRADER, controlInfoIndex: bestControlInfoIndex });
                         if (creepResult == creepName)
