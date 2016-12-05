@@ -13,7 +13,7 @@ function moveToStructureByControlInfo(creep, controller, creepControlInfo) {
         creep.moveTo(structure);
     }
     */
-    creep.moveTo(structure);
+    creep.moveTo(controller);
 }
 
 function transferEnergy(creep, creepControlInfo) {
