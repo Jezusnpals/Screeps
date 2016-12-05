@@ -37,7 +37,10 @@ var creepManager =
                     {
                         var bestHarvestInfoIndex = room.memory.harvestInfos.indexOf(bestHarvestInfo);
                         var creepName = 'H' + new Date().getTime();
-                        var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, { behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestHarvestInfoIndex });
+                        var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, {
+                            behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestHarvestInfoIndex,
+                            pathFromId: -1
+                        });
                         if (creepResult == creepName)
                         {
                             room.memory.harvestInfos[bestHarvestInfoIndex].creepNames.push(creepName);
@@ -54,7 +57,10 @@ var creepManager =
                     {
                         var bestControlInfoIndex = room.memory.controlInfos.indexOf(bestControlInfo);
                         var creepName = 'U' + new Date().getTime();
-                        var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, { behavior: behaviorEnum.UPGRADER, controlInfoIndex: bestControlInfoIndex });
+                        var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, {
+                            behavior: behaviorEnum.UPGRADER, controlInfoIndex: bestControlInfoIndex,
+                            pathFromId: -1
+                        });
                         if (creepResult == creepName)
                         {
                             room.memory.controlInfos[bestControlInfoIndex].creepNames.push(creepName);

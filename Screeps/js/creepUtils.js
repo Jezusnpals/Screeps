@@ -6,6 +6,7 @@ var creepUtils =
 {
     NO_NEXT_POSITION: -6,
     NEXT_POSITION_TAKEN: -7,
+    NO_PATH: -20,
     tryMoveByPath: function(creep, path)
     {
         var moveToPosition = pathManager.getNextPathPosition(creep.pos, path);
@@ -30,7 +31,6 @@ var creepUtils =
         return creep.moveByPath(pathToLinkedHarvestPosition.path);
     },
     moveToSourceByMappedInfo: function (creep, source, mappedInfo) {
-        creep.memory.harvestPathFromId = -1;
 
         var harvestPositionOpen = creep.room.lookAt(mapUtils.refreshRoomPosition(mappedInfo.collectionPosition)).length <= 1;
         var movedSuccessfully = -1;
@@ -45,29 +45,38 @@ var creepUtils =
             creep.moveTo(source.pos);
         }
     },
-    harvestEnergy: function (creep, mappedInfo) {
+    harvestEnergy: function (creep, mappedInfo)
+    {
         var source = mappedInfo ? Game.getObjectById(mappedInfo.sourceId) :
             creep.room.find(FIND_SOURCES)[0];
         var harvestResult = creep.harvest(source)
+        creep.memory.pathFromId = -1;
 
         if (harvestResult == ERR_NOT_IN_RANGE) {
             if (mappedInfo)
             {
                 this.moveToSourceByMappedInfo(creep, source, mappedInfo);
             }
-            else {
+            else
+            {
                 creep.moveTo(source);
             }
         }
     },
     moveToStructureByMappedInfo: function (creep, structure, mappedInfo)
     {
-        var pathFromIdNotSet = !creep.memory.pathFromId || creep.memory.pathFromId == -1
-        if (pathFromIdNotSet)
+        var pathFromIdSet = creep.memory.pathFromId >= 0
+        if (!pathFromIdSet)
         {
             creep.memory.pathFromId = pathManager.getPathFromIndex(mappedInfo.type, creep.pos);
         }
-        var creepFollowPathFromResult = this.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.pathFromId));
+        pathFromIdSet = creep.memory.pathFromId >= 0
+        var creepFollowPathFromResult = this.NO_PATH;
+        if (pathFromIdSet)
+        {
+            creepFollowPathFromResult = this.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.pathFromId));
+        }
+        
         if (creepFollowPathFromResult != OK)
         {
             creep.moveTo(structure);

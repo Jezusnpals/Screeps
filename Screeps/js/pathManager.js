@@ -49,16 +49,22 @@ var pathManager =
         var pathFromIndex = Memory.pathManager.pathFromDictionary[pathFromKey];
         return pathFromIndex;
     },
-    getNextPathPosition:function(pos, path)
+    getNextPathPosition: function (pos, path)
     {
         var comparablePos = mapUtils.getComparableRoomPosition(pos);
-        path.forEach(function (p, i)
+        var nextPos = path[0];
+        for (var i = 0; i < path.length; i++)
         {
-            if(mapUtils.getComparableRoomPosition(p) == comparablePos)
-            {
-                return (i + 1) < path.length ? path[i + 1] : null;
+            if (mapUtils.getComparableRoomPosition(path[i]) == comparablePos) {
+                if (i + 1 < path.length)
+                {
+                    nextPos = path[i + 1];
+                }
+                break;
             }
-        });
+        };
+
+        return nextPos;
     }
 };
 
