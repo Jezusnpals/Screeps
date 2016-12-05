@@ -1,15 +1,6 @@
 var pathManager = require('pathManager');
 var mapUtils = require('mapUtils');
 
-function moveToALinkedHarvestPosition(creep, mappedInfo) {
-    var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
-        return Game.creeps[key];
-    }).filter(c => c.id != creep.id).map(c => c.pos);
-
-    var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions), otherCreepPositions, [], 50);
-    return creep.moveByPath(pathToLinkedHarvestPosition.path);
-}
-
 var creepUtils =
 {
     NO_NEXT_POSITION: -6,
@@ -68,6 +59,19 @@ var creepUtils =
             }
         }
     },
+    moveToStructureByMappedInfo: function (creep, structure, mappedInfo)
+    {
+        var pathFromIdNotSet = !creep.memory.pathFromId || creep.memory.pathFromId == -1
+        if (pathFromIdNotSet)
+        {
+            creep.memory.pathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, mappedInfo.sourceId).pathFromId;
+        }
+        var creepFollowPathFromResult = this.tryMoveByPath(creep, pathManager.getHarvestPathFromByIndex(creep.memory.pathFromId));
+        if (creepFollowPathFromResult != OK)
+        {
+            creep.moveTo(structure);
+        }
+    }
 
 };
 
