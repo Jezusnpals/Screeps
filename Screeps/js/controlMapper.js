@@ -13,7 +13,7 @@ var controlMapper =
             mappedSources.forEach(function (mappedSource) {
                 mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
                     var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
-                        controlCostDivisor, mappedSources.sourceId);
+                        controlCostDivisor, mappedSource.sourceId);
                     controlInfos.push(mappedInfo);
                 });
             });
