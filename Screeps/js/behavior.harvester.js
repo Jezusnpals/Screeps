@@ -2,7 +2,6 @@ var pathManager = require('pathManager');
 var roomManager = require('roomManager');
 var creepUtils = require('creepUtils');
 
-
 function moveToStructureByHarvestInfo(creep, structure, harvestInfo)
 {
     var harvestIdNotSet = !creep.memory.harvestPathFromId || creep.memory.harvestPathFromId == -1
