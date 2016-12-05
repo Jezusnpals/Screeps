@@ -65,7 +65,7 @@ var creepUtils =
         var pathFromIdNotSet = !creep.memory.pathFromId || creep.memory.pathFromId == -1
         if (pathFromIdNotSet)
         {
-            creep.memory.pathFromId = pathManager.getPathFrom(mappedInfo.type, creep.pos);
+            creep.memory.pathFromId = pathManager.getPathFromIndex(mappedInfo.type, creep.pos);
         }
         var creepFollowPathFromResult = this.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.pathFromId));
         if (creepFollowPathFromResult != OK)

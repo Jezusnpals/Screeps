@@ -35,11 +35,19 @@ var pathManager =
         }
         return mapUtils.refreshRoomPositionArray(Memory.pathManager.pathToList[index]);
     },
-    getPathFrom:function(infoType,startPosition)
+    getPathFrom:function(index)
+    {
+        if (index < 0 || index >= Memory.pathManager.pathFromList.length)
+        {
+            return [];
+        }
+        return mapUtils.refreshRoomPositionArray(Memory.pathManager.pathFromList[index]);
+    },
+    getPathFromIndex: function (infoType, startPosition)
     {
         var pathFromKey = getPathFromKey(infoType, startPosition);
         var pathFromIndex = Memory.pathManager.pathFromDictionary[pathFromKey];
-        return mapUtils.refreshRoomPositionArray(Memory.pathManager.pathFromList[pathFromIndex]);
+        return pathFromIndex;
     },
     getNextPathPosition:function(pos, path)
     {
