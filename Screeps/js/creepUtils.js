@@ -36,7 +36,7 @@ var creepUtils =
         var movedSuccessfully = -1;
 
         if (harvestPositionOpen) {
-            movedSuccessfully = this.tryMoveByPath(creep, pathManager.getHarvestPathToByIndex(mappedInfo.pathToId));
+            movedSuccessfully = this.tryMoveByPath(creep, pathManager.getPathTo(mappedInfo.pathToId));
         }
         if (movedSuccessfully != OK) {
             movedSuccessfully = this.moveToALinkedHarvestPosition(creep, mappedInfo);
@@ -67,7 +67,7 @@ var creepUtils =
         {
             creep.memory.pathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, mappedInfo.sourceId).pathFromId;
         }
-        var creepFollowPathFromResult = this.tryMoveByPath(creep, pathManager.getHarvestPathFromByIndex(creep.memory.pathFromId));
+        var creepFollowPathFromResult = this.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.pathFromId));
         if (creepFollowPathFromResult != OK)
         {
             creep.moveTo(structure);

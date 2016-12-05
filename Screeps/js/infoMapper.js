@@ -17,7 +17,7 @@ var infoMapper = {
         var pathToResults = mapUtils.findPath(startPosition, collectionPosition);
 
         if (!pathToResults.incomplete) {
-            mappedInfo.pathToId = pathManager.addHarvestPathTo(pathToResults.path);
+            mappedInfo.pathToId = pathManager.addPathTo(pathToResults.path);
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
@@ -32,10 +32,10 @@ var infoMapper = {
 
                 pathFromResults = mapUtils.findPath(collectionPosition, startPosition, [], pathToAvoid);
                 mappedInfo.returnPathBlockers = mapUtils.getSameRoomPositionsFromArray(pathFromResults.path, pathToAvoid);
-                mappedInfo.pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
+                mappedInfo.pathFromId = pathManager.addPathFrom(pathFromResults.path);
             }
             else {
-                mappedInfo.pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
+                mappedInfo.pathFromId = pathManager.addPathFrom(pathFromResults.path);
                 mappedInfo.isSeperateReturnPath = true;
             }
         }

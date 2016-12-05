@@ -8,7 +8,7 @@ var pathManager = require('pathManager');
 var showFlagsForPaths = false;
 var showFlagsForSourcePoints = false;
 
-var showFlagForHarvestInfo = 'pathFrom';
+var showFlagForHarvestInfo = 'pathFromList';
 //var showFlagForHarvestInfo = 'returnPathBlockers';
 //var showFlagForHarvestInfo = 'pathTo';
 

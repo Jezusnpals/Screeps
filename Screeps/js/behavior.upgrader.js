@@ -8,7 +8,7 @@ function moveToStructureByControlInfo(creep, controller, creepControlInfo) {
     if (harvestIdNotSet) {
         creep.memory.harvestPathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, creepControlInfo.sourceId).harvestPathFromId;
     }
-    var creepFollowHarvestPathFromResult = creepUtils.tryMoveByPath(creep, pathManager.getHarvestPathFromByIndex(creep.memory.harvestPathFromId));
+    var creepFollowHarvestPathFromResult = creepUtils.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.harvestPathFromId));
     if (creepFollowHarvestPathFromResult != OK) {
         creep.moveTo(structure);
     }

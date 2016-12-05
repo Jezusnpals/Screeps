@@ -5,35 +5,35 @@ var pathManager =
     initialize:function()
     {
         Memory.pathManager = {
-            harvestPathTo: [],
-            harvestPathFrom: []
+            pathToList: [],
+            pathFromList: []
         };
     },
-    addHarvestPathTo:function(path)
+    addPathTo:function(path)
     {
-        Memory.pathManager.harvestPathTo.push(path);
-        return Memory.pathManager.harvestPathTo.length - 1;
+        Memory.pathManager.pathToList.push(path);
+        return Memory.pathManager.pathToList.length - 1;
     },
-    addHarvestPathFrom:function(path)
+    addPathFrom:function(path)
     {
-        Memory.pathManager.harvestPathFrom.push(path);
-        return Memory.pathManager.harvestPathFrom.length - 1;
+        Memory.pathManager.pathFromList.push(path);
+        return Memory.pathManager.pathFromList.length - 1;
     },
-    getHarvestPathToByIndex:function(index)
+    getPathTo:function(index)
     {
-        if (index < 0 || index >= Memory.pathManager.harvestPathTo.length)
+        if (index < 0 || index >= Memory.pathManager.pathToList.length)
         {
             return [];
         }
-        return mapUtils.refreshRoomPositionArray(Memory.pathManager.harvestPathTo[index]);
+        return mapUtils.refreshRoomPositionArray(Memory.pathManager.pathToList[index]);
     },
-    getHarvestPathFromByIndex:function(index)
+    getPathFrom:function(index)
     {
-        if (index < 0 || index >= Memory.pathManager.harvestPathFrom.length)
+        if (index < 0 || index >= Memory.pathManager.pathFromList.length)
         {
             return [];
         }
-        return mapUtils.refreshRoomPositionArray(Memory.pathManager.harvestPathFrom[index]);
+        return mapUtils.refreshRoomPositionArray(Memory.pathManager.pathFromList[index]);
     },
     getNextPathPosition:function(pos, path)
     {
