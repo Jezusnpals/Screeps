@@ -42,7 +42,7 @@ var infoMapper = {
 
         return mappedInfo;
     },
-    calculateHarvestSource: function (infosWithoutReturnPath, baseCreepCostDivisor) {
+    calculateNumberOfCreepsForNoReturnPath: function (infosWithoutReturnPath, baseCreepCostDivisor) {
         while (infosWithoutReturnPath.length > 0) {
             var collidingInfos = [];
             collidingInfos.push({
