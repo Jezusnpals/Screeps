@@ -56,6 +56,16 @@ var roomManager =
         else {
             room.createConstructionSite(40, 44, STRUCTURE_EXTENSION);
         }
+    },
+    cleanUp: function(room, deadCreepNames)
+    {
+        deadCreepNames.forEach(function(name, i)
+        {
+            var nameIndex = room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex].creepNames.indexOf(name);
+            room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex].creepNames.splice(nameIndex, 1);
+            delete Memory.creeps[name];
+        });
+        
     }
 };
 

@@ -24,23 +24,23 @@ module.exports.loop = function () {
         Memory.initialized = true;
     }
 
-    
-
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
         behavior.run(creep);
     }
 
-
     var allSpawns = Object.keys(Game.spawns).map(function (key) {
         return Game.spawns[key];
     });
 
-    for (var name in Game.rooms) {
-
-
+    for (var name in Game.rooms)
+    {
         var room = Game.rooms[name];
 
+        var deadCreepNames = Object.keys(Memory.creeps).filter
+            (n => !Object.keys(Game.creeps).includes(n));
+
+        roomManager.cleanUp(room, deadCreepNames);
 
         if (!room.memory.initialized) {
 
