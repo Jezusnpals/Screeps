@@ -23,7 +23,6 @@ var spawnMapper = {
                     isSeperateReturnPath: mappedInfo.isSeperateReturnPath,
                     canGetTo: mappedInfo.canGetTo,
                     returnPathBlockers: mappedInfo.returnPathBlockers,
-                    isSeperateReturnPath: mappedInfo.isSeperateReturnPath,
                     collectionPosition: mappedInfo.collectionPosition
                 }
                 harvestInfos.push(harvestInfo);

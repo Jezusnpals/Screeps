@@ -3,58 +3,6 @@ var pathManager = require('pathManager');
 var roomManager = require('roomManager');
 var creepUtils = require('creepUtils');
 
-const INCOMPLETE_PATH = -20;
-
-function moveToALinkedHarvestPosition(creep, harvestInfo)
-{
-    var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
-        return Game.creeps[key];
-    }).filter(c => c.id != creep.id).map(c => c.pos);
-
-    var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(harvestInfo.linkedCollectionPositions), otherCreepPositions, [], 50);
-    return creep.moveByPath(pathToLinkedHarvestPosition.path);
-}
-
-function moveToSourceByHarvestInfo(creep, source, harvestInfo)
-{
-    creep.memory.harvestPathFromId = -1;
-    
-    var harvestPositionOpen = creep.room.lookAt(mapUtils.refreshRoomPosition(harvestInfo.collectionPosition)).length <= 1;
-    var movedSuccessfully = -1;
-
-    if (harvestPositionOpen)
-    {
-        movedSuccessfully = creepUtils.tryMoveByPath(creep, pathManager.getHarvestPathToByIndex(harvestInfo.pathToId));
-    }
-    if (movedSuccessfully != OK)
-    {
-        movedSuccessfully = moveToALinkedHarvestPosition(creep, harvestInfo);
-    }
-    if (movedSuccessfully != OK)
-    {
-        creep.moveTo(source.pos);
-    }
-}
-
-function harvestEnergy(creep)
-{
-    var creepHarvestInfo = creep.memory.harvestInfoIndex >= 0 ? creep.room.memory.harvestInfos[creep.memory.harvestInfoIndex]: null;
-    var source = creepHarvestInfo ? Game.getObjectById(creepHarvestInfo.sourceId) :
-        creep.room.find(FIND_SOURCES)[0];
-    var harvestResult = creep.harvest(source)
-
-    if (harvestResult == ERR_NOT_IN_RANGE)
-    {
-        if (creepHarvestInfo)
-        {
-            moveToSourceByHarvestInfo(creep, source, creepHarvestInfo);
-        }
-        else
-        {
-            creep.moveTo(source);
-        }
-    }
-}
 
 function moveToStructureByHarvestInfo(creep, structure, harvestInfo)
 {
@@ -97,7 +45,8 @@ var harvester =
         var creepNeedsEnergy = creep.carry.energy < creep.carryCapacity;
         if (creepNeedsEnergy)
         {
-            harvestEnergy(creep);
+            var creepHarvestInfo = creep.memory.harvestInfoIndex >= 0 ? creep.room.memory.harvestInfos[creep.memory.harvestInfoIndex]: null;
+            creepUtils.harvestEnergy(creep, creepHarvestInfo);
         }
         else 
         {

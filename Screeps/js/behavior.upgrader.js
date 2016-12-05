@@ -1,7 +1,8 @@
-var upgrader = {
 
-    /** @param {Creep} creep **/
-    run: function (creep) {
+var upgrader =
+    {
+    run: function (creep)
+    {
 
         if (creep.memory.upgrading && creep.carry.energy == 0) {
             creep.memory.upgrading = false;
