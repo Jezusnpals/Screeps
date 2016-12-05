@@ -13,7 +13,7 @@ var controlMapper =
                 mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
                     var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo.originalPos);
                     collectionPositionInfo.harvestPathFromId = mappedInfo.pathFromId;
-                    var controlInfos = {
+                    var controlInfo = {
                         sourceId: mappedSource.sourceId,
                         creepNames: [],
                         maxCreeps: 1 + Math.floor(mappedInfo.costTo / controlCostDivisor),
@@ -25,7 +25,7 @@ var controlMapper =
                         returnPathBlockers: mappedInfo.returnPathBlockers,
                         collectionPosition: mappedInfo.collectionPosition
                     }
-                    controlInfos.push(controlInfos);
+                    controlInfos.push(controlInfo);
                 });
             });
 
