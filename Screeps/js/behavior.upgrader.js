@@ -43,7 +43,12 @@ var upgrader =
         {
             creepUtils.harvestEnergy(creep, creepControlInfo);
         }
-
+        else
+        {
+            transferEnergy(creep, creepControlInfo);
+        }
+        
+        /*
         if (creep.memory.upgrading && creep.carry.energy == 0) {
             creep.memory.upgrading = false;
             creep.say('harvesting');
@@ -58,6 +63,7 @@ var upgrader =
                 creep.moveTo(creep.room.controller);
             }
         }
+        */
     }
 };
 
