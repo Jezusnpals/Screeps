@@ -3,53 +3,45 @@ var pathManager = require('pathManager');
 
 var harvestCreepCostToDivisor = 12;
 
-function getHarvestInfo(spawnPosition, collectionPosition, linkedCollectionPositions) {
-    var pathFromId = -1;
-    var harvestInfo = {
-        spawnPosition: spawnPosition,
+function calculateMappedInfo(startPosition, collectionPosition) {
+    var mappedInfo = {
+        startPosition: startPosition,
         collectionPosition: collectionPosition,
-        creepNames: [],
         pathToId: -1,
         costTo: -1,
-        returnPath: [],
         isSeperateReturnPath: false,
         returnPathBlockers: [],
         canGetTo: false,
-        maxHarvesters: 0,
-        linkedCollectionPositions: linkedCollectionPositions
+        pathFromId: -1
     };
 
-    var pathToResults = mapUtils.findPath(spawnPosition, collectionPosition);
+    var pathToResults = mapUtils.findPath(startPosition, collectionPosition);
 
     if (!pathToResults.incomplete) {
-        harvestInfo.pathToId = pathManager.addHarvestPathTo(pathToResults.path);
-        harvestInfo.costTo = pathToResults.cost;
-        harvestInfo.canGetTo = true;
+        mappedInfo.pathToId = pathManager.addHarvestPathTo(pathToResults.path);
+        mappedInfo.costTo = pathToResults.cost;
+        mappedInfo.canGetTo = true;
 
         var pathToAvoid = pathToResults.path.slice();
-        mapUtils.removeRoomPositionFromArray(pathToAvoid, spawnPosition);
+        mapUtils.removeRoomPositionFromArray(pathToAvoid, startPosition);
         mapUtils.removeRoomPositionFromArray(pathToAvoid, collectionPosition);
 
-        var pathFromResults = mapUtils.findPath(collectionPosition, spawnPosition, pathToAvoid);
+        var pathFromResults = mapUtils.findPath(collectionPosition, startPosition, pathToAvoid);
 
         if (pathFromResults.incomplete) {
-            harvestInfo.isSeperateReturnPath = false;
+            mappedInfo.isSeperateReturnPath = false;
 
-            pathFromResults = mapUtils.findPath(collectionPosition, spawnPosition, [], pathToAvoid);
-            harvestInfo.returnPathBlockers = mapUtils.getSameRoomPositionsFromArray(pathFromResults.path, pathToAvoid);
+            pathFromResults = mapUtils.findPath(collectionPosition, startPosition, [], pathToAvoid);
+            mappedInfo.returnPathBlockers = mapUtils.getSameRoomPositionsFromArray(pathFromResults.path, pathToAvoid);
             pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
         }
         else {
-            pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
-            harvestInfo.isSeperateReturnPath = true;
-            harvestInfo.maxHarvesters = 1 + Math.floor(harvestInfo.costTo / harvestCreepCostToDivisor);
+            mappedInfo.pathFromId = pathManager.addHarvestPathFrom(pathFromResults.path);
+            mappedInfo.isSeperateReturnPath = true;
         }
     }
 
-    return {
-        harvestInfo: harvestInfo,
-        pathFromId: pathFromId
-    };
+    return mappedInfo;
 }
 
 
@@ -88,11 +80,23 @@ var spawnMapper = {
 
         mappedSources.forEach(function (mappedSource) {
             mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
-                var harvestInfoResults = getHarvestInfo(spawn.pos, collectionPositionInfo.originalPos, collectionPositionInfo.linkedCollectionPositions);
-                collectionPositionInfo.harvestPathFromId = harvestInfoResults.pathFromId;
-                harvestInfoResults.harvestInfo.sourceId = mappedSource.sourceId; 
-                harvestInfoResults.harvestInfo.spawnId = spawn.id;
-                harvestInfos.push(harvestInfoResults.harvestInfo);
+                var mappedInfo = calculateMappedInfo(spawn.pos, collectionPositionInfo.originalPos, );
+                collectionPositionInfo.harvestPathFromId = mappedInfo.pathFromId;
+                var harvestInfo = {
+                    sourceId: mappedSource.sourceId,
+                    spawnId: spawn.id,
+                    creepNames: [],
+                    maxHarvesters: 1 + Math.floor(mappedInfo.costTo / harvestCreepCostToDivisor),
+                    pathToId: mappedInfo.pathToId,
+                    linkedCollectionPositions: collectionPositionInfo.linkedCollectionPositions,
+                    costTo: mappedInfo.costTo,
+                    isSeperateReturnPath: mappedInfo.isSeperateReturnPath,
+                    canGetTo: mappedInfo.canGetTo,
+                    returnPathBlockers: mappedInfo.returnPathBlockers,
+                    isSeperateReturnPath: mappedInfo.isSeperateReturnPath,
+                    collectionPosition: mappedInfo.collectionPosition
+                }
+                harvestInfos.push(harvestInfo);
             });
 
         });
