@@ -36,7 +36,7 @@ var roomManager =
         };
 
         var matchingSources = room.memory.mappedSources.filter(ms => ms.sourceId == sourceId);
-        if (matchingSources.length > 0) {
+        if (matchingSources.length == 1) {
             var matchingPositions = matchingSources[0].collectionPositionInfos.filter(cpi =>
                 mapUtils.getComparableRoomPosition(cpi.originalPos) == mapUtils.getComparableRoomPosition(pos));
             if (matchingPositions.length == 1) {
