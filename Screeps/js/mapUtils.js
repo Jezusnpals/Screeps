@@ -3,7 +3,12 @@ var mapUtils = {
         var roomSize = 50;
         return x >= 0 && x < roomSize && y >= 0 && y <= roomSize;
     },
-    getAdjacentRoomPositions: function (roomPos) {
+    getAdjacentRoomPositions: function (roomPos, maxDistance)
+    {
+        if (!maxDistance)
+        {
+            maxDistance = 1;
+        }
         var adjacentPositions = [];
 
         for (var i = -1; i <= 1; i++) {
