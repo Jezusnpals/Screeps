@@ -24,10 +24,10 @@ module.exports.loop = function () {
         Memory.initialized = true;
     }
 
-    for (var name in Game.creeps) {
+    Object.keys(Game.creeps).filter(cn => !Game.creeps[cn].spawning).forEach(function (name) {
         var creep = Game.creeps[name];
         behavior.run(creep);
-    }
+    });
 
     var allSpawns = Object.keys(Game.spawns).map(function (key) {
         return Game.spawns[key];
