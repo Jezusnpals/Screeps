@@ -20,7 +20,7 @@ function transferEnergy(creep, creepControlInfo) {
     var controller = creep.room.controller;
     var transferResults = creep.upgradeController(controller);
 
-    if (transferResults = ERR_NOT_IN_RANGE)
+    if (transferResults == ERR_NOT_IN_RANGE)
     {
         if (creepControlInfo)
         {
