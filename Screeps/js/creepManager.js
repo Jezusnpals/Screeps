@@ -1,13 +1,13 @@
 var behaviorEnum = require('behaviorEnum');
 
 function calculateHarvestCost(info) {
-    return info.costTo + (info.costTo / (info.maxHarvesters - info.creepNames.length));
+    return info.costTo + (info.costTo / (info.maxCreeps - info.creepNames.length));
 }
 
 var creepManager =
 {
     calculateHarvestSource: function (harvestInfos) {
-        var openHarvestInfos = harvestInfos.filter(info => info.creepNames.length < info.maxHarvesters); //maxHarvesters
+        var openHarvestInfos = harvestInfos.filter(info => info.creepNames.length < info.maxCreeps); //maxCreeps
         if (openHarvestInfos.length == 0) {
             return null;
         }

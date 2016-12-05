@@ -45,7 +45,7 @@ function calculateMappedInfo(startPosition, collectionPosition) {
 }
 
 
-function calculateNumberOfCreepsForNoReturnPath(infosWithoutReturnPath) {
+function calculateNumberOfCreepsForNoReturnPath(infosWithoutReturnPath, baseCreepCostDivisor) {
     while (infosWithoutReturnPath.length > 0) {
         var collidingInfos = [];
         collidingInfos.push({
@@ -65,8 +65,8 @@ function calculateNumberOfCreepsForNoReturnPath(infosWithoutReturnPath) {
         }
 
         collidingInfos.forEach(function (infoIndexPair) {
-            var harvestCreepCostFromDivisor = harvestCreepCostToDivisor + (collidingInfos.length * collidingBlockingPoints);
-            infoIndexPair.info.maxHarvesters = 1 + Math.floor(infoIndexPair.info.costTo / harvestCreepCostFromDivisor);
+            var creepCostFromDivisor = baseCreepCostDivisor +(collidingInfos.length * collidingBlockingPoints);
+            infoIndexPair.info.maxCreeps = 1 + Math.floor(infoIndexPair.info.costTo / creepCostFromDivisor);
             infosWithoutReturnPath.splice(infoIndexPair.index, 1);
         })
     }
@@ -86,7 +86,7 @@ var spawnMapper = {
                     sourceId: mappedSource.sourceId,
                     spawnId: spawn.id,
                     creepNames: [],
-                    maxHarvesters: 1 + Math.floor(mappedInfo.costTo / harvestCreepCostToDivisor),
+                    maxCreeps: 1 + Math.floor(mappedInfo.costTo / harvestCreepCostToDivisor),
                     pathToId: mappedInfo.pathToId,
                     linkedCollectionPositions: collectionPositionInfo.linkedCollectionPositions,
                     costTo: mappedInfo.costTo,
@@ -102,7 +102,7 @@ var spawnMapper = {
         });
 
         var infosWithoutReturnPath = harvestInfos.filter(info => !info.isSeperateReturnPath);
-        calculateNumberOfCreepsForNoReturnPath(infosWithoutReturnPath);
+        calculateNumberOfCreepsForNoReturnPath(infosWithoutReturnPath, harvestCreepCostToDivisor);
 
         return harvestInfos;
     }
