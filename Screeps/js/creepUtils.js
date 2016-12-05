@@ -1,5 +1,6 @@
 var pathManager = require('pathManager');
 var mapUtils = require('mapUtils');
+var roomManager = require('roomManager');
 
 var creepUtils =
 {
