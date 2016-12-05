@@ -1,4 +1,5 @@
 var pathManager = require('pathManager');
+var mapUtils = require('mapUtils');
 
 function moveToALinkedHarvestPosition(creep, mappedInfo) {
     var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
