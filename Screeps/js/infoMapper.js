@@ -51,7 +51,7 @@ var infoMapper = {
             });
             var collidingBlockingPoints = 0;
             for (var i = 1; i < infosWithoutReturnPath.length; i++) {
-                var sameBlockingPoints = getSameRoomPositionsFromArray(infosWithoutReturnPath[0].returnPathBlockers, infosWithoutReturnPath[i].returnPathBlockers)
+                var sameBlockingPoints = mapUtils.getSameRoomPositionsFromArray(infosWithoutReturnPath[0].returnPathBlockers, infosWithoutReturnPath[i].returnPathBlockers)
                 if (sameBlockingPoints.length > 0) {
                     collidingBlockingPoints += sameBlockingPoints.length;
                     collidingInfos.push({
