@@ -1,23 +1,31 @@
 var mapUtils = require('mapUtils');
 
+function getPathFromKey(infoType, startPosition)
+{
+    return infoType + mapUtils.getComparableRoomPosition(path);
+}
+
 var pathManager =
 {
     initialize:function()
     {
         Memory.pathManager = {
             pathToList: [],
-            pathFromList: []
-        };
+            pathFromList: [],
+            pathFromDictionary: {} //Dictonary of Info Type + ComparableRoomPosition to Path From Index
+        };                         //Example: pathFromDictionary['Harvester3230Sim'] = 16
     },
     addPathTo:function(path)
     {
         Memory.pathManager.pathToList.push(path);
         return Memory.pathManager.pathToList.length - 1;
     },
-    addPathFrom:function(path)
+    addPathFrom:function(infoType,startPosition, path)
     {
         Memory.pathManager.pathFromList.push(path);
-        return Memory.pathManager.pathFromList.length - 1;
+        var pathIndex = Memory.pathManager.pathFromList.length - 1;
+        var pathFromKey = getPathFromKey(infoType, startPosition);
+        Memory.pathManager.pathFromDictionary[pathFromKey] = pathIndex;
     },
     getPathTo:function(index)
     {
@@ -27,13 +35,11 @@ var pathManager =
         }
         return mapUtils.refreshRoomPositionArray(Memory.pathManager.pathToList[index]);
     },
-    getPathFrom:function(index)
+    getPathFrom:function(infoType,startPosition)
     {
-        if (index < 0 || index >= Memory.pathManager.pathFromList.length)
-        {
-            return [];
-        }
-        return mapUtils.refreshRoomPositionArray(Memory.pathManager.pathFromList[index]);
+        var pathFromKey = getPathFromKey(infoType, startPosition);
+        var pathFromIndex = Memory.pathManager.pathFromDictionary[pathFromKey];
+        return mapUtils.refreshRoomPositionArray(Memory.pathManager.pathFromList[pathFromIndex]);
     },
     getNextPathPosition:function(pos, path)
     {

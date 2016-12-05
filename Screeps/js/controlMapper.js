@@ -12,7 +12,6 @@ var controlMapper =
             mappedSources.forEach(function (mappedSource) {
                 mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
                     var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo.originalPos);
-                    collectionPositionInfo.pathFromId = mappedInfo.pathFromId;
                     var controlInfo = {
                         sourceId: mappedSource.sourceId,
                         creepNames: [],

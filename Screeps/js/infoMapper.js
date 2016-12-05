@@ -2,7 +2,7 @@ var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
 
 var infoMapper = {
-    calculateMappedInfo: function (startPosition, collectionPosition) {
+    calculateMappedInfo: function (startPosition, collectionPosition, infoType) {
         var mappedInfo = {
             startPosition: startPosition,
             collectionPosition: collectionPosition,
@@ -11,12 +11,14 @@ var infoMapper = {
             isSeperateReturnPath: false,
             returnPathBlockers: [],
             canGetTo: false,
-            pathFromId: -1
+            pathFromId: -1,
+            type: infoType
         };
 
         var pathToResults = mapUtils.findPath(startPosition, collectionPosition);
 
-        if (!pathToResults.incomplete) {
+        if (!pathToResults.incomplete)
+        {
             mappedInfo.pathToId = pathManager.addPathTo(pathToResults.path);
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
@@ -27,17 +29,18 @@ var infoMapper = {
 
             var pathFromResults = mapUtils.findPath(collectionPosition, startPosition, pathToAvoid);
 
-            if (pathFromResults.incomplete) {
+            if (pathFromResults.incomplete)
+            {
                 mappedInfo.isSeperateReturnPath = false;
 
                 pathFromResults = mapUtils.findPath(collectionPosition, startPosition, [], pathToAvoid);
                 mappedInfo.returnPathBlockers = mapUtils.getSameRoomPositionsFromArray(pathFromResults.path, pathToAvoid);
-                mappedInfo.pathFromId = pathManager.addPathFrom(pathFromResults.path);
             }
-            else {
-                mappedInfo.pathFromId = pathManager.addPathFrom(pathFromResults.path);
+            else
+            {
                 mappedInfo.isSeperateReturnPath = true;
             }
+            pathManager.addPathFrom(infoType, collectionPosition, pathFromResults.path)
         }
 
         return mappedInfo;

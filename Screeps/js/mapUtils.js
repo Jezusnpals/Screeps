@@ -55,7 +55,7 @@ var mapUtils = {
         return pathResults;
     },
     getComparableRoomPosition: function (pos) {
-        return pos.x + ' ' + pos.y;
+        return pos.x + ' ' + pos.y + pos.roomName;
     },
     mapRoomPositionArray: function (posArray) {
         return posArray.map(function (pos) {

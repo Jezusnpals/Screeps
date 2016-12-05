@@ -11,7 +11,6 @@ var spawnMapper = {
         mappedSources.forEach(function (mappedSource) {
             mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
                 var mappedInfo = infoMapper.calculateMappedInfo(spawn.pos, collectionPositionInfo.originalPos);
-                collectionPositionInfo.pathFromId = mappedInfo.pathFromId;
                 var harvestInfo = {
                     sourceId: mappedSource.sourceId,
                     spawnId: spawn.id,
