@@ -80,7 +80,7 @@ var spawnMapper = {
 
         mappedSources.forEach(function (mappedSource) {
             mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
-                var mappedInfo = calculateMappedInfo(spawn.pos, collectionPositionInfo.originalPos, );
+                var mappedInfo = calculateMappedInfo(spawn.pos, collectionPositionInfo.originalPos);
                 collectionPositionInfo.harvestPathFromId = mappedInfo.pathFromId;
                 var harvestInfo = {
                     sourceId: mappedSource.sourceId,
