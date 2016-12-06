@@ -10,37 +10,6 @@ var controlMapper =
         {
             return infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, 2, infoEnum.CONTROL,
                     controlMapper.controlCreepCostDivisor, sourceId);
-        },
-        mapSingleSource:function(control, mappedSource)
-        {
-            var controlInfos = [];
-
-            mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
-            {
-                var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
-                    controlMapper.controlCreepCostDivisor, mappedSource.sourceId);
-                controlInfos.push(mappedInfo);
-            });
-
-            return controlInfos;
-        },
-        mapControl:function(control, mappedSources)
-        {
-            var controlInfos = [];
-            mappedSources.forEach(function (mappedSource)
-            {
-                mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
-                {
-                    var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
-                        controlMapper.controlCreepCostDivisor, mappedSource.sourceId);
-                    controlInfos.push(mappedInfo);
-                });
-            });
-
-            var infosWithoutReturnPath = controlInfos.filter(info => !info.isSeperateReturnPath);
-            infoMapper.mapNumberOfCreepsForNoReturnPath(infosWithoutReturnPath, this.controlCreepCostDivisor);
-
-            return controlInfos;
         }
     };
 
