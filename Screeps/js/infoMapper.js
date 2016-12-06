@@ -33,7 +33,7 @@ var infoMapper = {
             mapUtils.removeRoomPositionFromArray(pathToAvoid, startPosition);
             mapUtils.removeRoomPositionFromArray(pathToAvoid, collectionPosition);
 
-            var pathFromGoal = { pos: startPosition.pos, range: returnRange };
+            var pathFromGoal = { pos: startPosition, range: returnRange };
 
             var pathFromResults = mapUtils.findPath(collectionPosition, pathFromGoal, pathToAvoid, 300);
 
