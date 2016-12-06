@@ -1,4 +1,5 @@
 var pathManager = require('pathManager');
+var mapUtils = require('mapUtils');
 
 var showFlagsForToPaths = true;
 var showFlagsForSourcePoints = false;
@@ -33,9 +34,11 @@ var flagDrawer = {
         }
         if (showFlagsForFromPaths)
         {
-            Memory.pathManager.pathFromList.forEach(function (pointOnPath, i) {
-                var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
-                room.createFlag(pointOnPath, 'f' +i , colors[3]);
+            Memory.pathManager.pathFromList.forEach(function (path, i) {
+                mapUtils.refreshRoomPositionArray(path).forEach(function (pointOnPath, j) {
+                    var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
+                    console.log(room.createFlag(pointOnPath, 'f' + i + j, COLOR_ORANGE));
+                });
             });
         }
     }
