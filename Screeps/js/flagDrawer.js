@@ -5,7 +5,7 @@ var showFlagsForSourcePoints = false;
 
 var showFlagForHarvestInfo = 'returnPathBlockers';
 
-var flapDrawer = {
+var flagDrawer = {
     showFlags: function(room)
     {
         if (showFlagsForPaths) {
@@ -36,4 +36,4 @@ var flapDrawer = {
     }
 }
 
-module.exports = flapDrawer;
+module.exports = flagDrawer;

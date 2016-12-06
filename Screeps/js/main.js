@@ -3,7 +3,7 @@ var roomManager = require('roomManager');
 var mapUtils = require('mapUtils');
 var creepManager = require('creepManager');
 var pathManager = require('pathManager');
-var flapDrawer = require('flapDrawer');
+var flagDrawer = require('flagDrawer');
 
 module.exports.loop = function () 
 {
