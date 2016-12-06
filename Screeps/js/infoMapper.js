@@ -2,7 +2,7 @@ var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
 
 var infoMapper = {
-    calculateMappedInfo: function (startPosition, collectionPositionInfo, infoType, baseCreepCostDivisor, sourceId)
+    calculateMappedInfo: function (startPosition, collectionPositionInfo, returnRange, infoType, baseCreepCostDivisor, sourceId)
     {
         var collectionPosition = mapUtils.refreshRoomPosition(collectionPositionInfo.originalPos);
         var mappedInfo = {
@@ -33,13 +33,15 @@ var infoMapper = {
             mapUtils.removeRoomPositionFromArray(pathToAvoid, startPosition);
             mapUtils.removeRoomPositionFromArray(pathToAvoid, collectionPosition);
 
-            var pathFromResults = mapUtils.findPath(collectionPosition, startPosition, pathToAvoid, 300);
+            var pathFromGoal = { pos: startPosition.pos, range: returnRange };
+
+            var pathFromResults = mapUtils.findPath(collectionPosition, pathFromGoal, pathToAvoid, 300);
 
             if (pathFromResults.incomplete)
             {
                 mappedInfo.isSeperateReturnPath = false;
 
-                pathFromResults = mapUtils.findPath(collectionPosition, startPosition, [], pathToAvoid);
+                pathFromResults = mapUtils.findPath(collectionPosition, pathFromGoal, [], pathToAvoid);
                 mappedInfo.returnPathBlockers = mapUtils.getSameRoomPositionsFromArray(pathFromResults.path, pathToAvoid);
             }
             else
