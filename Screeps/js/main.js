@@ -13,7 +13,8 @@ var showFlagForHarvestInfo = 'pathFromList';
 //var showFlagForHarvestInfo = 'pathTo';
 
 
-module.exports.loop = function () {
+module.exports.loop = function () 
+{
     var start = Date.now();
 
     PathFinder.use(true);

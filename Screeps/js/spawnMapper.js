@@ -9,8 +9,10 @@ var spawnMapper = {
     mapSpawn: function (spawn, mappedSources) {
         var harvestInfos = [];
 
-        mappedSources.forEach(function (mappedSource) {
-            mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
+        mappedSources.forEach(function (mappedSource)
+        {
+            mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
+            {
                 var mappedInfo = infoMapper.calculateMappedInfo(spawn.pos, collectionPositionInfo, infoEnum.SPAWN,
                     harvestCreepCostToDivisor, mappedSource.sourceId);
                 mappedInfo.spawnId = spawn.id;

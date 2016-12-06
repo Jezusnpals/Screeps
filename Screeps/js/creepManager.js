@@ -1,13 +1,49 @@
 var behaviorEnum = require('behaviorEnum');
+var mapUtils = require('mapUtils');
 
-function calculateHarvestCost(info) {
-    return info.costTo + (info.costTo / (info.maxCreeps - info.creepNames.length));
+function calculateHarvestCost(info)
+{
+    var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
+                        getComparableRoomPosition(info.collectionPosition)];
+    return info.costTo + (info.costTo * percentFilled);
+}
+
+function checkOpenInfo(info)
+{
+    if(info.creepNames.length < info.maxCreeps)
+    {
+        return false;
+    }
+    var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
+                        getComparableRoomPosition(info.collectionPosition)];
+    var percentAddingUnit = 1 / info.maxCreeps;
+    return percentFilled + percentAddingUnit <= 1;
+}
+
+function addPercentFilled(info)
+{
+    var percentAddingUnit = 1 / info.maxCreeps;
+    room.memory.collectionUsageDictonary[mapUtils.
+                        getComparableRoomPosition(info.collectionPosition)] += percentAddingUnit;
 }
 
 var creepManager =
 {
-    calculateBestSource: function (infos) {
-        var openInfos = infos.filter(info => info.creepNames.length < info.maxCreeps); //maxCreeps
+    initialize:function(room, mappedSources)
+    {
+        room.memory.collectionUsageDictonary = {};
+        mappedSources.forEach(function (mappedSource)
+        {
+            mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
+            {
+                room.memory.collectionUsageDictonary[mapUtils.
+                    getComparableRoomPosition(collectionPositionInfo.originalPos)] = 0;
+            });
+        });
+    },
+    calculateBestSource: function (infos)
+    {
+        var openInfos = infos.filter(checkOpenInfo); //maxCreeps
         if (openInfos.length == 0) {
             return null;
         }
@@ -44,6 +80,7 @@ var creepManager =
                         if (creepResult == creepName)
                         {
                             room.memory.harvestInfos[bestHarvestInfoIndex].creepNames.push(creepName);
+                            addPercentFilled(room.memory.harvestInfos[bestControlInfoIndex]);
                         }
                     }
                 }
@@ -64,6 +101,7 @@ var creepManager =
                         if (creepResult == creepName)
                         {
                             room.memory.controlInfos[bestControlInfoIndex].creepNames.push(creepName);
+                            addPercentFilled(room.memory.controlInfos[bestControlInfoIndex]);
                         }
                     }
                 }

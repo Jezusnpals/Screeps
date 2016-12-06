@@ -3,15 +3,17 @@ var pathManager = require('pathManager');
 var infoMapper = require('infoMapper');
 var infoEnum = require('infoEnum');
 
-var controlCostDivisor = 12;
+var controlCostDivisor = 5;
 
 var controlMapper =
     {
         mapControl:function(control, mappedSources)
         {
             var controlInfos = [];
-            mappedSources.forEach(function (mappedSource) {
-                mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo) {
+            mappedSources.forEach(function (mappedSource)
+            {
+                mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
+                {
                     var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
                         controlCostDivisor, mappedSource.sourceId);
                     controlInfos.push(mappedInfo);
