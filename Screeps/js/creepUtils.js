@@ -7,6 +7,7 @@ var creepUtils =
     NO_NEXT_POSITION: -6,
     NEXT_POSITION_TAKEN: -7,
     NO_PATH: -20,
+    recalculate_path_errors: [NEXT_POSITION_TAKEN, NO_NEXT_POSITION, NO_PATH, ERR_NOT_FOUND],
     tryMoveByPath: function(creep, path)
     {
         var moveToPosition = pathManager.getNextPathPosition(creep.pos, path);
@@ -34,15 +35,17 @@ var creepUtils =
     moveToSourceByMappedInfo: function (creep, source, mappedInfo) {
 
         var harvestPositionOpen = creep.room.lookAt(mapUtils.refreshRoomPosition(mappedInfo.collectionPosition)).length <= 1;
-        var movedSuccessfully = -1;
+        var moveResults = -1;
 
         if (harvestPositionOpen) {
-            movedSuccessfully = this.tryMoveByPath(creep, pathManager.getPathTo(mappedInfo.pathToId));
+            moveResults = this.tryMoveByPath(creep, pathManager.getPathTo(mappedInfo.pathToId));
         }
-        if (movedSuccessfully != OK) {
-            movedSuccessfully = this.moveToALinkedHarvestPosition(creep, mappedInfo);
+        if (this.recalculate_path_errors.includes(moveResults))
+        {
+            moveResults = this.moveToALinkedHarvestPosition(creep, mappedInfo);
         }
-        if (movedSuccessfully != OK) {
+        if (this.recalculate_path_errors.includes(moveResults))
+        {
             creep.moveTo(source.pos);
         }
     },
@@ -78,7 +81,7 @@ var creepUtils =
             creepFollowPathFromResult = this.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.pathFromId));
         }
         
-        if (creepFollowPathFromResult != OK && creepFollowPathFromResult != ERR_TIRED)
+        if (this.recalculate_path_errors.includes(creepFollowPathFromResult))
         {
             creep.memory.pathFromId = -1;
             creep.moveTo(structure);
