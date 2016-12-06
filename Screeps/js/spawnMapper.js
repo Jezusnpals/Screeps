@@ -13,7 +13,7 @@ var spawnMapper = {
         mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
         {
             var mappedInfo = infoMapper.calculateMappedInfo(spawn.pos, collectionPositionInfo, infoEnum.SPAWN,
-                harvestCreepCostDivisor.harvestCreepCostDivisor, mappedSource.sourceId);
+                spawnMapper.harvestCreepCostDivisor, mappedSource.sourceId);
             mappedInfo.spawnId = spawn.id;
             harvestInfos.push(mappedInfo);
         });
@@ -29,7 +29,7 @@ var spawnMapper = {
             mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
             {
                 var mappedInfo = infoMapper.calculateMappedInfo(spawn.pos, collectionPositionInfo, infoEnum.SPAWN,
-                    harvestCreepCostDivisor.harvestCreepCostDivisor, mappedSource.sourceId);
+                    spawnMapper.harvestCreepCostDivisor, mappedSource.sourceId);
                 mappedInfo.spawnId = spawn.id;
                 harvestInfos.push(mappedInfo);
             });
