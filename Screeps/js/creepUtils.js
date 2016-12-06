@@ -39,7 +39,7 @@ var creepUtils =
         var moveResults = -1;
 
         if (harvestPositionOpen) {
-            moveResults = tryMoveByPath(creep, pathManager.getPathTo(mappedInfo.pathToId));
+            moveResults = this.tryMoveByPath(creep, pathManager.getPathTo(mappedInfo.pathToId));
         }
         if (this.recalculate_path_errors.includes(moveResults))
         {
