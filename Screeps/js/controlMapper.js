@@ -13,7 +13,7 @@ var controlMapper =
             mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
             {
                 var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
-                    this.controlCreepCostDivisor, mappedSource.sourceId);
+                    controlCreepCostDivisor.controlCreepCostDivisor, mappedSource.sourceId);
                 controlInfos.push(mappedInfo);
             });
 
@@ -27,7 +27,7 @@ var controlMapper =
                 mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
                 {
                     var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
-                        this.controlCreepCostDivisor, mappedSource.sourceId);
+                        controlCreepCostDivisor.controlCreepCostDivisor, mappedSource.sourceId);
                     controlInfos.push(mappedInfo);
                 });
             });
