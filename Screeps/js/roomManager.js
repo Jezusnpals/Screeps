@@ -60,7 +60,7 @@ var roomManager =
             {
                 var nameIndex = room.memory.controlInfos[Memory.creeps[name].controlInfoIndex].creepNames.indexOf(name);
                 room.memory.controlInfos[Memory.creeps[name].controlInfoIndex].creepNames.splice(nameIndex, 1);
-                creepManager.removeUsageFromInfo(room.memory.controlInfos[Memory.creeps[name].harvestInfoIndex]);
+                creepManager.removeUsageFromInfo(room.memory.controlInfos[Memory.creeps[name].controlInfoIndex]);
                 delete Memory.creeps[name];
             }
             
