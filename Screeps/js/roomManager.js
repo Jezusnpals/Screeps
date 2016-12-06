@@ -45,7 +45,7 @@ var roomManager =
                 room.memory.harvestInfos = room.memory.harvestInfos.concat(spawnMapper.mapSingleSource(spawn, room.memory.mappedSources[room.memory.currentMapIndex]));
             });
 
-            room.memory.controlInfos = controlMapper.mapSingleSource(room.controller, room.memory.mappedSources[room.memory.currentMapIndex]);
+            room.memory.controlInfos = room.memory.controlInfos.concat(controlMapper.mapSingleSource(room.controller, room.memory.mappedSources[room.memory.currentMapIndex]));
 
             room.memory.currentMapIndex++;
 
@@ -57,7 +57,7 @@ var roomManager =
         else if(!room.memory.mappedMaxCreepsForNoReturnPath)
         {
             var harvestInfosWithNoReturnPath = room.memory.harvestInfos.filter(info => !info.isSeperateReturnPath);
-            var controlInfosWithNoReturnPath = room.memory.mapSingleSource.filter(info => !info.isSeperateReturnPath);
+            var controlInfosWithNoReturnPath = room.memory.controlInfos.filter(info => !info.isSeperateReturnPath);
 
             infoMapper.mapNumberOfCreepsForNoReturnPath(harvestInfosWithNoReturnPath, spawnMapper.harvestCreepCostDivisor);
             infoMapper.mapNumberOfCreepsForNoReturnPath(controlInfosWithNoReturnPath, controlMapper.controlCreepCostDivisor);
