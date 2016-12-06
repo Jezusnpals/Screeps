@@ -7,7 +7,7 @@ var creepUtils =
     NO_NEXT_POSITION: -6,
     NEXT_POSITION_TAKEN: -7,
     NO_PATH: -20,
-    recalculate_path_errors: [NEXT_POSITION_TAKEN, NO_NEXT_POSITION, NO_PATH, ERR_NOT_FOUND],
+    recalculate_path_errors: [this.NEXT_POSITION_TAKEN, this.NO_NEXT_POSITION, this.NO_PATH, ERR_NOT_FOUND],
     tryMoveByPath: function(creep, path)
     {
         var moveToPosition = pathManager.getNextPathPosition(creep.pos, path);
