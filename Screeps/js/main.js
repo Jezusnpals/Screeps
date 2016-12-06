@@ -29,8 +29,6 @@ module.exports.loop = function ()
     for (var name in Game.rooms)
     {
         var room = Game.rooms[name];
-        
-        flapDrawer.showFlags(room);
 
         var deadCreepNames = Object.keys(Memory.creeps).filter
             (n => !Object.keys(Game.creeps).includes(n));
@@ -41,6 +39,7 @@ module.exports.loop = function ()
 
             var currentRoomSpawns = allSpawns.filter(x => x.room.name == name);
             roomManager.initialize(room, currentRoomSpawns);
+            flagDrawer.showFlags(room);
         }
         roomManager.run(room);
     }
