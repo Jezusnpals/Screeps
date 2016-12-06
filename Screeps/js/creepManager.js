@@ -61,14 +61,16 @@ var creepManager =
 
         return openInfos[lowestCostIndex];
     },
-    createCreep(room, infos, startMemory)
+    createCreep(room, infos, startMemory, infoIndexName) 
     {
         var bestInfo = this.calculateBestSource(infos, room);
         if (bestInfo != null) {
             var bestInfoIndex = infos.indexOf(bestInfo);
             var creepName = 'c' + new Date().getTime();
+            startMemory[infoIndexName] = bestInfoIndex;
             var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, startMemory);
-            if (creepResult == creepName) {
+            if (creepResult == creepName) 
+            {
                 infos[bestInfoIndex].creepNames.push(creepName);
                 addPercentFilled(infos[bestInfoIndex], room);
             }
@@ -81,16 +83,16 @@ var creepManager =
             if (Object.keys(Game.creeps).length % 2 == 0)
             {
                 this.createCreep(room, room.memory.harvestInfos, {
-                    behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestInfoIndex,
+                    behavior: behaviorEnum.HARVESTER,
                     pathFromId: -1
-                });
+                }, 'harvestInfoIndex');
             }
             else
             {
                 this.createCreep(room, room.memory.controlInfos, {
-                    behavior: behaviorEnum.UPGRADER, controlInfoIndex: bestInfoIndex,
+                    behavior: behaviorEnum.UPGRADER,
                     pathFromId: -1
-                });
+                }, 'controlInfoIndex');
             }
         }
   
