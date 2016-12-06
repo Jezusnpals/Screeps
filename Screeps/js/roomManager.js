@@ -26,6 +26,8 @@ var roomManager =
         });
 
         room.memory.controlInfos = controlMapper.mapControl(room.controller, room.memory.mappedSources);
+
+        creepManager.initialize(room, room.memory.mappedSources);
     },
     run: function (room) {
 
