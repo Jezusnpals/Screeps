@@ -80,7 +80,7 @@ var creepManager =
                         if (creepResult == creepName)
                         {
                             room.memory.harvestInfos[bestHarvestInfoIndex].creepNames.push(creepName);
-                            addPercentFilled(room.memory.harvestInfos[bestControlInfoIndex]);
+                            addPercentFilled(room.memory.harvestInfos[bestHarvestInfoIndex]);
                         }
                     }
                 }
