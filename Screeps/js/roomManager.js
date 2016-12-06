@@ -42,6 +42,7 @@ var roomManager =
                     var harvestInfo = spawnMapper.mapSingleCollectionPosition(spawn, collectionPositionInfo, mappedSource.sourceId);
                     room.memory.harvestInfos.push(harvestInfo);
                 });
+                room.memory.currentMappingType = infoEnum.CONTROL;
             }
             else if (room.memory.currentMappingType == infoEnum.CONTROL)
             {
@@ -60,6 +61,7 @@ var roomManager =
                 {
                     room.memory.finishedMapping = true;
                 }
+                room.memory.currentMappingType = infoEnum.SPAWN;
             }
         }
         else if(!room.memory.mappedMaxCreepsForNoReturnPath)
