@@ -55,7 +55,7 @@ var infoMapper = {
 
         return mappedInfo;
     },
-    calculateNumberOfCreepsForNoReturnPath: function (infosWithoutReturnPath, baseCreepCostDivisor) {
+    mapNumberOfCreepsForNoReturnPath: function (infosWithoutReturnPath, baseCreepCostDivisor) {
         while (infosWithoutReturnPath.length > 0) {
             var collidingInfos = [];
             collidingInfos.push({

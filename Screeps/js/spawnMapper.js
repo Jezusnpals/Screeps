@@ -3,10 +3,25 @@ var pathManager = require('pathManager');
 var infoMapper = require('infoMapper');
 var infoEnum = require('infoEnum');
 
-var harvestCreepCostToDivisor = 12;
 
 var spawnMapper = {
-    mapSpawn: function (spawn, mappedSources) {
+    harvestCreepCostDivisor: 12,
+    mapSingleSource: function(spawn, mappedSource)
+    {
+        var harvestInfos = [];
+
+        mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
+        {
+            var mappedInfo = infoMapper.calculateMappedInfo(spawn.pos, collectionPositionInfo, infoEnum.SPAWN,
+                this.harvestCreepCostDivisor, mappedSource.sourceId);
+            mappedInfo.spawnId = spawn.id;
+            harvestInfos.push(mappedInfo);
+        });
+
+        return harvestInfos;
+    },
+    mapSpawn: function (spawn, mappedSources)
+    {
         var harvestInfos = [];
 
         mappedSources.forEach(function (mappedSource)
@@ -14,14 +29,14 @@ var spawnMapper = {
             mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
             {
                 var mappedInfo = infoMapper.calculateMappedInfo(spawn.pos, collectionPositionInfo, infoEnum.SPAWN,
-                    harvestCreepCostToDivisor, mappedSource.sourceId);
+                    this.harvestCreepCostDivisor, mappedSource.sourceId);
                 mappedInfo.spawnId = spawn.id;
                 harvestInfos.push(mappedInfo);
             });
         });
 
         var infosWithoutReturnPath = harvestInfos.filter(info => !info.isSeperateReturnPath);
-        infoMapper.calculateNumberOfCreepsForNoReturnPath(infosWithoutReturnPath, harvestCreepCostToDivisor);
+        infoMapper.mapNumberOfCreepsForNoReturnPath(infosWithoutReturnPath, this.harvestCreepCostDivisor);
 
         return harvestInfos;
     }

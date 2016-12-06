@@ -3,6 +3,7 @@ var sourceMapper = require('sourceMapper');
 var spawnMapper = require('spawnMapper');
 var controlMapper = require('controlMapper');
 var creepManager = require('creepManager');
+var infoMapper = require('infoMapper');
 
 var roomManager =
 {
@@ -20,14 +21,47 @@ var roomManager =
             room.memory.mappedSources.push(mappedSource);
         }
 
+        room.memory.currentMapIndex = 0;
+        room.memory.finishedMapping = false;
+        room.memory.mappedMaxCreepsForNoReturnPath = false;
+
+        /*
         spawns.forEach(function (spawn)
         {
             room.memory.harvestInfos = room.memory.harvestInfos.concat(spawnMapper.mapSpawn(spawn, room.memory.mappedSources));
         });
 
         room.memory.controlInfos = controlMapper.mapControl(room.controller, room.memory.mappedSources);
+        */
 
         creepManager.initialize(room, room.memory.mappedSources);
+    },
+    mapInfos: function(room, spawns)
+    {
+        if (!room.memory.finishedMapping)
+        {
+            spawns.forEach(function (spawn)
+            {
+                room.memory.harvestInfos = room.memory.harvestInfos.concat(spawnMapper.mapSingleSource(spawn, room.memory.mappedSources[room.memory.currentMapIndex]));
+            });
+
+            room.memory.controlInfos = controlMapper.mapSingleSource(room.controller, room.memory.mappedSources[room.memory.currentMapIndex]);
+
+            room.memory.currentMapIndex++;
+
+            if(room.memory.currentMapIndex >= room.memory.mappedSources.length)
+            {
+                room.memory.finishedMapping = true;
+            }
+        }
+        else if(!room.memory.mappedMaxCreepsForNoReturnPath)
+        {
+            var harvestInfosWithNoReturnPath = room.memory.harvestInfos.filter(info => !info.isSeperateReturnPath);
+            var controlInfosWithNoReturnPath = room.memory.mapSingleSource.filter(info => !info.isSeperateReturnPath);
+
+            infoMapper.mapNumberOfCreepsForNoReturnPath(harvestInfosWithNoReturnPath, spawnMapper.harvestCreepCostDivisor);
+            infoMapper.mapNumberOfCreepsForNoReturnPath(controlInfosWithNoReturnPath, controlMapper.controlCreepCostDivisor);
+        }
     },
     run: function (room) {
 

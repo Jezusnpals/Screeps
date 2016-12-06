@@ -35,12 +35,13 @@ module.exports.loop = function ()
 
         roomManager.cleanUp(room, deadCreepNames);
 
-        if (!room.memory.initialized) {
-
-            var currentRoomSpawns = allSpawns.filter(x => x.room.name == name);
+        var currentRoomSpawns = allSpawns.filter(x => x.room.name == name);
+        if (!room.memory.initialized)
+        {
             roomManager.initialize(room, currentRoomSpawns);
             flagDrawer.showFlags(room);
         }
+        roomManager.mapInfos(room, currentRoomSpawns)
         roomManager.run(room);
     }
     //console.log(Date.now() - start);

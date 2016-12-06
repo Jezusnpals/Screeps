@@ -3,10 +3,22 @@ var pathManager = require('pathManager');
 var infoMapper = require('infoMapper');
 var infoEnum = require('infoEnum');
 
-var controlCostDivisor = 5;
-
 var controlMapper =
     {
+        controlCreepCostDivisor: 5,
+        mapSingleSource:function(control, mappedSource)
+        {
+            var controlInfos = [];
+
+            mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
+            {
+                var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
+                    this.controlCreepCostDivisor, mappedSource.sourceId);
+                controlInfos.push(mappedInfo);
+            });
+
+            return controlInfos;
+        },
         mapControl:function(control, mappedSources)
         {
             var controlInfos = [];
@@ -15,13 +27,13 @@ var controlMapper =
                 mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
                 {
                     var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
-                        controlCostDivisor, mappedSource.sourceId);
+                        this.controlCreepCostDivisor, mappedSource.sourceId);
                     controlInfos.push(mappedInfo);
                 });
             });
 
             var infosWithoutReturnPath = controlInfos.filter(info => !info.isSeperateReturnPath);
-            infoMapper.calculateNumberOfCreepsForNoReturnPath(infosWithoutReturnPath, controlCostDivisor);
+            infoMapper.mapNumberOfCreepsForNoReturnPath(infosWithoutReturnPath, this.controlCreepCostDivisor);
 
             return controlInfos;
         }
