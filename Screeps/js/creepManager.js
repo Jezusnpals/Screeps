@@ -1,6 +1,23 @@
 var behaviorEnum = require('behaviorEnum');
 var mapUtils = require('mapUtils');
 
+function createCreep(room, infos)
+{
+    var bestInfo = this.calculateBestSource(infos, room);
+    if (bestInfo != null) {
+        var bestInfoIndex = infos.indexOf(bestInfo);
+        var creepName = 'c' + new Date().getTime();
+        var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, {
+            behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestInfoIndex,
+            pathFromId: -1
+        });
+        if (creepResult == creepName) {
+            infos[bestInfoIndex].creepNames.push(creepName);
+            addPercentFilled(infos[bestInfoIndex], room);
+        }
+    }
+}
+
 function calculateHarvestCost(info, room)
 {
     var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
@@ -66,45 +83,11 @@ var creepManager =
         {
             if (Object.keys(Game.creeps).length % 2 == 0)
             {
-                if (room.memory.harvestInfos)
-                {
-                    var bestHarvestInfo = this.calculateBestSource(room.memory.harvestInfos, room);
-                    if (bestHarvestInfo != null)
-                    {
-                        var bestHarvestInfoIndex = room.memory.harvestInfos.indexOf(bestHarvestInfo);
-                        var creepName = 'H' + new Date().getTime();
-                        var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, {
-                            behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestHarvestInfoIndex,
-                            pathFromId: -1
-                        });
-                        if (creepResult == creepName)
-                        {
-                            room.memory.harvestInfos[bestHarvestInfoIndex].creepNames.push(creepName);
-                            addPercentFilled(room.memory.harvestInfos[bestHarvestInfoIndex], room);
-                        }
-                    }
-                }
+                createCreep(room, room.memory.harvestInfos);
             }
             else
             {
-                if (room.memory.controlInfos)
-                {
-                    var bestControlInfo = this.calculateBestSource(room.memory.controlInfos, room);
-                    if (bestControlInfo != null)
-                    {
-                        var bestControlInfoIndex = room.memory.controlInfos.indexOf(bestControlInfo);
-                        var creepName = 'U' + new Date().getTime();
-                        var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, {
-                            behavior: behaviorEnum.UPGRADER, controlInfoIndex: bestControlInfoIndex,
-                            pathFromId: -1
-                        });
-                        if (creepResult == creepName)
-                        {
-                            room.memory.controlInfos[bestControlInfoIndex].creepNames.push(creepName);
-                            addPercentFilled(room.memory.controlInfos[bestControlInfoIndex], room);
-                        }
-                    }
-                }
+                createCreep(room, room.memory.controlInfos);
             }
         }
   
