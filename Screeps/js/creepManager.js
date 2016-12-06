@@ -76,6 +76,12 @@ var creepManager =
             }
         }
     },
+    removeUsageFromInfo: function (info)
+    {
+        var percentAddingUnit = 1 / info.maxCreeps;
+        room.memory.collectionUsageDictonary[mapUtils.
+            getComparableRoomPosition(info.collectionPosition)] -= percentAddingUnit
+    },
     run: function (room)
     {
         if (Object.keys(Game.creeps).length < 200 && Game.spawns['Spawn1'].energy >= 200)
