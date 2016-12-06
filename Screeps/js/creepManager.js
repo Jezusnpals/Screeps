@@ -61,32 +61,36 @@ var creepManager =
 
         return openInfos[lowestCostIndex];
     },
-    createCreep(room, infos)
+    createCreep(room, infos, startMemory)
     {
         var bestInfo = this.calculateBestSource(infos, room);
         if (bestInfo != null) {
             var bestInfoIndex = infos.indexOf(bestInfo);
             var creepName = 'c' + new Date().getTime();
-            var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, {
-                behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestInfoIndex,
-                pathFromId: -1
-            });
+            var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, startMemory);
             if (creepResult == creepName) {
                 infos[bestInfoIndex].creepNames.push(creepName);
                 addPercentFilled(infos[bestInfoIndex], room);
             }
         }
     },
-    run: function (room) {
+    run: function (room)
+    {
         if (Object.keys(Game.creeps).length < 200 && Game.spawns['Spawn1'].energy >= 200)
         {
             if (Object.keys(Game.creeps).length % 2 == 0)
             {
-                this.createCreep(room, room.memory.harvestInfos);
+                this.createCreep(room, room.memory.harvestInfos, {
+                    behavior: behaviorEnum.HARVESTER, harvestInfoIndex: bestInfoIndex,
+                    pathFromId: -1
+                });
             }
             else
             {
-                this.createCreep(room, room.memory.controlInfos);
+                this.createCreep(room, room.memory.controlInfos, {
+                    behavior: behaviorEnum.UPGRADER, controlInfoIndex: bestInfoIndex,
+                    pathFromId: -1
+                });
             }
         }
   
