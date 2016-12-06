@@ -78,7 +78,7 @@ var creepUtils =
             creepFollowPathFromResult = this.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.pathFromId));
         }
         
-        if (creepFollowPathFromResult != OK)
+        if (creepFollowPathFromResult != OK && creepFollowPathFromResult != ERR_TIRED)
         {
             creep.memory.pathFromId = -1;
             creep.moveTo(structure);
