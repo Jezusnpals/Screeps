@@ -10,6 +10,8 @@ var controlMapper =
         {
             var controlInfos = [];
 
+            //test
+
             mappedSource.collectionPositionInfos.forEach(function (collectionPositionInfo)
             {
                 var mappedInfo = infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
