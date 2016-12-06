@@ -20,7 +20,7 @@ function checkOpenInfo(info, room)
     return percentFilled + percentAddingUnit <= 1;
 }
 
-function addPercentFilled(info)
+function addPercentFilled(info, room)
 {
     var percentAddingUnit = 1 / info.maxCreeps;
     room.memory.collectionUsageDictonary[mapUtils.
@@ -80,7 +80,7 @@ var creepManager =
                         if (creepResult == creepName)
                         {
                             room.memory.harvestInfos[bestHarvestInfoIndex].creepNames.push(creepName);
-                            addPercentFilled(room.memory.harvestInfos[bestHarvestInfoIndex]);
+                            addPercentFilled(room.memory.harvestInfos[bestHarvestInfoIndex], room);
                         }
                     }
                 }
@@ -101,7 +101,7 @@ var creepManager =
                         if (creepResult == creepName)
                         {
                             room.memory.controlInfos[bestControlInfoIndex].creepNames.push(creepName);
-                            addPercentFilled(room.memory.controlInfos[bestControlInfoIndex]);
+                            addPercentFilled(room.memory.controlInfos[bestControlInfoIndex], room);
                         }
                     }
                 }
