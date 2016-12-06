@@ -4,6 +4,7 @@ var spawnMapper = require('spawnMapper');
 var controlMapper = require('controlMapper');
 var creepManager = require('creepManager');
 var infoMapper = require('infoMapper');
+var infoEnum = require('infoEnum');
 
 var roomManager =
 {
@@ -21,18 +22,10 @@ var roomManager =
             room.memory.mappedSources.push(mappedSource);
         }
 
-        room.memory.currentMapIndex = 0;
+        room.memory.currentPositionIndex = [0,0];
         room.memory.finishedMapping = false;
         room.memory.mappedMaxCreepsForNoReturnPath = false;
-
-        /*
-        spawns.forEach(function (spawn)
-        {
-            room.memory.harvestInfos = room.memory.harvestInfos.concat(spawnMapper.mapSpawn(spawn, room.memory.mappedSources));
-        });
-
-        room.memory.controlInfos = controlMapper.mapControl(room.controller, room.memory.mappedSources);
-        */
+        room.memory.currentMappingType = infoEnum.SPAWN;
 
         creepManager.initialize(room, room.memory.mappedSources);
     },
@@ -40,18 +33,33 @@ var roomManager =
     {
         if (!room.memory.finishedMapping)
         {
-            spawns.forEach(function (spawn)
+            if (room.memory.currentMappingType == infoEnum.SPAWN)
             {
-                room.memory.harvestInfos = room.memory.harvestInfos.concat(spawnMapper.mapSingleSource(spawn, room.memory.mappedSources[room.memory.currentMapIndex]));
-            });
-
-            room.memory.controlInfos = room.memory.controlInfos.concat(controlMapper.mapSingleSource(room.controller, room.memory.mappedSources[room.memory.currentMapIndex]));
-
-            room.memory.currentMapIndex++;
-
-            if(room.memory.currentMapIndex >= room.memory.mappedSources.length)
+                spawns.forEach(function (spawn)
+                {
+                    var mappedSource = room.memory.mappedSources[room.memory.currentPositionIndex[0]];
+                    var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentPositionIndex[1]];
+                    var harvestInfo = spawnMapper.mapSingleCollectionPosition(spawn, collectionPositionInfo, mappedSource.sourceId);
+                    room.memory.harvestInfos.push(harvestInfo);
+                });
+            }
+            else if (room.memory.currentMappingType == infoEnum.CONTROL)
             {
-                room.memory.finishedMapping = true;
+                var mappedSource = room.memory.mappedSources[room.memory.currentPositionIndex[0]];
+                var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentPositionIndex[1]];
+                var controlInfo = controlMapper.mapSingleCollectionPosition(room.controller, collectionPositionInfo, mappedSource.sourceId);
+                room.memory.controlInfos.push(controlInfo);
+
+                room.memory.currentPositionIndex[1]++;
+                if (room.memory.currentPositionIndex[1] >= mappedSource.collectionPositionInfos.length)
+                {
+                    room.memory.currentPositionIndex[0]++;
+                }
+
+                if (room.memory.currentPositionIndex[0] >= room.memory.mappedSources.length)
+                {
+                    room.memory.finishedMapping = true;
+                }
             }
         }
         else if(!room.memory.mappedMaxCreepsForNoReturnPath)

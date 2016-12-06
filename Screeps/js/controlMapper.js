@@ -6,6 +6,11 @@ var infoEnum = require('infoEnum');
 var controlMapper =
     {
         controlCreepCostDivisor: 5,
+        mapSingleCollectionPosition: function (control, collectionPositionInfo, sourceId)
+        {
+            return infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, infoEnum.CONTROL,
+                    controlMapper.controlCreepCostDivisor, sourceId);
+        },
         mapSingleSource:function(control, mappedSource)
         {
             var controlInfos = [];
