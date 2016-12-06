@@ -37,7 +37,7 @@ var flagDrawer = {
             Memory.pathManager.pathFromList.forEach(function (path, i) {
                 mapUtils.refreshRoomPositionArray(path).forEach(function (pointOnPath, j) {
                     var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
-                    console.log(room.createFlag(pointOnPath, 'f' + i + j, COLOR_ORANGE));
+                    room.createFlag(pointOnPath, 'f' + i + j, COLOR_ORANGE);
                 });
             });
         }
