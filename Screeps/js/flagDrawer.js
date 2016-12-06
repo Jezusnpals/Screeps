@@ -1,9 +1,9 @@
 var pathManager = require('pathManager');
 var mapUtils = require('mapUtils');
 
-var showFlagsForToPaths = true;
+var showFlagsForToPaths = false;
 var showFlagsForSourcePoints = false;
-var showFlagsForFromPaths = true;
+var showFlagsForFromPaths = false;
 
 var flagDrawer = {
     showFlags: function(room)
