@@ -55,6 +55,7 @@ var roomManager =
                 if (room.memory.currentPositionIndex[1] >= mappedSource.collectionPositionInfos.length)
                 {
                     room.memory.currentPositionIndex[0]++;
+                    room.memory.currentPositionIndex[1] = 0;
                 }
 
                 if (room.memory.currentPositionIndex[0] >= room.memory.mappedSources.length)

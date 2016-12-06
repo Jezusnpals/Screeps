@@ -4,7 +4,7 @@ var pathManager = require('pathManager');
 var infoMapper = {
     calculateMappedInfo: function (startPosition, collectionPositionInfo, infoType, baseCreepCostDivisor, sourceId)
     {
-        var collectionPosition = collectionPositionInfo.originalPos;
+        var collectionPosition = mapUtils.refreshRoomPosition(collectionPositionInfo.originalPos);
         var mappedInfo = {
             creepNames: [],
             collectionPosition: collectionPosition,
