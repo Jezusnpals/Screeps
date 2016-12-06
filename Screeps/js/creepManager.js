@@ -82,11 +82,11 @@ var creepManager =
         {
             if (Object.keys(Game.creeps).length % 2 == 0)
             {
-                createCreep(room, room.memory.harvestInfos);
+                this.createCreep(room, room.memory.harvestInfos);
             }
             else
             {
-                createCreep(room, room.memory.controlInfos);
+                this.createCreep(room, room.memory.controlInfos);
             }
         }
   
