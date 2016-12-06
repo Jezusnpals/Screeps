@@ -33,7 +33,7 @@ var infoMapper = {
             mapUtils.removeRoomPositionFromArray(pathToAvoid, startPosition);
             mapUtils.removeRoomPositionFromArray(pathToAvoid, collectionPosition);
 
-            var pathFromResults = mapUtils.findPath(collectionPosition, startPosition, pathToAvoid);
+            var pathFromResults = mapUtils.findPath(collectionPosition, startPosition, pathToAvoid, 300);
 
             if (pathFromResults.incomplete)
             {
