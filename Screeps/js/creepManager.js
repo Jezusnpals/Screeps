@@ -1,16 +1,16 @@
 var behaviorEnum = require('behaviorEnum');
 var mapUtils = require('mapUtils');
 
-function calculateHarvestCost(info)
+function calculateHarvestCost(info, room)
 {
     var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
                         getComparableRoomPosition(info.collectionPosition)];
     return info.costTo + (info.costTo * percentFilled);
 }
 
-function checkOpenInfo(info)
+function checkOpenInfo(info, room)
 {
-    if(info.creepNames.length < info.maxCreeps)
+    if(info.creepNames.length >= info.maxCreeps)
     {
         return false;
     }
@@ -41,18 +41,18 @@ var creepManager =
             });
         });
     },
-    calculateBestSource: function (infos)
+    calculateBestSource: function (infos, room)
     {
-        var openInfos = infos.filter(checkOpenInfo); //maxCreeps
+        var openInfos = infos.filter(info => checkOpenInfo(info, room)); //maxCreeps
         if (openInfos.length == 0) {
             return null;
         }
 
-        var lowestCost = calculateHarvestCost(openInfos[0]);
+        var lowestCost = calculateHarvestCost(openInfos[0], room);
         var lowestCostIndex = 0;
 
         for (var i = 1; i < openInfos.length; i++) {
-            var currentCost = calculateHarvestCost(openInfos[i]);
+            var currentCost = calculateHarvestCost(openInfos[i], room);
             if (currentCost < lowestCost) {
                 lowestCost = currentCost;
                 lowestCostIndex = i;
@@ -68,7 +68,7 @@ var creepManager =
             {
                 if (room.memory.harvestInfos)
                 {
-                    var bestHarvestInfo = this.calculateBestSource(room.memory.harvestInfos);
+                    var bestHarvestInfo = this.calculateBestSource(room.memory.harvestInfos, room);
                     if (bestHarvestInfo != null)
                     {
                         var bestHarvestInfoIndex = room.memory.harvestInfos.indexOf(bestHarvestInfo);
@@ -89,7 +89,7 @@ var creepManager =
             {
                 if (room.memory.controlInfos)
                 {
-                    var bestControlInfo = this.calculateBestSource(room.memory.controlInfos);
+                    var bestControlInfo = this.calculateBestSource(room.memory.controlInfos, room);
                     if (bestControlInfo != null)
                     {
                         var bestControlInfoIndex = room.memory.controlInfos.indexOf(bestControlInfo);
