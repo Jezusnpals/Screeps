@@ -17,6 +17,7 @@ var creepUtils =
         var positionOpen = creep.room.lookAt(moveToPosition).length <= 1;
         if (!positionOpen)
         {
+            
             return this.NEXT_POSITION_TAKEN;
         }
         return creep.moveByPath([creep.pos, moveToPosition]);
@@ -79,6 +80,7 @@ var creepUtils =
         
         if (creepFollowPathFromResult != OK)
         {
+            creep.memory.pathFromId = -1;
             creep.moveTo(structure);
         }
     }
