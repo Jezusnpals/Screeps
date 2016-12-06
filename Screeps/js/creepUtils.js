@@ -43,7 +43,7 @@ var creepUtils =
         }
         if (this.recalculate_path_errors.includes(moveResults))
         {
-            moveResults = moveToALinkedHarvestPosition(creep, mappedInfo);
+            moveResults = this.moveToALinkedHarvestPosition(creep, mappedInfo);
         }
         if (this.recalculate_path_errors.includes(moveResults))
         {
