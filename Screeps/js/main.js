@@ -39,8 +39,8 @@ module.exports.loop = function ()
         if (!room.memory.initialized)
         {
             roomManager.initialize(room, currentRoomSpawns);
-            flagDrawer.showFlags(room);
         }
+        flagDrawer.showFlags(room);
         roomManager.mapInfos(room, currentRoomSpawns)
         roomManager.run(room);
     }
