@@ -15,12 +15,23 @@ var flagDrawer = {
                     room.createFlag(pointOnPath, 't' +i + j, colors[1]);
                 });
 
+
                 info.returnPathBlockers.forEach(function (pointOnPath, j) {
                     var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
                     room.createFlag(pointOnPath, 'f' +i + j, colors[0]);
                 });
+            });
+            room.memory.controlInfos.forEach(function (info, i) {
+                pathManager.getPathTo(info.pathToId).forEach(function (pointOnPath, j) {
+                    var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
+                    room.createFlag(pointOnPath, 'ct' + i + j, colors[4]);
+                });
 
-                
+
+                info.returnPathBlockers.forEach(function (pointOnPath, j) {
+                    var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
+                    room.createFlag(pointOnPath, 'cf' + i + j, colors[5]);
+                });
             });
         }
         if (showFlagsForSourcePoints)
