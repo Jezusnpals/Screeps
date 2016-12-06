@@ -36,9 +36,10 @@ var creepUtils =
     moveToSourceByMappedInfo: function (creep, source, mappedInfo) {
 
         var harvestPositionOpen = creep.room.lookAt(mapUtils.refreshRoomPosition(mappedInfo.collectionPosition)).length <= 1;
-        var moveResults = -1;
+        var moveResults = NO_PATH;
 
-        if (harvestPositionOpen) {
+        if (harvestPositionOpen)
+        {
             moveResults = this.tryMoveByPath(creep, pathManager.getPathTo(mappedInfo.pathToId));
         }
         if (this.recalculate_path_errors.includes(moveResults))

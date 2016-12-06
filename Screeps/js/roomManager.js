@@ -72,6 +72,8 @@ var roomManager =
 
             infoMapper.mapNumberOfCreepsForNoReturnPath(harvestInfosWithNoReturnPath, spawnMapper.harvestCreepCostDivisor);
             infoMapper.mapNumberOfCreepsForNoReturnPath(controlInfosWithNoReturnPath, controlMapper.controlCreepCostDivisor);
+
+            room.memory.mappedMaxCreepsForNoReturnPath = true;
         }
     },
     run: function (room) {
