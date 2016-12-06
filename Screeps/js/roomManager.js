@@ -53,14 +53,14 @@ var roomManager =
             {
                 var nameIndex = room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex].creepNames.indexOf(name);
                 room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex].creepNames.splice(nameIndex, 1);
-                creepManager.removeUsageFromInfo(room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex]);
+                creepManager.removeUsageFromInfo(room, room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex]);
                 delete Memory.creeps[name];
             }
             else if (Memory.creeps[name].controlInfoIndex)
             {
                 var nameIndex = room.memory.controlInfos[Memory.creeps[name].controlInfoIndex].creepNames.indexOf(name);
                 room.memory.controlInfos[Memory.creeps[name].controlInfoIndex].creepNames.splice(nameIndex, 1);
-                creepManager.removeUsageFromInfo(room.memory.controlInfos[Memory.creeps[name].controlInfoIndex]);
+                creepManager.removeUsageFromInfo(room, room.memory.controlInfos[Memory.creeps[name].controlInfoIndex]);
                 delete Memory.creeps[name];
             }
             

@@ -76,7 +76,7 @@ var creepManager =
             }
         }
     },
-    removeUsageFromInfo: function (info)
+    removeUsageFromInfo: function (room, info)
     {
         var percentAddingUnit = 1 / info.maxCreeps;
         room.memory.collectionUsageDictonary[mapUtils.
