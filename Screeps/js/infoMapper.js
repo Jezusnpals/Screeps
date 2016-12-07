@@ -35,7 +35,7 @@ var infoMapper = {
 
             var pathFromGoal = { pos: startPosition, range: returnRange };
 
-            var pathFromResults = mapUtils.findPath(collectionPosition, pathFromGoal, pathToAvoid, 300);
+            var pathFromResults = mapUtils.findPath(collectionPosition, pathFromGoal, pathToAvoid);
 
             if (pathFromResults.incomplete)
             {
@@ -64,11 +64,11 @@ var infoMapper = {
                 info: infosWithoutReturnPath[0],
                 index: 0
             });
-            var collidingBlockingPoints = 0;
+            var numberOfBlockingPoints = infosWithoutReturnPath[0].returnPathBlockers.length;
             for (var i = 1; i < infosWithoutReturnPath.length; i++) {
                 var sameBlockingPoints = mapUtils.getSameRoomPositionsFromArray(infosWithoutReturnPath[0].returnPathBlockers, infosWithoutReturnPath[i].returnPathBlockers)
                 if (sameBlockingPoints.length > 0) {
-                    collidingBlockingPoints += sameBlockingPoints.length;
+                    numberOfBlockingPoints += sameBlockingPoints.length;
                     collidingInfos.push({
                         info: infosWithoutReturnPath[i],
                         index: i
@@ -77,7 +77,7 @@ var infoMapper = {
             }
 
             collidingInfos.forEach(function (infoIndexPair) {
-                var creepCostFromDivisor = baseCreepCostDivisor + (collidingInfos.length * collidingBlockingPoints);
+                var creepCostFromDivisor = baseCreepCostDivisor + (collidingInfos.length * numberOfBlockingPoints);
                 infoIndexPair.info.maxCreeps = 1 + Math.floor(infoIndexPair.info.costTo / creepCostFromDivisor);
                 infosWithoutReturnPath.splice(infoIndexPair.index, 1);
             })
