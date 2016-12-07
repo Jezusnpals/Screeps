@@ -102,7 +102,7 @@ var creepManager =
                 }
                 else
                 {
-                    this.createCreepWithoutInfo(room, room.memory.harvestInfos, {
+                    this.createCreepWithoutInfo(room, {
                         behavior: behaviorEnum.HARVESTER,
                         pathFromId: -1
                     });
@@ -120,7 +120,7 @@ var creepManager =
                 }
                 else
                 {
-                    this.createCreepWithoutInfo(room, room.memory.harvestInfos, {
+                    this.createCreepWithoutInfo(room, {
                         behavior: behaviorEnum.UPGRADER,
                                 pathFromId: -1
                                 });
