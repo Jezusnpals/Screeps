@@ -123,19 +123,23 @@ var creepManager =
         creepsInThisRoom.forEach(function(creep)
         {
             var infos = [];
+            var indexName = '';
             if(creep.memory.behavior == behaviorEnum.HARVESTER)
             {
                 infos = room.memory.harvestInfos;
+                indexName = 'harvestInfoIndex';
             }
             else if (creep.memory.behavior == behaviorEnum.UPGRADER)
             {
                 infos = room.memory.controlInfos;
+                indexName = 'controlInfoIndex';
             }
 
             var bestInfo = creepManager.calculateBestSource(infos, room);
             if (bestInfo != null)
             {
                 var bestInfoIndex = infos.indexOf(bestInfo);
+                creep.memory[indexName] = bestInfoIndex;
                 infos[bestInfoIndex].creepNames.push(creep.name);
                 addPercentFilled(infos[bestInfoIndex], room);
             }
