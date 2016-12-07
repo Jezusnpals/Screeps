@@ -77,7 +77,7 @@ var infoMapper = {
             }
 
             collidingInfos.forEach(function (infoIndexPair) {
-                var creepCostFromDivisor = baseCreepCostDivisor + (collidingInfos.length * numberOfBlockingPoints);
+                var creepCostFromDivisor = baseCreepCostDivisor * (collidingInfos.length * numberOfBlockingPoints);
                 infoIndexPair.info.maxCreeps = 1 + Math.floor(infoIndexPair.info.costTo / creepCostFromDivisor);
                 infosWithoutReturnPath.splice(infoIndexPair.index, 1);
             })
