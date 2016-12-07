@@ -132,7 +132,7 @@ var creepManager =
                 infos = room.memory.controlInfos;
             }
 
-            var bestInfo = this.calculateBestSource(infos, room);
+            var bestInfo = creepManager.calculateBestSource(infos, room);
             if (bestInfo != null)
             {
                 var bestInfoIndex = infos.indexOf(bestInfo);
