@@ -50,8 +50,8 @@ var flagDrawer = {
         if (showFlagsForFromPaths)
         {
 
-            var spawnIndexs = Object.keys(Memory.pathFinder.pathFromDictionary)
-                .map(k => k.includes(infoEnum.SPAWN) ? Memory.pathFinder.pathFromDictionary[k] : -1)
+            var spawnIndexs = Object.keys(Memory.pathManager.pathFromDictionary)
+                .map(k => k.includes(infoEnum.SPAWN) ? Memory.pathManager.pathFromDictionary[k] : -1)
                 .filter(index => index != -1);
             Memory.pathManager.pathFromList.forEach(function (path, i) {
                 mapUtils.refreshRoomPositionArray(path).forEach(function (pointOnPath, j) {
