@@ -136,7 +136,7 @@ var creepManager =
             if (bestInfo != null)
             {
                 var bestInfoIndex = infos.indexOf(bestInfo);
-                infos[bestInfoIndex].creepNames.push(creepName);
+                infos[bestInfoIndex].creepNames.push(creep.name);
                 addPercentFilled(infos[bestInfoIndex], room);
             }
         });
