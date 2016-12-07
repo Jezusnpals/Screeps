@@ -101,7 +101,45 @@ var creepManager =
                 }, 'controlInfoIndex');
             }
         }
-  
+    },
+    resetCreepInfos: function(room)
+    {
+        room.memory.harvestInfos.forEach(function (info)
+        {
+            info.creepNames = [];
+        });
+        room.memory.controlInfos.forEach(function (info)
+        {
+            info.creepNames = [];
+        });
+        Object.keys(room.memory.collectionUsageDictonary).forEach(function (key)
+        {
+            room.memory.collectionUsageDictonary[key] = 0;
+        });
+
+        var creepsInThisRoom = Object.keys(Game.creeps)
+                                .map(k => Game.creeps[k])
+                                .filter(c => c.room.name == room.name);
+        creepsInThisRoom.forEach(function(creep)
+        {
+            var infos = [];
+            if(creep.memory.behavior == behaviorEnum.HARVESTER)
+            {
+                infos = room.memory.harvestInfos;
+            }
+            else if (creep.memory.behavior == behaviorEnum.UPGRADER)
+            {
+                infos = room.memory.controlInfos;
+            }
+
+            var bestInfo = this.calculateBestSource(infos, room);
+            if (bestInfo != null)
+            {
+                var bestInfoIndex = infos.indexOf(bestInfo);
+                infos[bestInfoIndex].creepNames.push(creepName);
+                addPercentFilled(infos[bestInfoIndex], room);
+            }
+        });
     }
 }
 module.exports = creepManager;
