@@ -84,7 +84,7 @@ var roomManager =
             return;
         }
 
-        creepManager.run(room);
+        creepManager.run(room, room.memory.finishedMapping);
 
         if (this.createdConstructionSites) {
             room.createConstructionSite(25, 25, STRUCTURE_EXTENSION)

@@ -76,29 +76,55 @@ var creepManager =
             }
         }
     },
+    createCreepWithoutInfo: function(room, startMemory)
+    {
+        var creepName = 'c' + new Date().getTime();
+        Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, startMemory);
+    },
     removeUsageFromInfo: function (room, info)
     {
         var percentAddingUnit = 1 / info.maxCreeps;
         room.memory.collectionUsageDictonary[mapUtils.
             getComparableRoomPosition(info.collectionPosition)] -= percentAddingUnit
     },
-    run: function (room)
+    run: function (room, finsihedMapping)
     {
         if (Object.keys(Game.creeps).length < 200 && Game.spawns['Spawn1'].energy >= 200)
         {
             if (Object.keys(Game.creeps).length % 2 == 0)
             {
-                this.createCreep(room, room.memory.harvestInfos, {
-                    behavior: behaviorEnum.HARVESTER,
-                    pathFromId: -1
-                }, 'harvestInfoIndex');
+                if (finsihedMapping)
+                {
+                    this.createCreep(room, room.memory.harvestInfos, {
+                        behavior: behaviorEnum.HARVESTER,
+                        pathFromId: -1
+                    }, 'harvestInfoIndex');
+                }
+                else
+                {
+                    this.createCreepWithoutInfo(room, room.memory.harvestInfos, {
+                        behavior: behaviorEnum.HARVESTER,
+                        pathFromId: -1
+                    });
+                }
+                
             }
             else
             {
-                this.createCreep(room, room.memory.controlInfos, {
-                    behavior: behaviorEnum.UPGRADER,
-                    pathFromId: -1
-                }, 'controlInfoIndex');
+                if (finsihedMapping)
+                {
+                    this.createCreep(room, room.memory.controlInfos, {
+                        behavior: behaviorEnum.UPGRADER,
+                        pathFromId: -1
+                    }, 'controlInfoIndex');
+                }
+                else
+                {
+                    this.createCreepWithoutInfo(room, room.memory.harvestInfos, {
+                        behavior: behaviorEnum.UPGRADER,
+                                pathFromId: -1
+                                });
+                }
             }
         }
     },

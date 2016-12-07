@@ -81,10 +81,15 @@ var mapUtils = {
     refreshRoomPosition: function (pos) {
         return new RoomPosition(pos.x, pos.y, pos.roomName);
     },
-    refreshRoomPositionArray: function (positions) {
+    refreshRoomPositionArray: function (positions)
+    {
         return positions.map(function (pos) {
             return mapUtils.refreshRoomPosition(pos);
         });
+    },
+    calculateDistanceBetweenTwoPoints: function(pos1, pos2)
+    {
+        return Math.sqrt(Math.pow((pos1.x - pos2.x), 2) + Math.pow((pos1.y + pos2.y), 2));
     }
 };
 

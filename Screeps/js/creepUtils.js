@@ -31,7 +31,7 @@ var creepUtils =
         }).filter(c => c.id != creep.id).map(c => c.pos);
 
         var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions), otherCreepPositions, [], 50);
-        return creep.moveByPath(pathToLinkedHarvestPosition.path);
+        return creepUtils.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
     },
     moveToSourceByMappedInfo: function (creep, source, mappedInfo) {
 
@@ -54,7 +54,11 @@ var creepUtils =
     harvestEnergy: function (creep, mappedInfo)
     {
         var source = mappedInfo ? Game.getObjectById(mappedInfo.sourceId) :
-            creep.room.find(FIND_SOURCES)[0];
+            creep.room.find(FIND_SOURCES).reduce(function (s1, s2) {
+                var s1Distance = mapUtils.calculateDistanceBetweenTwoPoints(creep.pos, s1.pos);
+                var s2Distance = mapUtils.calculateDistanceBetweenTwoPoints(creep.pos, s2.pos);
+                return s1Distance < s2Distance ? s1 : s2;
+            });
         var harvestResult = creep.harvest(source)
         creep.memory.pathFromId = -1;
 
