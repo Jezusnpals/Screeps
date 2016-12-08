@@ -44,8 +44,8 @@ var creepUtils =
             if (!pathToIdSet)
             {
                 creep.memory.pathToId = pathManager.getPathToIndex(mappedInfo.type, creep.pos);
+                pathToIdSet = creep.memory.pathToId >= 0
             }
-            pathToIdSet = creep.memory.pathToId >= 0
             if (pathToIdSet)
             {
                 moveResults = this.tryMoveByPath(creep, pathManager.getPathTo(creep.memory.pathToId));
