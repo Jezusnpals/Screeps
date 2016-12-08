@@ -115,14 +115,16 @@ var creepManager =
                 {
                     this.createCreep(room, room.memory.controlInfos, {
                         behavior: behaviorEnum.UPGRADER,
-                        pathFromId: -1
+                        pathFromId: -1,
+                        pathToId: -1
                     }, 'controlInfoIndex');
                 }
                 else
                 {
                     this.createCreepWithoutInfo(room, {
                         behavior: behaviorEnum.UPGRADER,
-                                pathFromId: -1
+                        pathFromId: -1,
+                        pathToId: -1
                                 });
                 }
             }

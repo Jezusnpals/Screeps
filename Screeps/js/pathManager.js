@@ -1,6 +1,6 @@
 var mapUtils = require('mapUtils');
 
-function getPathFromKey(infoType, startPosition)
+function getKey(infoType, startPosition)
 {
     return infoType + mapUtils.getComparableRoomPosition(startPosition);
 }
@@ -20,7 +20,7 @@ var pathManager =
     {
         Memory.pathManager.pathToList.push(path);
         var pathIndex = Memory.pathManager.pathToList.length - 1;
-        var pathToKey = getPathFromKey(infoType, startPosition);
+        var pathToKey = getKey(infoType, startPosition);
         Memory.pathManager.pathToDictonary[pathToKey] = pathIndex;
         return pathIndex;
     },
@@ -28,7 +28,7 @@ var pathManager =
     {
         Memory.pathManager.pathFromList.push(path);
         var pathIndex = Memory.pathManager.pathFromList.length - 1;
-        var pathFromKey = getPathFromKey(infoType, startPosition);
+        var pathFromKey = getKey(infoType, startPosition);
         Memory.pathManager.pathFromDictionary[pathFromKey] = pathIndex;
         return pathIndex;
     },
@@ -40,6 +40,12 @@ var pathManager =
         }
         return mapUtils.refreshRoomPositionArray(Memory.pathManager.pathToList[index]);
     },
+    getPathToIndex:function(infoType, startPosition)
+    {
+        var pathToKey = getKey(infoType, startPosition);
+        var pathToIndex = Memory.pathManager.pathToDictonary[pathToKey];
+        return pathToIndex;
+    },
     getPathFrom:function(index)
     {
         if (index < 0 || index >= Memory.pathManager.pathFromList.length)
@@ -50,7 +56,7 @@ var pathManager =
     },
     getPathFromIndex: function (infoType, startPosition)
     {
-        var pathFromKey = getPathFromKey(infoType, startPosition);
+        var pathFromKey = getKey(infoType, startPosition);
         var pathFromIndex = Memory.pathManager.pathFromDictionary[pathFromKey];
         return pathFromIndex;
     },

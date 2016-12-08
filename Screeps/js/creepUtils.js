@@ -40,8 +40,18 @@ var creepUtils =
 
         if (harvestPositionOpen)
         {
-            moveResults = this.tryMoveByPath(creep, pathManager.getPathTo(mappedInfo.pathToId));
+            var pathToIdSet = creep.memory.pathToId >= 0
+            if (creep.memory.pathToId == -1)
+            {
+                creep.memory.pathToId = pathManager.getPathToIndex(mappedInfo.type, creep.pos);
+            }
+            pathToIdSet = creep.memory.pathToId >= 0
+            if (pathToIdSet)
+            {
+                moveResults = this.tryMoveByPath(creep, pathManager.getPathTo(creep.memory.pathToId));
+            }
         }
+        
         if (this.recalculate_path_errors.includes(moveResults))
         {
             moveResults = this.moveToALinkedHarvestPosition(creep, mappedInfo);
@@ -75,12 +85,13 @@ var creepUtils =
     },
     moveToStructureByMappedInfo: function (creep, structure, mappedInfo)
     {
-        var pathFromIdSet = creep.memory.pathFromId >= 0
+        creep.memory.pathToId = -1;
+        var pathFromIdSet = creep.memory.pathFromId >= 0;
         if (!pathFromIdSet)
         {
             creep.memory.pathFromId = pathManager.getPathFromIndex(mappedInfo.type, creep.pos);
         }
-        pathFromIdSet = creep.memory.pathFromId >= 0
+        pathFromIdSet = creep.memory.pathFromId >= 0;
         var creepFollowPathFromResult = NO_PATH;
         if (pathFromIdSet)
         {
