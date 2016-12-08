@@ -10,7 +10,7 @@ function transferEnergy(creep, creepControlInfo) {
     {
         if (creepControlInfo)
         {
-            creepUtils.moveToStructureByControlInfo(creep, controller, creepControlInfo)
+            creepUtils.moveToStructureByMappedInfo(creep, controller, creepControlInfo)
         }
         else
         {
