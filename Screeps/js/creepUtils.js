@@ -43,7 +43,7 @@ var creepUtils =
             var pathToIdSet = creep.memory.pathToId >= 0
             if (!pathToIdSet)
             {
-                creep.memory.pathToId = pathManager.getPathToIndex(mappedInfo.type, creep.pos);
+                creep.memory.pathToId = pathManager.getPathToIndex(creep.pos, mappedInfo.collectionPosition);
                 pathToIdSet = creep.memory.pathToId >= 0
             }
             if (pathToIdSet)
@@ -89,7 +89,7 @@ var creepUtils =
         var pathFromIdSet = creep.memory.pathFromId >= 0;
         if (!pathFromIdSet)
         {
-            creep.memory.pathFromId = pathManager.getPathFromIndex(mappedInfo.type, creep.pos);
+            creep.memory.pathFromId = pathManager.getPathFromIndex(creep.pos, structure.pos);
         }
         pathFromIdSet = creep.memory.pathFromId >= 0;
         var creepFollowPathFromResult = NO_PATH;
