@@ -2,20 +2,6 @@ var creepUtils = require('creepUtils');
 var roomManager = require('roomManager');
 var creepUtils = require('creepUtils');
 
-function moveToStructureByControlInfo(creep, controller, creepControlInfo) {
-    /*
-    var harvestIdNotSet = !creep.memory.harvestPathFromId || creep.memory.harvestPathFromId == -1
-    if (harvestIdNotSet) {
-        creep.memory.harvestPathFromId = roomManager.getCollectionPositionInfo(creep.room, creep.pos, creepControlInfo.sourceId).harvestPathFromId;
-    }
-    var creepFollowHarvestPathFromResult = creepUtils.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.harvestPathFromId));
-    if (creepFollowHarvestPathFromResult != OK) {
-        creep.moveTo(structure);
-    }
-    */
-    creep.moveTo(controller);
-}
-
 function transferEnergy(creep, creepControlInfo) {
     var controller = creep.room.controller;
     var transferResults = creep.upgradeController(controller);
@@ -24,7 +10,7 @@ function transferEnergy(creep, creepControlInfo) {
     {
         if (creepControlInfo)
         {
-            moveToStructureByControlInfo(creep, controller, creepControlInfo)
+            creepUtils.moveToStructureByControlInfo(creep, controller, creepControlInfo)
         }
         else
         {
