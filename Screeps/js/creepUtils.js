@@ -41,7 +41,7 @@ var creepUtils =
         if (harvestPositionOpen)
         {
             var pathToIdSet = creep.memory.pathToId >= 0
-            if (creep.memory.pathToId == -1)
+            if (!pathToIdSet)
             {
                 creep.memory.pathToId = pathManager.getPathToIndex(mappedInfo.type, creep.pos);
             }

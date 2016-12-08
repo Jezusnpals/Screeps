@@ -97,14 +97,16 @@ var creepManager =
                 {
                     this.createCreep(room, room.memory.harvestInfos, {
                         behavior: behaviorEnum.HARVESTER,
-                        pathFromId: -1
+                        pathFromId: -1,
+                        pathToId: -1
                     }, 'harvestInfoIndex');
                 }
                 else
                 {
                     this.createCreepWithoutInfo(room, {
                         behavior: behaviorEnum.HARVESTER,
-                        pathFromId: -1
+                        pathFromId: -1,
+                        pathToId: -1
                     });
                 }
                 
