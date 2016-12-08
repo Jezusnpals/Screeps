@@ -14,7 +14,7 @@ var controlMapper =
         },
         mapSingleCollectionPosition: function (control, collectionPositionInfo, sourceId)
         {
-            mapAllPathsToCollectionPosition(control, collectionPositionInfo.originalPos);
+            this.mapAllPathsToCollectionPosition(control, collectionPositionInfo.originalPos);
             return infoMapper.calculateMappedInfo(control.pos, collectionPositionInfo, 3, infoEnum.CONTROL,
                     controlMapper.controlCreepCostDivisor, sourceId);
         }
