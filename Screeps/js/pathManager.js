@@ -2,7 +2,7 @@ var mapUtils = require('mapUtils');
 
 function getKey(startPosition, endPosition)
 {
-    return mapUtils.getComparableRoomPosition(startPosition) + ' ' + mapUtils.getComparableRoomPosition(startPosition);
+    return mapUtils.getComparableRoomPosition(startPosition) + ' ' + mapUtils.getComparableRoomPosition(endPosition);
 }
 
 var pathManager =
