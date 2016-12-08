@@ -85,6 +85,7 @@ var infoMapper = {
     },
     mapAllPathsTo:function(originalPosition, goalPosition, range, infoType)
     {
+        goalPosition = mapUtils.refreshRoomPosition(goalPosition);
         var possibleUpgradePositions = mapUtils.getAdjacentRoomPositions(originalPosition, range)
                                                .filter(pos => mapUtils.isWalkableTerrain(pos));
         possibleUpgradePositions.forEach(function (pos)
