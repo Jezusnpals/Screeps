@@ -12,13 +12,17 @@ var pathManager =
         Memory.pathManager = {
             pathToList: [],
             pathFromList: [],
-            pathFromDictionary: {} //Dictonary of Info Type + ComparableRoomPosition to Path From Index
-        };                         //Example: pathFromDictionary['Harvester3230Sim'] = 16
+            pathFromDictionary: {}, //Dictonary of Info Type + ComparableRoomPosition to Path From Index
+            pathToDictonary: {}     //Example: pathFromDictionary['Harvester3230Sim'] = 16
+        };                        
     },
-    addPathTo:function(path)
+    addPathTo: function (infoType, startPosition, path)
     {
         Memory.pathManager.pathToList.push(path);
-        return Memory.pathManager.pathToList.length - 1;
+        var pathIndex = Memory.pathManager.pathToList.length - 1;
+        var pathToKey = getPathFromKey(infoType, startPosition);
+        Memory.pathManager.pathToDictonary[pathToKey] = pathIndex;
+        return pathIndex;
     },
     addPathFrom:function(infoType,startPosition, path)
     {
@@ -26,6 +30,7 @@ var pathManager =
         var pathIndex = Memory.pathManager.pathFromList.length - 1;
         var pathFromKey = getPathFromKey(infoType, startPosition);
         Memory.pathManager.pathFromDictionary[pathFromKey] = pathIndex;
+        return pathIndex;
     },
     getPathTo:function(index)
     {

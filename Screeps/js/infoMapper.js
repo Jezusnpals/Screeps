@@ -25,7 +25,7 @@ var infoMapper = {
         {
             var pathToWithStartPosition = pathToResults.path;
             pathToWithStartPosition.unshift(startPosition);
-            mappedInfo.pathToId = pathManager.addPathTo(pathToWithStartPosition);
+            mappedInfo.pathToId = pathManager.addPathTo(infoType, startPosition, pathToWithStartPosition);
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
@@ -82,6 +82,20 @@ var infoMapper = {
                 infosWithoutReturnPath.splice(infoIndexPair.index, 1);
             })
         }
+    },
+    mapAllPathsTo:function(originalPosition, goalPosition, range, infoType)
+    {
+        var possibleUpgradePositions = mapUtils.getAdjacentRoomPositions(originalPosition, range);
+        possibleUpgradePositions.forEach(function (pos)
+        {
+            var pathToResults = mapUtils.findPath(pos, goalPosition);
+            var pathWithStartPosition = pathToResults.path;
+            pathWithStartPosition.unshift(pos);
+            if (!pathToResults.incomplete)
+            {
+                pathManager.addPathTo(infoType, pos, pathWithStartPosition);
+            }
+        });
     }
     };
 

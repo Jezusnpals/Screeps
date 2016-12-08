@@ -11,9 +11,9 @@ var mapUtils = {
         }
         var adjacentPositions = [];
 
-        for (var i = -1; i <= 1; i++) {
-            for (var j = -1; j <= 1; j++) {
-                var samePos = i == 0 & j == 0;
+        for (var i = -maxDistance; i <= maxDistance; i++) {
+            for (var j = -maxDistance; j <= maxDistance; j++) {
+                var samePos = i == 0 && j == 0;
                 if (this.checkInBounds(roomPos.x + i, roomPos.y + j) && !samePos) {
                     adjacentPositions.push(new RoomPosition(roomPos.x + i, roomPos.y + j, roomPos.roomName));
                 }
