@@ -25,7 +25,7 @@ var infoMapper = {
         {
             var pathToWithStartPosition = pathToResults.path;
             pathToWithStartPosition.unshift(startPosition);
-            mappedInfo.pathToId = pathManager.addPathTo(pathToWithStartPosition);
+            mappedInfo.pathToId = pathManager.addPathTo(pathToWithStartPosition, collectionPosition);
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
@@ -50,7 +50,7 @@ var infoMapper = {
             }
             var pathFromWithStartPosition = pathFromResults.path;
             pathFromWithStartPosition.unshift(collectionPosition);
-            pathManager.addPathFrom(pathFromWithStartPosition)
+            pathManager.addPathFrom(pathFromWithStartPosition, startPosition);
         }
 
         mappedInfo.maxCreeps = 1 + Math.floor(mappedInfo.costTo / baseCreepCostDivisor);
@@ -95,7 +95,7 @@ var infoMapper = {
             pathWithStartPosition.unshift(pos);
             if (!pathToResults.incomplete)
             {
-                pathManager.addPathTo(pathWithStartPosition);
+                pathManager.addPathTo(pathWithStartPosition, goalPosition);
             }
         });
     }

@@ -1,8 +1,8 @@
 var mapUtils = require('mapUtils');
 
-function getKey(startPosition, endPosition)
+function getKey(startPosition, goalPosition)
 {
-    return mapUtils.getComparableRoomPosition(startPosition) + ' ' + mapUtils.getComparableRoomPosition(endPosition);
+    return mapUtils.getComparableRoomPosition(startPosition) + ' ' + mapUtils.getComparableRoomPosition(goalPosition);
 }
 
 var pathManager =
@@ -16,19 +16,19 @@ var pathManager =
             pathToDictonary: {}    
         };                        
     },
-    addPathTo: function (path)
+    addPathTo: function (path, goalPosition)
     {
         Memory.pathManager.pathToList.push(path);
         var pathIndex = Memory.pathManager.pathToList.length - 1;
-        var pathToKey = getKey(path[0], path[path.length-1]);
+        var pathToKey = getKey(path[0], goalPosition);
         Memory.pathManager.pathToDictonary[pathToKey] = pathIndex;
         return pathIndex;
     },
-    addPathFrom: function (path)
+    addPathFrom: function (path, goalPosition)
     {
         Memory.pathManager.pathFromList.push(path);
         var pathIndex = Memory.pathManager.pathFromList.length - 1;
-        var pathFromKey = getKey(path[0], path[path.length - 1]);
+        var pathFromKey = getKey(path[0], goalPosition);
         Memory.pathManager.pathFromDictionary[pathFromKey] = pathIndex;
         return pathIndex;
     },

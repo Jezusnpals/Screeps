@@ -40,11 +40,11 @@ var creepUtils =
 
         if (harvestPositionOpen)
         {
-            var pathToIdSet = creep.memory.pathToId >= 0
+            var pathToIdSet = creep.memory.pathToId >= 0;
             if (!pathToIdSet)
             {
                 creep.memory.pathToId = pathManager.getPathToIndex(creep.pos, mappedInfo.collectionPosition);
-                pathToIdSet = creep.memory.pathToId >= 0
+                pathToIdSet = creep.memory.pathToId >= 0;
             }
             if (pathToIdSet)
             {
