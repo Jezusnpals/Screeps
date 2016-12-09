@@ -73,7 +73,8 @@ var creepManager =
             buildFrames: buildFrames,
             upgradeFrames: upgradeFrames,
             moveToSourceRate: moveToSourceRate,
-            moveFromSourceRate: moveFromSourceRate
+            moveFromSourceRate: moveFromSourceRate,
+            maxCarryAmount: maxCarryAmount
         }
     },
     calculateBestSource: function (infos, room, creepInfo)

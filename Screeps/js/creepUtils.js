@@ -122,6 +122,7 @@ var creepUtils =
         if (harvestResult == ERR_NOT_IN_RANGE)
         {
             creep.memory.isMoving = true;
+            creep.memory.harvestFramesLeft = 0;
             if (mappedInfo)
             {
                 creepUtils.moveToSourceByMappedInfo(creep, source, mappedInfo);
@@ -130,9 +131,18 @@ var creepUtils =
             {
                 creep.moveTo(source);
             }
-        } else
+        }
+        else
         {
             creep.memory.isMoving = false;
+            if (creep.memory.harvestFramesLeft === 0)
+            {
+                creep.memory.harvestFramesLeft = creep.memory.creepInfo.harvestFrames;
+            }
+            else
+            {
+                creep.memory.harvestFramesLeft--;
+            }
         }
     },
     moveToStructureByMappedInfo: function (creep, structure, mappedInfo)
