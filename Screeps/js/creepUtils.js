@@ -31,6 +31,12 @@ var creepUtils =
         }).filter(c => c.id != creep.id).map(c => c.pos);
 
         var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions), otherCreepPositions, [], 50);
+        if (!pathToLinkedHarvestPosition.incomplete)
+        {
+            var pathWithStartPosition = pathToLinkedHarvestPosition.path;
+            pathWithStartPosition.unshift(creep.pos);
+            pathManager.addPathTo(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
+        }
         return creepUtils.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
     },
     moveToSourceByMappedInfo: function (creep, source, mappedInfo) {
