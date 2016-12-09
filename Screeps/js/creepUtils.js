@@ -11,23 +11,6 @@ function positionIsOpen(room, pos)
     return room.lookAt(mapUtils.refreshRoomPosition(pos)).length <= 1;
 }
 
-function pathToLinkedHarvestPosition(creep, mappedInfo)
-{
-    var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
-        return Game.creeps[key];
-    }).filter(c => c.id != creep.id).map(c => c.pos);
-
-    var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos,
-                                      mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions), otherCreepPositions, [], 50);
-    if (!pathToLinkedHarvestPosition.incomplete)
-    {
-        var pathWithStartPosition = pathToLinkedHarvestPosition.path;
-        pathWithStartPosition.unshift(creep.pos);
-        creep.memory.pathToId = pathManager.addPathTo(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
-    }
-
-    return creepUtils.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
-}
 var creepUtils =
 {
     
@@ -47,6 +30,23 @@ var creepUtils =
         }
         return creep.moveByPath([creep.pos, moveToPosition]);
     },
+    pathToLinkedHarvestPosition: function(creep, mappedInfo)
+    {
+        var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
+            return Game.creeps[key];
+        }).filter(c => c.id != creep.id).map(c => c.pos);
+
+        var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos,
+                                          mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions), otherCreepPositions, [], 50);
+        if (!pathToLinkedHarvestPosition.incomplete)
+        {
+            var pathWithStartPosition = pathToLinkedHarvestPosition.path;
+            pathWithStartPosition.unshift(creep.pos);
+            creep.memory.pathToId = pathManager.addPathTo(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
+        }
+
+        return this.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
+    },
     moveToALinkedHarvestPosition: function (creep, mappedInfo)
     {
         mappedInfo.linkedCollectionPositions.forEach(function(linkedPos)
@@ -61,7 +61,7 @@ var creepUtils =
                 }
             }
         });
-        return pathToLinkedHarvestPosition(creep, mappedInfo);
+        return this.pathToLinkedHarvestPosition(creep, mappedInfo);
     },
     moveToSourceByMappedInfo: function (creep, source, mappedInfo) {
 
