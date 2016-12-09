@@ -37,7 +37,7 @@ var creepUtils =
         {
             return NO_NEXT_POSITION;
         }
-        var positionOpen = positionIsOpen(creep.room, pos);
+        var positionOpen = positionIsOpen(creep.room, creep.pos);
         if (!positionOpen)
         {
             return NEXT_POSITION_TAKEN;
