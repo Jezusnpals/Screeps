@@ -9,14 +9,6 @@ function calculateCost(info, room)
     return info.costTo + (info.costTo * percentFilled);
 }
 
-function checkOpenInfo(info, room)
-{
-    var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
-                        getComparableRoomPosition(info.collectionPosition)];
-    var percentAddingUnit = 1 / info.maxCreeps;
-    return percentFilled + percentAddingUnit <= 1;
-}
-
 function calculatePercentUsage(info, creepInfo)
 {
     var moveToSourceFrames = info.costTo * creepInfo.moveToSourceRate;
@@ -25,6 +17,15 @@ function calculatePercentUsage(info, creepInfo)
     var totalFrames = transferFrames + moveToSourceFrames + moveFromSourceFrames + creepInfo.harvestFrames;
     return creepInfo.harvestFrames / totalFrames;
 }
+
+function checkOpenInfo(info, room, creepInfo)
+{
+    var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
+                        getComparableRoomPosition(info.collectionPosition)];
+    var percentAddingUnit = calculatePercentUsage(info, creepInfo);
+    return percentFilled + percentAddingUnit <= 1;
+}
+
 
 function addPercentFilled(info, room, creepInfo)
 {
@@ -75,10 +76,11 @@ var creepManager =
             moveFromSourceRate: moveFromSourceRate
         }
     },
-    calculateBestSource: function (infos, room)
+    calculateBestSource: function (infos, room, creepInfo)
     {
-        var openInfos = infos.filter(info => checkOpenInfo(info, room)); //maxCreeps
-        if (openInfos.length == 0) {
+        var openInfos = infos.filter(info => checkOpenInfo(info, room, creepInfo)); //maxCreeps
+        if (openInfos.length == 0)
+        {
             return null;
         }
 
@@ -97,13 +99,14 @@ var creepManager =
     },
     createCreep(room, infos, startMemory, infoIndexName) 
     {
-        var bestInfo = this.calculateBestSource(infos, room);
+        startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
+        var bestInfo = this.calculateBestSource(infos, room, startMemory.creepInfo);
         if (bestInfo != null) {
             var bestInfoIndex = infos.indexOf(bestInfo);
             var creepName = 'c' + new Date().getTime();
             var creepBodies = [WORK, CARRY, MOVE];
             startMemory[infoIndexName] = bestInfoIndex;
-            startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
+            
             var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
             if (creepResult == creepName) 
             {
@@ -203,7 +206,7 @@ var creepManager =
                 indexName = 'controlInfoIndex';
             }
 
-            var bestInfo = creepManager.calculateBestSource(infos, room);
+            var bestInfo = creepManager.calculateBestSource(infos, room, creep.memory.creepInfo);
             if (bestInfo != null)
             {
                 var bestInfoIndex = infos.indexOf(bestInfo);
