@@ -84,6 +84,7 @@ var creepUtils =
         
         if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
+            creep.memory.pathToId = -1;
             moveResults = creepUtils.moveToALinkedHarvestPosition(creep, mappedInfo);
         }
         if (creepUtils.recalculate_path_errors.includes(moveResults))
