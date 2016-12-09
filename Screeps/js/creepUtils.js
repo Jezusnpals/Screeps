@@ -6,7 +6,8 @@ var NO_NEXT_POSITION = -6;
 var NEXT_POSITION_TAKEN = -7;
 var NO_PATH = -20;
 
-function positionIsOpen(room, pos) {
+function positionIsOpen(room, pos)
+{
     var positionObjects = room.lookAt(mapUtils.refreshRoomPosition(pos));
     if (positionObjects.length <= 1)
     {
@@ -18,7 +19,7 @@ function positionIsOpen(room, pos) {
         return false;
     }
     var thereAreNonMovingCreeps = positionObjects.filter(po => po.type == 'creep')
-                                                 .filter(c => !c.memory.isMoving).length > 0;
+                                                 .filter(c => c.my && !Game.creeps[c.name].memory.isMoving).length > 0;
     if (thereAreNonMovingCreeps)
     {
         return false;
