@@ -29,7 +29,7 @@ function positionIsOpen(room, pos)
 
 function collectionPositionWillBeOpen(creep, path, goalPos)
 {
-    var positionObjects = room.lookAt(mapUtils.refreshRoomPosition(goalPos));
+    var positionObjects = creep.room.lookAt(mapUtils.refreshRoomPosition(goalPos));
     if (positionObjects.length <= 1)
     {
         return true;
