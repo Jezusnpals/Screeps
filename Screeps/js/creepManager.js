@@ -53,15 +53,15 @@ var creepManager =
         var harvestRatePerWork = 2;
         var structureRatePerWork = 5;
         var upgradeRatePerWork = 1;
-        var numberOfMoveParts = creepBodies.filter(cb => cb.type === MOVE).length;
-        var numberOfCarryParts = creepBodies.filter(cb => cb.type === CARRY).length;
+        var numberOfMoveParts = creepBodies.filter(cb => cb === MOVE).length;
+        var numberOfCarryParts = creepBodies.filter(cb => cb === CARRY).length;
         var numberOfWeightBodyParts = creepBodies.length - numberOfCarryParts - numberOfMoveParts;
         var terrain = 1;
 
         var moveToSourceRate = Math.ceil(terrain * numberOfWeightBodyParts / numberOfMoveParts);
         var moveFromSourceRate = Math.ceil(terrain * (numberOfWeightBodyParts + numberOfCarryParts) / numberOfMoveParts);
 
-        var numberOfWorkParts = creepBodies.filter(cb => cb.type === WORK).length;
+        var numberOfWorkParts = creepBodies.filter(cb => cb === WORK).length;
         var maxCarryAmount = (resourcesPerCarry * numberOfCarryParts);
         var harvestFrames = Math.ceil(maxCarryAmount / (harvestRatePerWork * numberOfWorkParts));
         var buildFrames = Math.ceil(maxCarryAmount / (structureRatePerWork * numberOfWorkParts));
