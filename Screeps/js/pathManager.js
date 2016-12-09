@@ -66,7 +66,7 @@ var pathManager =
         var nextPos = path[0];
         for (var i = 0; i < path.length; i++)
         {
-            if (mapUtils.getComparableRoomPosition(path[i]) == comparablePos) {
+            if (mapUtils.getComparableRoomPosition(path[i]) === comparablePos) {
                 if (i + 1 < path.length)
                 {
                     nextPos = path[i + 1];
@@ -76,6 +76,19 @@ var pathManager =
         };
 
         return nextPos;
+    },
+    calculateNumberOfRemaingPathPositions: function (pos, path)
+    {
+        var comparablePos = mapUtils.getComparableRoomPosition(pos);
+        for (var i = 0; i < path.length; i++)
+        {
+            if (mapUtils.getComparableRoomPosition(path[i]) === comparablePos)
+            {
+                return path.length - i;
+            }
+        }
+
+        return 0;
     }
 };
 

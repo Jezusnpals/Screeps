@@ -27,6 +27,24 @@ function positionIsOpen(room, pos)
     return true;
 }
 
+function collectionPositionWillBeOpen(creep, path, goalPos)
+{
+    var positionObjects = room.lookAt(mapUtils.refreshRoomPosition(goalPos));
+    if (positionObjects.length <= 1)
+    {
+        return true;
+    }
+
+    var myNonMovingCreeps = positionObjects.filter(po => po.type == 'creep')
+        .filter(c => c.my && !Game.creeps[c.name].memory.isMoving);
+    if (myNonMovingCreeps.length !== 1)
+    {
+        return true;
+    }
+    var framesLeftToMove = pathManager.calculateNumberOfRemaingPathPositions(creep.pos, path);
+    return framesLeftToMove <= Game.creeps[myNonMovingCreeps[0].Name].memory.harvestFramesLeft;
+}
+
 var creepUtils =
 {
     
@@ -78,23 +96,21 @@ var creepUtils =
         });
         return creepUtils.pathToLinkedHarvestPosition(creep, mappedInfo);
     },
-    moveToSourceByMappedInfo: function (creep, source, mappedInfo) {
-
-        var harvestPositionOpen = positionIsOpen(creep.room, mappedInfo.collectionPosition);
+    moveToSourceByMappedInfo: function (creep, source, mappedInfo)
+    {
+        var pathToIdSet = creep.memory.pathToId >= 0;
+        if (!pathToIdSet)
+        {
+            creep.memory.pathToId = pathManager.getPathToIndex(creep.pos, mappedInfo.collectionPosition);
+            pathToIdSet = creep.memory.pathToId >= 0;
+        }
+        var path = pathManager.getPathTo(creep.memory.pathToId);
+        var canUseSavedPath = pathToIdSet && collectionPositionWillBeOpen(creep, path, mappedInfo.collectionPosition);
         var moveResults = NO_PATH;
 
-        if (harvestPositionOpen)
+        if (canUseSavedPath)
         {
-            var pathToIdSet = creep.memory.pathToId >= 0;
-            if (!pathToIdSet)
-            {
-                creep.memory.pathToId = pathManager.getPathToIndex(creep.pos, mappedInfo.collectionPosition);
-                pathToIdSet = creep.memory.pathToId >= 0; 
-            }
-            if (pathToIdSet)
-            {
-                moveResults = creepUtils.tryMoveByPath(creep, pathManager.getPathTo(creep.memory.pathToId));
-            }
+            moveResults = creepUtils.tryMoveByPath(creep, path);
         }
         
         if (creepUtils.recalculate_path_errors.includes(moveResults))
@@ -137,7 +153,7 @@ var creepUtils =
             creep.memory.isMoving = false;
             if (creep.memory.harvestFramesLeft === 0)
             {
-                creep.memory.harvestFramesLeft = creep.memory.creepInfo.harvestFrames;
+                creep.memory.harvestFramesLeft = creep.memory.creepInfo.harvestFrames - 1; //counts the current frame as a harvest frame
             }
             else
             {
