@@ -30,7 +30,6 @@ var harvester =
         {
             
             var creepHarvestInfo = creep.memory.harvestInfoIndex >= 0 ? creep.room.memory.harvestInfos[creep.memory.harvestInfoIndex] : null;
-            creep.memory.pathToId = creepHarvestInfo ? creepHarvestInfo.pathToId : -1;
             creepUtils.harvestEnergy(creep, creepHarvestInfo);
         }
         else 
