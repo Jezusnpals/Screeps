@@ -5,6 +5,29 @@ var roomManager = require('roomManager');
 var NO_NEXT_POSITION = -6;
 var NEXT_POSITION_TAKEN = -7;
 var NO_PATH = -20;
+
+function positionIsOpen(room, pos)
+{
+    return room.lookAt(mapUtils.refreshRoomPosition(pos)).length <= 1;
+}
+
+function pathToLinkedHarvestPosition(creep, mappedInfo)
+{
+    var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
+        return Game.creeps[key];
+    }).filter(c => c.id != creep.id).map(c => c.pos);
+
+    var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos,
+                                      mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions), otherCreepPositions, [], 50);
+    if (!pathToLinkedHarvestPosition.incomplete)
+    {
+        var pathWithStartPosition = pathToLinkedHarvestPosition.path;
+        pathWithStartPosition.unshift(creep.pos);
+        creep.memory.pathToId = pathManager.addPathTo(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
+    }
+
+    return creepUtils.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
+}
 var creepUtils =
 {
     
@@ -26,22 +49,23 @@ var creepUtils =
     },
     moveToALinkedHarvestPosition: function (creep, mappedInfo)
     {
-        var otherCreepPositions = Object.keys(Game.creeps).map(function (key) {
-            return Game.creeps[key];
-        }).filter(c => c.id != creep.id).map(c => c.pos);
-
-        var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos, mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions), otherCreepPositions, [], 50);
-        if (!pathToLinkedHarvestPosition.incomplete)
+        mappedInfo.linkedCollectionPositions.forEach(function(linkedPos)
         {
-            var pathWithStartPosition = pathToLinkedHarvestPosition.path;
-            pathWithStartPosition.unshift(creep.pos);
-            creep.memory.pathToId = pathManager.addPathTo(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
-        }
-        return creepUtils.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
+            if(positionIsOpen(creep.room, linkedPos))
+            {
+                creep.memory.pathToId = pathManager.getPathToIndex(creep.pos, mappedInfo.collectionPosition);
+                var pathToIdSet = creep.memory.pathToId >= 0;
+                if (pathToIdSet)
+                {
+                    return this.tryMoveByPath(creep, pathManager.getPathTo(creep.memory.pathToId));
+                }
+            }
+        });
+        return pathToLinkedHarvestPosition(creep, mappedInfo);
     },
     moveToSourceByMappedInfo: function (creep, source, mappedInfo) {
 
-        var harvestPositionOpen = creep.room.lookAt(mapUtils.refreshRoomPosition(mappedInfo.collectionPosition)).length <= 1;
+        var harvestPositionOpen = positionIsOpen(creep.room, mappedInfo.collectionPosition);
         var moveResults = NO_PATH;
 
         if (harvestPositionOpen)

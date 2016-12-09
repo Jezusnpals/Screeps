@@ -15,12 +15,18 @@ var sourceMapper = {
         }
         mappedSource.collectionPositionInfos = [];
 
-        collectionPositions.forEach(function (originalPos) {
+        collectionPositions.forEach(function (originalPos)
+        {
             var linkedCollectionPositions = [];
-            collectionPositions.forEach(function (linkPos) {
-                var linkPathResults = mapUtils.findPath(originalPos, linkPos);
-                if (!linkPathResults.incomplete && linkPathResults.cost <= linkingMaxCost) {
-                    linkedCollectionPositions.push(linkPos);
+            collectionPositions.forEach(function (linkPos)
+            {
+                if (mapUtils.getComparableRoomPosition(originalPos) != mapUtils.getComparableRoomPosition(linkPos))
+                {
+                    var linkPathResults = mapUtils.findPath(originalPos, linkPos);
+                    if (!linkPathResults.incomplete && linkPathResults.cost <= linkingMaxCost)
+                    {
+                        linkedCollectionPositions.push(linkPos);
+                    }
                 }
             });
 
