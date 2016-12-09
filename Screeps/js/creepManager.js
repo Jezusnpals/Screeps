@@ -212,7 +212,7 @@ var creepManager =
                 var bestInfoIndex = infos.indexOf(bestInfo);
                 creep.memory[indexName] = bestInfoIndex;
                 infos[bestInfoIndex].creepNames.push(creep.name);
-                addPercentFilled(infos[bestInfoIndex], room);
+                addPercentFilled(infos[bestInfoIndex], room, creep.memory.creepInfo);
             }
         });
     }
