@@ -7,16 +7,19 @@ function transferEnergy(creep, creepHarvestInfo)
         creep.room.find(FIND_STRUCTURES).filter(s => s.structureType == STRUCTURE_SPAWN)[0];
     var transferResults = creep.transfer(structure, RESOURCE_ENERGY);
 
-    if(transferResults == ERR_NOT_IN_RANGE)
+    if (transferResults == ERR_NOT_IN_RANGE)
     {
-        if(creepHarvestInfo)
+        if (creepHarvestInfo)
         {
             creepUtils.moveToStructureByMappedInfo(creep, structure, creepHarvestInfo)
-        }
-        else
+        } else
         {
             creep.moveTo(structure);
         }
+    }
+    else
+    {
+        creepUtils.harvestEnergy(creep, creepHarvestInfo); //we should be able to start moving to source and transfer on the same frame
     }
 }
 
