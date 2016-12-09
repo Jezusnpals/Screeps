@@ -24,7 +24,6 @@ var roomManager =
 
         room.memory.currentPositionIndex = [0,0];
         room.memory.finishedMapping = false;
-        room.memory.mappedMaxCreepsForNoReturnPath = false;
         room.memory.currentMappingType = infoEnum.SPAWN;
 
         creepManager.initialize(room, room.memory.mappedSources);
@@ -61,21 +60,10 @@ var roomManager =
                 if (room.memory.currentPositionIndex[0] >= room.memory.mappedSources.length)
                 {
                     room.memory.finishedMapping = true;
+                    creepManager.resetCreepInfos(room);
                 }
                 room.memory.currentMappingType = infoEnum.SPAWN;
             }
-        }
-        else if(!room.memory.mappedMaxCreepsForNoReturnPath)
-        {
-            var harvestInfosWithNoReturnPath = room.memory.harvestInfos.filter(info => !info.isSeperateReturnPath);
-            var controlInfosWithNoReturnPath = room.memory.controlInfos.filter(info => !info.isSeperateReturnPath);
-
-            infoMapper.mapNumberOfCreepsForNoReturnPath(harvestInfosWithNoReturnPath, spawnMapper.harvestCreepCostDivisor);
-            infoMapper.mapNumberOfCreepsForNoReturnPath(controlInfosWithNoReturnPath, controlMapper.controlCreepCostDivisor);
-
-            room.memory.mappedMaxCreepsForNoReturnPath = true;
-
-            creepManager.resetCreepInfos(room);
         }
     },
     run: function (room) {

@@ -1,7 +1,8 @@
 var behaviorEnum = require('behaviorEnum');
 var mapUtils = require('mapUtils');
+var infoEnum = require('infoEnum');
 
-function calculateHarvestCost(info, room)
+function calculateCost(info, room)
 {
     var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
                         getComparableRoomPosition(info.collectionPosition)];
@@ -10,19 +11,24 @@ function calculateHarvestCost(info, room)
 
 function checkOpenInfo(info, room)
 {
-    if(info.creepNames.length >= info.maxCreeps)
-    {
-        return false;
-    }
     var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
                         getComparableRoomPosition(info.collectionPosition)];
     var percentAddingUnit = 1 / info.maxCreeps;
     return percentFilled + percentAddingUnit <= 1;
 }
 
-function addPercentFilled(info, room)
+function calculatePercentUsage(info, creepInfo)
 {
-    var percentAddingUnit = 1 / info.maxCreeps;
+    var moveToSourceFrames = info.costTo * creepInfo.moveToSourceRate;
+    var moveFromSourceFrames = info.costTo * creepInfo.moveFromSourceRate;
+    var transferFrames = info.type === infoEnum.CONTROL ? upgradeFrames : 1; //1 frame for spwan transfer
+    var totalFrames = transferFrames + moveToSourceFrames + moveFromSourceFrames + creepInfo.harvestFrames;
+    return creepInfo.harvestFrames / totalFrames;
+}
+
+function addPercentFilled(info, room, creepInfo)
+{
+    var percentAddingUnit = calculatePercentUsage(info, creepInfo);
     room.memory.collectionUsageDictonary[mapUtils.
                         getComparableRoomPosition(info.collectionPosition)] += percentAddingUnit;
 }
@@ -41,6 +47,34 @@ var creepManager =
             });
         });
     },
+    calculateCreepInfo: function (creepBodies)
+    {
+        var resourcesPerCarry = 50;
+        var harvestRatePerWork = 2;
+        var structureRatePerWork = 5;
+        var upgradeRatePerWork = 1;
+        var numberOfMoveParts = creepBodies.filter(cb => cb.type === MOVE).length;
+        var numberOfCarryParts = creepBodies.filter(cb => cb.type === CARRY).length;
+        var numberOfWeightBodyParts = creepBodies.length - numberOfCarryParts - numberOfMoveParts;
+        var terrain = 1;
+
+        var moveToSourceRate = Math.ceil(terrain * numberOfWeightBodyParts / numberOfMoveParts);
+        var moveFromSourceRate = Math.ceil(terrain * (numberOfWeightBodyParts + numberOfCarryParts) / numberOfMoveParts);
+
+        var numberOfWorkParts = creepBodies.filter(cb => cb.type === WORK).length;
+        var maxCarryAmount = (resourcesPerCarry * numberOfCarryParts);
+        var harvestFrames = Math.ceil(maxCarryAmount / (harvestRatePerWork * numberOfWorkParts));
+        var buildFrames = Math.ceil(maxCarryAmount / (structureRatePerWork * numberOfWorkParts));
+        var upgradeFrames = Math.ceil(maxCarryAmount / (upgradeRatePerWork * numberOfWorkParts));
+
+        return  {
+            harvestFrames: harvestFrames,
+            buildFrames: buildFrames,
+            upgradeFrames: upgradeFrames,
+            moveToSourceRate: moveToSourceRate,
+            moveFromSourceRate: moveFromSourceRate
+        }
+    },
     calculateBestSource: function (infos, room)
     {
         var openInfos = infos.filter(info => checkOpenInfo(info, room)); //maxCreeps
@@ -48,11 +82,11 @@ var creepManager =
             return null;
         }
 
-        var lowestCost = calculateHarvestCost(openInfos[0], room);
+        var lowestCost = calculateCost(openInfos[0], room);
         var lowestCostIndex = 0;
 
         for (var i = 1; i < openInfos.length; i++) {
-            var currentCost = calculateHarvestCost(openInfos[i], room);
+            var currentCost = calculateCost(openInfos[i], room);
             if (currentCost < lowestCost) {
                 lowestCost = currentCost;
                 lowestCostIndex = i;
@@ -67,19 +101,23 @@ var creepManager =
         if (bestInfo != null) {
             var bestInfoIndex = infos.indexOf(bestInfo);
             var creepName = 'c' + new Date().getTime();
+            var creepBodies = [WORK, CARRY, MOVE];
             startMemory[infoIndexName] = bestInfoIndex;
-            var creepResult = Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, startMemory);
+            startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
+            var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
             if (creepResult == creepName) 
             {
                 infos[bestInfoIndex].creepNames.push(creepName);
-                addPercentFilled(infos[bestInfoIndex], room);
+                addPercentFilled(infos[bestInfoIndex], room, startMemory.creepInfo);
             }
         }
     },
     createCreepWithoutInfo: function(room, startMemory)
     {
         var creepName = 'c' + new Date().getTime();
-        Game.spawns['Spawn1'].createCreep([WORK, CARRY, MOVE], creepName, startMemory);
+        var creepBodies = [WORK, CARRY, MOVE];
+        startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
+        Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
     },
     removeUsageFromInfo: function (room, info)
     {
