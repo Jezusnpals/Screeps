@@ -11,6 +11,8 @@ module.exports.loop = function ()
 
     PathFinder.use(true);
 
+    //commit test
+
     if (!Memory.initialized)
     {
         pathManager.initialize();
