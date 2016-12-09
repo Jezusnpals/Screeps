@@ -45,7 +45,7 @@ var creepUtils =
             creep.memory.pathToId = pathManager.addPathTo(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
         }
 
-        return this.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
+        return creepUtils.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
     },
     moveToALinkedHarvestPosition: function (creep, mappedInfo)
     {
@@ -57,11 +57,11 @@ var creepUtils =
                 var pathToIdSet = creep.memory.pathToId >= 0;
                 if (pathToIdSet)
                 {
-                    return this.tryMoveByPath(creep, pathManager.getPathTo(creep.memory.pathToId));
+                    return creepUtils.tryMoveByPath(creep, pathManager.getPathTo(creep.memory.pathToId));
                 }
             }
         });
-        return this.pathToLinkedHarvestPosition(creep, mappedInfo);
+        return creepUtils.pathToLinkedHarvestPosition(creep, mappedInfo);
     },
     moveToSourceByMappedInfo: function (creep, source, mappedInfo) {
 
@@ -78,15 +78,15 @@ var creepUtils =
             }
             if (pathToIdSet)
             {
-                moveResults = this.tryMoveByPath(creep, pathManager.getPathTo(creep.memory.pathToId));
+                moveResults = creepUtils.tryMoveByPath(creep, pathManager.getPathTo(creep.memory.pathToId));
             }
         }
         
-        if (this.recalculate_path_errors.includes(moveResults))
+        if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
-            moveResults = this.moveToALinkedHarvestPosition(creep, mappedInfo);
+            moveResults = creepUtils.moveToALinkedHarvestPosition(creep, mappedInfo);
         }
-        if (this.recalculate_path_errors.includes(moveResults))
+        if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
             creep.moveTo(source.pos);
         }
@@ -105,7 +105,7 @@ var creepUtils =
         if (harvestResult == ERR_NOT_IN_RANGE) {
             if (mappedInfo)
             {
-                this.moveToSourceByMappedInfo(creep, source, mappedInfo);
+                creepUtils.moveToSourceByMappedInfo(creep, source, mappedInfo);
             }
             else
             {
@@ -125,10 +125,10 @@ var creepUtils =
         var creepFollowPathFromResult = NO_PATH;
         if (pathFromIdSet)
         {
-            creepFollowPathFromResult = this.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.pathFromId));
+            creepFollowPathFromResult = creepUtils.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.pathFromId));
         }
         
-        if (this.recalculate_path_errors.includes(creepFollowPathFromResult))
+        if (creepUtils.recalculate_path_errors.includes(creepFollowPathFromResult))
         {
             creep.memory.pathFromId = -1;
             creep.moveTo(structure);
