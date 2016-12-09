@@ -35,7 +35,7 @@ var creepUtils =
         {
             var pathWithStartPosition = pathToLinkedHarvestPosition.path;
             pathWithStartPosition.unshift(creep.pos);
-            pathManager.addPathTo(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
+            creep.memory.pathToId = pathManager.addPathTo(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
         }
         return creepUtils.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
     },
