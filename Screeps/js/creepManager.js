@@ -99,14 +99,13 @@ var creepManager =
     },
     createCreep(room, infos, startMemory, infoIndexName) 
     {
+        var creepBodies = [WORK, CARRY, MOVE];
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         var bestInfo = this.calculateBestSource(infos, room, startMemory.creepInfo);
         if (bestInfo != null) {
             var bestInfoIndex = infos.indexOf(bestInfo);
             var creepName = 'c' + new Date().getTime();
-            var creepBodies = [WORK, CARRY, MOVE];
             startMemory[infoIndexName] = bestInfoIndex;
-            
             var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
             if (creepResult == creepName) 
             {
