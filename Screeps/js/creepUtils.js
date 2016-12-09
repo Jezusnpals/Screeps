@@ -89,6 +89,7 @@ var creepUtils =
         }
         if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
+            creep.memory.pathToId = -1;
             creep.moveTo(source.pos);
         }
     },
