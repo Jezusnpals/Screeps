@@ -35,6 +35,7 @@ var harvester =
         }
         else 
         {
+            creep.memory.isMoving = true;
             transferEnergy(creep, creepHarvestInfo);
         }
     }

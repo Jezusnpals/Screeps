@@ -6,9 +6,24 @@ var NO_NEXT_POSITION = -6;
 var NEXT_POSITION_TAKEN = -7;
 var NO_PATH = -20;
 
-function positionIsOpen(room, pos)
-{
-    return room.lookAt(mapUtils.refreshRoomPosition(pos)).length <= 1;
+function positionIsOpen(room, pos) {
+    var positionObjects = room.lookAt(mapUtils.refreshRoomPosition(pos));
+    if (positionObjects.length <= 1)
+    {
+        return true;
+    }
+    var thereAreStructures = positionObjects.filter(po => po.type == 'structure').length > 0;
+    if (thereAreStructures)
+    {
+        return false;
+    }
+    var thereAreNonMovingCreeps = positionObjects.filter(po => po.type == 'creep')
+                                                 .filter(c => !c.memory.isMoving).length > 0;
+    if (thereAreNonMovingCreeps)
+    {
+        return false;
+    }
+    return true;
 }
 
 var creepUtils =
@@ -22,10 +37,9 @@ var creepUtils =
         {
             return NO_NEXT_POSITION;
         }
-        var positionOpen = creep.room.lookAt(moveToPosition).length <= 1;
+        var positionOpen = positionIsOpen(creep.room, pos);
         if (!positionOpen)
         {
-            
             return NEXT_POSITION_TAKEN;
         }
         return creep.moveByPath([creep.pos, moveToPosition]);
@@ -104,7 +118,9 @@ var creepUtils =
         var harvestResult = creep.harvest(source)
         creep.memory.pathFromId = -1;
 
-        if (harvestResult == ERR_NOT_IN_RANGE) {
+        if (harvestResult == ERR_NOT_IN_RANGE)
+        {
+            creep.memory.isMoving = true;
             if (mappedInfo)
             {
                 creepUtils.moveToSourceByMappedInfo(creep, source, mappedInfo);
@@ -113,6 +129,9 @@ var creepUtils =
             {
                 creep.moveTo(source);
             }
+        } else
+        {
+            creep.memory.isMoving = false;
         }
     },
     moveToStructureByMappedInfo: function (creep, structure, mappedInfo)

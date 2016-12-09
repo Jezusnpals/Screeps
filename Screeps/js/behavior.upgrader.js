@@ -8,6 +8,7 @@ function transferEnergy(creep, creepControlInfo) {
 
     if (transferResults == ERR_NOT_IN_RANGE)
     {
+        creep.memory.isMoving = true;
         if (creepControlInfo)
         {
             creepUtils.moveToStructureByMappedInfo(creep, controller, creepControlInfo)
@@ -16,6 +17,9 @@ function transferEnergy(creep, creepControlInfo) {
         {
             creep.moveTo(controller);
         }
+    } else
+    {
+        creep.memory.isMoving = false;
     }
 }
 
@@ -27,7 +31,7 @@ var upgrader =
         if (creep.memory.upgrading && creep.carry.energy == 0)
         {
             creep.memory.upgrading = false;
-            }
+        }
         if (!creep.memory.upgrading && creep.carry.energy == creep.carryCapacity)
         {
             creep.memory.upgrading = true;
