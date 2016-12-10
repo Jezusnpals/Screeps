@@ -70,7 +70,7 @@ var creepUtils =
         }).filter(c => c.id != creep.id && !c.memory.isMoving).map(c => c.pos);
 
         var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos,
-                                          mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions), otherNonMovingCreepPositions, [], 50);
+                                          mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions), otherNonMovingCreepPositions);
         if (!pathToLinkedHarvestPosition.incomplete)
         {
             var pathWithStartPosition = pathToLinkedHarvestPosition.path;
