@@ -27,13 +27,9 @@ var infoMapper = {
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
-            var pathFromGoal = { pos: startPosition, range: returnRange };
+            var pathFromGoal = pathToWithStartPosition.splice(0).reverse();
 
-            var pathFromResults = mapUtils.findPath(collectionPosition, pathFromGoal);
-
-            var pathFromWithStartPosition = pathFromResults.path;
-            pathFromWithStartPosition.unshift(collectionPosition);
-            pathManager.addPath(pathFromWithStartPosition, startPosition);
+            pathManager.addPath(pathFromGoal, startPosition);
         }
 
         return mappedInfo;
