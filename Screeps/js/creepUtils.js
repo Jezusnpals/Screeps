@@ -69,8 +69,9 @@ var creepUtils =
             return Game.creeps[key];
         }).filter(c => c.id != creep.id && !c.memory.isMoving).map(c => c.pos);
 
+        var goalPositions = mappedInfo.linkedCollectionPositions.concat(mappedInfo.collectionPosition);
         var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos,
-                                          mapUtils.refreshRoomPositionArray(mappedInfo.linkedCollectionPositions.concat(mappedInfo.originalPos)), otherNonMovingCreepPositions);
+                                          mapUtils.refreshRoomPositionArray(goalPositions), otherNonMovingCreepPositions);
         if (!pathToLinkedHarvestPosition.incomplete && pathToLinkedHarvestPosition.path.length > 0)
         {
             var pathWithStartPosition = pathToLinkedHarvestPosition.path;
