@@ -134,9 +134,9 @@ var creepUtils =
         var harvestResult = creep.harvest(source)
         creep.memory.pathFromKey = '';
 
-        if (harvestResult == ERR_NOT_IN_RANGE)
+        if (harvestResult === ERR_NOT_IN_RANGE)
         {
-            creep.memory.isMoving = true;
+            creep.memory.isMoving = creep.fatigue === 0;
             creep.memory.harvestFramesLeft = 0;
             if (mappedInfo)
             {

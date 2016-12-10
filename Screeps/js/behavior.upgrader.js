@@ -8,7 +8,7 @@ function transferEnergy(creep, creepControlInfo) {
 
     if (transferResults == ERR_NOT_IN_RANGE)
     {
-        creep.memory.isMoving = true;
+        creep.memory.isMoving = creep.fatigue === 0;
         if (creepControlInfo)
         {
             creepUtils.moveToStructureByMappedInfo(creep, controller, creepControlInfo)
