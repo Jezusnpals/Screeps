@@ -36,7 +36,7 @@ function collectionPositionWillBeOpen(creep, path, goalPos)
     }
 
     var myNonMovingCreeps = positionObjects.filter(po => po.type == 'creep')
-        .filter(c => c.creep.my && !Game.creeps[c.Creep.name].memory.isMoving);
+        .filter(c => c.creep.my && !Game.creeps[c.creep.name].memory.isMoving);
     if (myNonMovingCreeps.length !== 1)
     {
         return true;
