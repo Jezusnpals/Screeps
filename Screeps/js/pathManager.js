@@ -20,7 +20,7 @@ var pathManager =
     },
     getPath: function (key)
     {
-        return Memory.pathManager.pathDictionary[key] ? Memory.pathManager.pathDictionary[key] : [];
+        return Memory.pathManager.pathDictionary[key] ? mapUtils.refreshRoomPositionArray(Memory.pathManager.pathDictionary[key]) : [];
     },
     getNextPathPosition: function (pos, path)
     {
