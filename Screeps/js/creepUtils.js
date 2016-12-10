@@ -139,13 +139,16 @@ var creepUtils =
         {
             creep.memory.isMoving = creep.fatigue === 0;
             creep.memory.harvestFramesLeft = 0;
-            if (mappedInfo)
+            if (creep.memory.isMoving)
             {
-                creepUtils.moveToSourceByMappedInfo(creep, source, mappedInfo);
-            }
-            else
-            {
-                creep.moveTo(source);
+                if (mappedInfo)
+                {
+                    creepUtils.moveToSourceByMappedInfo(creep, source, mappedInfo);
+                }
+                else
+                {
+                    creep.moveTo(source);
+                }
             }
         }
         else

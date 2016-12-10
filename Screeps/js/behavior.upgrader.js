@@ -9,13 +9,16 @@ function transferEnergy(creep, creepControlInfo) {
     if (transferResults == ERR_NOT_IN_RANGE)
     {
         creep.memory.isMoving = creep.fatigue === 0;
-        if (creepControlInfo)
+        if (creep.memory.isMoving)
         {
-            creepUtils.moveToStructureByMappedInfo(creep, controller, creepControlInfo)
-        }
-        else
-        {
-            creep.moveTo(controller);
+            if (creepControlInfo)
+            {
+                creepUtils.moveToStructureByMappedInfo(creep, controller, creepControlInfo)
+            }
+            else
+            {
+                creep.moveTo(controller);
+            }
         }
     } else
     {

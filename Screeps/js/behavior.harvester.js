@@ -9,12 +9,17 @@ function transferEnergy(creep, creepHarvestInfo)
 
     if (transferResults == ERR_NOT_IN_RANGE)
     {
-        if (creepHarvestInfo)
+        creep.memory.isMoving = creep.fatigue === 0;
+        if (creep.memory.isMoving)
         {
-            creepUtils.moveToStructureByMappedInfo(creep, structure, creepHarvestInfo)
-        } else
-        {
-            creep.moveTo(structure);
+            if (creepHarvestInfo)
+            {
+                creepUtils.moveToStructureByMappedInfo(creep, structure, creepHarvestInfo);
+            }
+            else
+            {
+                creep.moveTo(structure);
+            }
         }
     }
     else
@@ -35,7 +40,6 @@ var harvester =
         }
         else 
         {
-            creep.memory.isMoving = creep.fatigue === 0;
             transferEnergy(creep, creepHarvestInfo);
         }
     }
