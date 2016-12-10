@@ -19,7 +19,7 @@ function positionIsOpen(room, pos)
         return false;
     }
     var thereAreNonMovingCreeps = positionObjects.filter(po => po.type == 'creep')
-                                                 .filter(c => c.my && !Game.creeps[c.name].memory.isMoving).length > 0;
+                                                 .filter(c => c.creep.my && !Game.creeps[c.creep.name].memory.isMoving).length > 0;
     if (thereAreNonMovingCreeps)
     {
         return false;
