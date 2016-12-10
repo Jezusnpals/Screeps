@@ -6,7 +6,7 @@ function transferEnergy(creep, creepControlInfo) {
     var controller = creep.room.controller;
     var transferResults = creep.upgradeController(controller);
 
-    if (transferResults == ERR_NOT_IN_RANGE)
+    if (transferResults === ERR_NOT_IN_RANGE || creep.energy === 1)
     {
         creep.memory.isMoving = creep.fatigue === 0;
         if (creep.memory.isMoving)
@@ -20,7 +20,8 @@ function transferEnergy(creep, creepControlInfo) {
                 creep.moveTo(controller);
             }
         }
-    } else
+    }
+    else
     {
         creep.memory.isMoving = false;
     }
