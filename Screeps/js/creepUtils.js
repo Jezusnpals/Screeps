@@ -42,7 +42,7 @@ function collectionPositionWillBeOpen(creep, path, goalPos)
         return true;
     }
     var framesLeftToMove = pathManager.calculateNumberOfRemaingPathPositions(creep.pos, path);
-    return framesLeftToMove >= Game.creeps[myNonMovingCreeps[0].creep.name].memory.harvestFramesLeft;
+    return framesLeftToMove > Game.creeps[myNonMovingCreeps[0].creep.name].memory.harvestFramesLeft;
 }
 
 var creepUtils =
