@@ -137,8 +137,8 @@ var creepManager =
                 {
                     this.createCreep(room, room.memory.harvestInfos, {
                         behavior: behaviorEnum.HARVESTER,
-                        pathFromKey: -1,
-                        pathToKey: -1,
+                        pathFromKey: '',
+                        pathToKey: '',
                         isMoving: true
                     }, 'harvestInfoIndex');
                 }
@@ -146,8 +146,8 @@ var creepManager =
                 {
                     this.createCreepWithoutInfo(room, {
                         behavior: behaviorEnum.HARVESTER,
-                        pathFromKey: -1,
-                        pathToKey: -1,
+                        pathFromKey: '',
+                        pathToKey: '',
                         isMoving: true
                     });
                 }
@@ -159,8 +159,8 @@ var creepManager =
                 {
                     this.createCreep(room, room.memory.controlInfos, {
                         behavior: behaviorEnum.UPGRADER,
-                        pathFromKey: -1,
-                        pathToKey: -1,
+                        pathFromKey: '',
+                        pathToKey: '',
                         isMoving: true
                     }, 'controlInfoIndex');
                 }
@@ -168,8 +168,8 @@ var creepManager =
                 {
                     this.createCreepWithoutInfo(room, {
                         behavior: behaviorEnum.UPGRADER,
-                        pathFromKey: -1,
-                        pathToKey: -1,
+                        pathFromKey: '',
+                        pathToKey: '',
                         isMoving: true
                                 });
                 }

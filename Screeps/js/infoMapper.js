@@ -8,10 +8,10 @@ var infoMapper = {
         var mappedInfo = {
             creepNames: [],
             collectionPosition: collectionPosition,
-            pathToKey: -1,
+            pathToKey: '',
             costTo: -1,
             canGetTo: false,
-            pathFromKey: -1,
+            pathFromKey: '',
             type: infoType,
             sourceId: sourceId,
             linkedCollectionPositions: collectionPositionInfo.linkedCollectionPositions
