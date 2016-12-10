@@ -104,7 +104,7 @@ var creepUtils =
             creep.memory.pathToKey = pathManager.getKey(creep.pos, mappedInfo.collectionPosition);
         }
         var path = creep.memory.pathToKey ? pathManager.getPath(creep.memory.pathToKey) : [];
-        var canUseSavedPath = pathToIdSet && collectionPositionWillBeOpen(creep, path, mappedInfo.collectionPosition);
+        var canUseSavedPath = creep.memory.pathToKey && collectionPositionWillBeOpen(creep, path, mappedInfo.collectionPosition);
         var moveResults = NO_PATH;
 
         if (canUseSavedPath)
