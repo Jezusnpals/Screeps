@@ -8,12 +8,14 @@ var flagDrawer = require('flagDrawer');
 module.exports.loop = function () 
 {
     var start = Date.now();
+    var framesBeforeMapInfo = 5;
 
     PathFinder.use(true);
 
     if (!Memory.initialized)
     {
         pathManager.initialize();
+        Memory.frame = 0;
         Memory.initialized = true;
     }
 
@@ -41,8 +43,13 @@ module.exports.loop = function ()
             roomManager.initialize(room, currentRoomSpawns);
         }
         //flagDrawer.showFlags(room);
-        roomManager.mapInfos(room, currentRoomSpawns)
+        if (framesBeforeMapInfo < Memory.frame) //Delay mapping to bank some extra cpu time just incase
+        {
+            roomManager.mapInfos(room, currentRoomSpawns);
+        }
+
         roomManager.run(room);
     }
     //console.log(Date.now() - start);
+    Memory.frame++;
 }
