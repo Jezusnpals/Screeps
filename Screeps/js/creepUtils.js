@@ -6,6 +6,7 @@ var NO_NEXT_POSITION = -6;
 var NEXT_POSITION_TAKEN = -7;
 var NO_PATH = -20;
 
+var structureTypes = ['constructionSite', 'structure'];
 function positionIsOpen(room, pos)
 {
     var positionObjects = room.lookAt(mapUtils.refreshRoomPosition(pos));
@@ -13,7 +14,7 @@ function positionIsOpen(room, pos)
     {
         return true;
     }
-    var thereAreStructures = positionObjects.filter(po => po.type == 'structure').length > 0;
+    var thereAreStructures = positionObjects.filter(po => structureTypes.includes(po.type)).length > 0;
     if (thereAreStructures)
     {
         return false;
