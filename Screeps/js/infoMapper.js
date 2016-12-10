@@ -8,10 +8,10 @@ var infoMapper = {
         var mappedInfo = {
             creepNames: [],
             collectionPosition: collectionPosition,
-            pathToId: -1,
+            pathToKey: -1,
             costTo: -1,
             canGetTo: false,
-            pathFromId: -1,
+            pathFromKey: -1,
             type: infoType,
             sourceId: sourceId,
             linkedCollectionPositions: collectionPositionInfo.linkedCollectionPositions
@@ -23,7 +23,7 @@ var infoMapper = {
         {
             var pathToWithStartPosition = pathToResults.path;
             pathToWithStartPosition.unshift(startPosition);
-            mappedInfo.pathToId = pathManager.addPathTo(pathToWithStartPosition, collectionPosition);
+            mappedInfo.pathToKey = pathManager.addPath(pathToWithStartPosition, collectionPosition);
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
@@ -33,7 +33,7 @@ var infoMapper = {
 
             var pathFromWithStartPosition = pathFromResults.path;
             pathFromWithStartPosition.unshift(collectionPosition);
-            pathManager.addPathFrom(pathFromWithStartPosition, startPosition);
+            pathManager.addPath(pathFromWithStartPosition, startPosition);
         }
 
         return mappedInfo;
@@ -50,7 +50,7 @@ var infoMapper = {
             pathWithStartPosition.unshift(pos);
             if (!pathToResults.incomplete)
             {
-                pathManager.addPathTo(pathWithStartPosition, goalPosition);
+                pathManager.addPath(pathWithStartPosition, goalPosition);
             }
         });
     }

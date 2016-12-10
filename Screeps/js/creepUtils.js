@@ -76,7 +76,7 @@ var creepUtils =
         {
             var pathWithStartPosition = pathToLinkedHarvestPosition.path;
             pathWithStartPosition.unshift(creep.pos);
-            creep.memory.pathToId = pathManager.addPathTo(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
+            creep.memory.pathToKey = pathManager.addPath(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
         }
 
         return creepUtils.tryMoveByPath(creep, pathToLinkedHarvestPosition.path);
@@ -85,11 +85,11 @@ var creepUtils =
     {
         mappedInfo.linkedCollectionPositions.forEach(function(linkedPos)
         {
-            creep.memory.pathToId = pathManager.getPathToIndex(creep.pos, linkedPos);
-            var pathToIdSet = creep.memory.pathToId >= 0;
+            creep.memory.pathToKey = pathManager.getKey(creep.pos, linkedPos);
+            var pathToIdSet = creep.memory.pathToKey >= 0;
             if (pathToIdSet) 
             {
-                var path = pathManager.getPathTo(creep.memory.pathToId);
+                var path = pathManager.getPath(creep.memory.pathToKey);
                 if (collectionPositionWillBeOpen(creep, path, linkedPos))
                 {
                     return creepUtils.tryMoveByPath(creep, path);
@@ -100,13 +100,13 @@ var creepUtils =
     },
     moveToSourceByMappedInfo: function (creep, source, mappedInfo)
     {
-        var pathToIdSet = creep.memory.pathToId >= 0;
+        var pathToIdSet = creep.memory.pathToKey >= 0;
         if (!pathToIdSet)
         {
-            creep.memory.pathToId = pathManager.getPathToIndex(creep.pos, mappedInfo.collectionPosition);
-            pathToIdSet = creep.memory.pathToId >= 0;
+            creep.memory.pathToKey = pathManager.getKey(creep.pos, mappedInfo.collectionPosition);
+            pathToIdSet = creep.memory.pathToKey >= 0;
         }
-        var path = pathToIdSet ? pathManager.getPathTo(creep.memory.pathToId) : [];
+        var path = pathToIdSet ? pathManager.getPath(creep.memory.pathToKey) : [];
         var canUseSavedPath = pathToIdSet && collectionPositionWillBeOpen(creep, path, mappedInfo.collectionPosition);
         var moveResults = NO_PATH;
 
@@ -117,12 +117,12 @@ var creepUtils =
         
         if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
-            creep.memory.pathToId = -1;
+            creep.memory.pathToKey = -1;
             moveResults = creepUtils.moveToALinkedHarvestPosition(creep, mappedInfo);
         }
         if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
-            creep.memory.pathToId = -1;
+            creep.memory.pathToKey = -1;
             creep.moveTo(source.pos);
         }
     },
@@ -135,7 +135,7 @@ var creepUtils =
                 return s1Distance < s2Distance ? s1 : s2;
             });
         var harvestResult = creep.harvest(source)
-        creep.memory.pathFromId = -1;
+        creep.memory.pathFromKey = -1;
 
         if (harvestResult == ERR_NOT_IN_RANGE)
         {
@@ -165,22 +165,22 @@ var creepUtils =
     },
     moveToStructureByMappedInfo: function (creep, structure, mappedInfo)
     {
-        creep.memory.pathToId = -1;
-        var pathFromIdSet = creep.memory.pathFromId >= 0;
+        creep.memory.pathToKey = -1;
+        var pathFromIdSet = creep.memory.pathFromKey >= 0;
         if (!pathFromIdSet)
         {
-            creep.memory.pathFromId = pathManager.getPathFromIndex(creep.pos, structure.pos);
+            creep.memory.pathFromKey = pathManager.getKey(creep.pos, structure.pos);
         }
-        pathFromIdSet = creep.memory.pathFromId >= 0;
+        pathFromIdSet = creep.memory.pathFromKey >= 0;
         var creepFollowPathFromResult = NO_PATH;
         if (pathFromIdSet)
         {
-            creepFollowPathFromResult = creepUtils.tryMoveByPath(creep, pathManager.getPathFrom(creep.memory.pathFromId));
+            creepFollowPathFromResult = creepUtils.tryMoveByPath(creep, pathManager.getPath(creep.memory.pathFromKey));
         }
         
         if (creepUtils.recalculate_path_errors.includes(creepFollowPathFromResult))
         {
-            creep.memory.pathFromId = -1;
+            creep.memory.pathFromKey = -1;
             creep.moveTo(structure);
         }
     }
