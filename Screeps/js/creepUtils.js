@@ -71,7 +71,7 @@ var creepUtils =
 
         var goalPositions = mappedInfo.linkedCollectionPositions.concat(mappedInfo.collectionPosition);
         var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos,
-                                          mapUtils.refreshRoomPositionArray(goalPositions), otherNonMovingCreepPositions);
+                                          mapUtils.refreshRoomPositionArray(goalPositions), otherNonMovingCreepPositions, [], 50);
         if (!pathToLinkedHarvestPosition.incomplete && pathToLinkedHarvestPosition.path.length > 0)
         {
             var pathWithStartPosition = pathToLinkedHarvestPosition.path;
@@ -85,15 +85,17 @@ var creepUtils =
     {
         mappedInfo.linkedCollectionPositions.forEach(function(linkedPos)
         {
-            if(positionIsOpen(creep.room, linkedPos))
+            creep.memory.pathToId = pathManager.getPathToIndex(creep.pos, linkedPos);
+            var pathToIdSet = creep.memory.pathToId >= 0;
+            if (pathToIdSet) 
             {
-                creep.memory.pathToId = pathManager.getPathToIndex(creep.pos, mappedInfo.collectionPosition);
-                var pathToIdSet = creep.memory.pathToId >= 0;
-                if (pathToIdSet)
+                var path = pathManager.getPathTo(creep.memory.pathToId);
+                if (collectionPositionWillBeOpen(creep, path, linkedPos))
                 {
-                    return creepUtils.tryMoveByPath(creep, pathManager.getPathTo(creep.memory.pathToId));
+                    return creepUtils.tryMoveByPath(creep, path);
                 }
             }
+            
         });
         return creepUtils.pathToLinkedHarvestPosition(creep, mappedInfo);
     },
