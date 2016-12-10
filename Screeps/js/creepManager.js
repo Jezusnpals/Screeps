@@ -122,11 +122,10 @@ var creepManager =
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
     },
-    removeUsageFromInfo: function (room, info)
-    {
-        var percentAddingUnit = 1 / info.maxCreeps;
-        room.memory.collectionUsageDictonary[mapUtils.
-            getComparableRoomPosition(info.collectionPosition)] -= percentAddingUnit
+    removeUsageFromInfo: function (room, info, creepInfo) {
+        var percentAddingUnit = calculatePercentUsage(info, creepInfo);
+        room.memory.collectionUsageDictonary[mapUtils
+            .getComparableRoomPosition(info.collectionPosition)] -= percentAddingUnit;;
     },
     run: function (room, finsihedMapping)
     {

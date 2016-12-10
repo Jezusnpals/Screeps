@@ -95,7 +95,6 @@ var creepUtils =
                     return creepUtils.tryMoveByPath(creep, path);
                 }
             }
-            
         });
         return creepUtils.pathToLinkedHarvestPosition(creep, mappedInfo);
     },
