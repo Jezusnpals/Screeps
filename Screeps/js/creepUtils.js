@@ -131,10 +131,14 @@ var creepUtils =
         }
         return creep.moveByPath([creep.pos, moveToPosition]);
     },
-    pathToLinkedHarvestPosition: function(creep, mappedInfo)
+    pathToLinkedHarvestPosition: function (creep, mappedInfo, alreadyTriedGoals)
     {
         var goalPositions = mappedInfo.linkedCollectionPositions.concat(mappedInfo.collectionPosition);
         goalPositions = goalPositions.filter(pos => !creep.memory.knownReservedSources.includes(mapUtils.getComparableRoomPosition(pos)));
+        if (alreadyTriedGoals)
+        {
+            goalPositions = goalPositions.filter(pos => !alreadyTriedGoals.includes(mapUtils.getComparableRoomPosition(pos)));
+        }
         var comparableGoalPositions = goalPositions.map(gp => mapUtils.getComparableRoomPosition(gp));;
         var allCreeps = Object.keys(Game.creeps).map(key => Game.creeps[key]);
         var nonGoalNonMovingCreepPositions = allCreeps.filter(c => c.id !== creep.id && !c.memory.isMoving &&
@@ -162,11 +166,9 @@ var creepUtils =
                      !collectionPositionWillBeOpen(creep, collectionPosition) ) &&
                      comparableGoalPositions.includes(stringCollectionPosition))
                 {
-                    if (!creep.memory.knownReservedSources.includes(stringCollectionPosition))
-                    {
-                        creep.memory.knownReservedSources.push(stringCollectionPosition);
-                    }
-                    return creepUtils.pathToLinkedHarvestPosition(creep, mappedInfo); //try again without this goal position
+                    alreadyTriedGoals = alreadyTriedGoals ? alreadyTriedGoals : [];
+                    alreadyTriedGoals.push(stringCollectionPosition);
+                    return creepUtils.pathToLinkedHarvestPosition(creep, mappedInfo, alreadyTriedGoals); //try again without this goal position
                 }
             }
         }
