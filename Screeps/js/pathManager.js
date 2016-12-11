@@ -16,17 +16,18 @@ var pathManager =
     {
         var numberOfPlains = 0;
         var numberOfSwamps = 0;
-        path.forEach(function(pos) 
+        for(var index = 1; index < path.length -1; index++) //don't include the start or end position
         {
-            var terrain = Game.map.getTerrainAt(pos);
+            var terrain = Game.map.getTerrainAt(path[index]);
             if (terrain === 'plain') 
             {
                 numberOfPlains++;
-            } else if (terrain = 'swamp') 
+            } 
+            else if (terrain === 'swamp') 
             {
                 numberOfSwamps++;
             }
-        });
+        }
 
         return {
             path: path,
