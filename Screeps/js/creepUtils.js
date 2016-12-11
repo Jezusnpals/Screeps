@@ -141,7 +141,7 @@ var creepUtils =
         }
         var comparableGoalPositions = goalPositions.map(gp => mapUtils.getComparableRoomPosition(gp));;
         var allCreeps = Object.keys(Game.creeps).map(key => Game.creeps[key]);
-        var nonGoalNonMovingCreepPositions = allCreeps.filter(c => c.id !== creep.id && !c.memory.isMoving &&
+        var nonGoalNonMovingCreepPositions = allCreeps.filter(c => c.id !== creep.id && (!c.memory.isMoving && c.fatigue == 0) &&
                                                             !comparableGoalPositions.includes(mapUtils.getComparableRoomPosition(c.pos)))
                                            .map(c => c.pos);
         
