@@ -49,13 +49,17 @@ function collectionPositionWillBeOpen(creep, path, goalPos)
 var creepUtils =
 {
     recalculate_path_errors: [NEXT_POSITION_TAKEN, NO_NEXT_POSITION, NO_PATH, ALL_PATHS_RESERVED, ERR_NOT_FOUND],
-    resetSavedPathToSource: function(creep, keepKnownReserve) 
+    resetReservedSource: function(creep) 
     {
         var hasSourceReserved = creep.memory.reservedSourceKey && creep.room.memory.reservedSources[creep.memory.reservedSourceKey] === creep.memory.framesToSource;
         if (hasSourceReserved)
         {
             creep.room.memory.reservedSources[creep.memory.reservedSourceKey] = null;
         }
+    },
+    resetSavedPathToSource: function (creep, keepKnownReserve)
+    {
+        creepUtils.resetReservedSource(creep);
         creep.memory.pathToKey = '';
         creep.memory.framesToSource = -1;
         creep.memory.reservedSourceKey = '';
@@ -97,7 +101,7 @@ var creepUtils =
         }
         else
         {
-            creepUtils.resetSavedPathToSource(creep, true);
+            creepUtils.resetReservedSource(creep);
             creep.memory.framesToSource = terrainPathCost;
             creep.room.memory.reservedSources[stringSourcePosition] = {frames: terrainPathCost, name: creep.name};
             creep.memory.reservedSourceKey = stringSourcePosition;
