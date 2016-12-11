@@ -146,7 +146,8 @@ var creepManager =
                         pathFromKey: '',
                         pathToKey: '',
                         isMoving: true,
-                        framesToSource: -1
+                        framesToSource: -1,
+                        reservedSources: []
                     }, 'harvestInfoIndex');
                 }
                 else
@@ -156,7 +157,8 @@ var creepManager =
                         pathFromKey: '',
                         pathToKey: '',
                         isMoving: true,
-                        framesToSource: -1
+                        framesToSource: -1,
+                        reservedSources: []
                     });
                 }
                 
@@ -170,7 +172,8 @@ var creepManager =
                         pathFromKey: '',
                         pathToKey: '',
                         isMoving: true,
-                        framesToSource: -1
+                        framesToSource: -1,
+                        reservedSources: []
                     }, 'controlInfoIndex');
                 }
                 else
@@ -180,7 +183,8 @@ var creepManager =
                         pathFromKey: '',
                         pathToKey: '',
                         isMoving: true,
-                        framesToSource: -1
+                        framesToSource: -1,
+                        reservedSources: []
                                 });
                 }
             }
