@@ -11,8 +11,8 @@ function calculateCost(info, room)
 
 function calculatePercentUsage(info, creepInfo)
 {
-    var moveToSourceFrames = info.costTo * creepInfo.moveToSourceRate;
-    var moveFromSourceFrames = info.costTo * creepInfo.moveFromSourceRate;
+    var moveToSourceFrames = info.costTo * creepInfo.moveToSourceOnPlainRate;
+    var moveFromSourceFrames = info.costTo * creepInfo.moveFromSourceOnPlainRate;
     var transferFrames = info.type === infoEnum.CONTROL ? creepInfo.upgradeFrames : 1; //1 frame for spwan transfer
     var nonHarvestFrames = transferFrames + moveToSourceFrames + moveFromSourceFrames;
     return creepInfo.harvestFrames / nonHarvestFrames;
