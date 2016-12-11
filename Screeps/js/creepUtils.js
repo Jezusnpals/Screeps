@@ -65,7 +65,7 @@ var creepUtils =
         creep.memory.reservedSourceKey = '';
         if (keepKnownReserve)
         {
-            creep.reservedSources = [];
+            creep.memory.knownReservedSources = [];
         }
     },
     incrementFramesToSource: function (creep)
