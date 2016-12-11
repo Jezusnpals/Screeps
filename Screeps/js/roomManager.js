@@ -14,6 +14,7 @@ var roomManager =
         room.memory.mappedSources = [];
         room.memory.harvestInfos = [];
         room.memory.controlInfos = [];
+        room.memory.reservedSources = {};
 
         var sources = room.find(FIND_SOURCES);
         for (var index in sources)

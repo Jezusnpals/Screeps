@@ -57,10 +57,14 @@ var creepManager =
         var numberOfMoveParts = creepBodies.filter(cb => cb === MOVE).length;
         var numberOfCarryParts = creepBodies.filter(cb => cb === CARRY).length;
         var numberOfWeightBodyParts = creepBodies.length - numberOfCarryParts - numberOfMoveParts;
-        var terrain = 1;
+        var plain = 1;
+        var swamp = 5;
 
-        var moveToSourceRate = Math.ceil(terrain * numberOfWeightBodyParts / numberOfMoveParts);
-        var moveFromSourceRate = Math.ceil(terrain * (numberOfWeightBodyParts + numberOfCarryParts) / numberOfMoveParts);
+        var moveToSourceOnPlainRate = Math.ceil(plain * numberOfWeightBodyParts / numberOfMoveParts);
+        var moveFromSourceOnPlainRate = Math.ceil(plain * (numberOfWeightBodyParts + numberOfCarryParts) / numberOfMoveParts);
+
+        var moveToSourceOnSwampRate = Math.ceil(swamp * numberOfWeightBodyParts / numberOfMoveParts);
+        var moveFromSourceOnSwampRate = Math.ceil(swamp * (numberOfWeightBodyParts + numberOfCarryParts) / numberOfMoveParts);
 
         var numberOfWorkParts = creepBodies.filter(cb => cb === WORK).length;
         var maxCarryAmount = (resourcesPerCarry * numberOfCarryParts);
@@ -72,8 +76,10 @@ var creepManager =
             harvestFrames: harvestFrames,
             buildFrames: buildFrames,
             upgradeFrames: upgradeFrames,
-            moveToSourceRate: moveToSourceRate,
-            moveFromSourceRate: moveFromSourceRate,
+            moveToSourceOnPlainRate: moveToSourceOnPlainRate,
+            moveFromSourceOnPlainRate: moveFromSourceOnPlainRate,
+            moveToSourceOnSwampRate: moveToSourceOnSwampRate,
+            moveFromSourceOnSwampRate: moveFromSourceOnSwampRate,
             maxCarryAmount: maxCarryAmount
         }
     },
@@ -139,7 +145,8 @@ var creepManager =
                         behavior: behaviorEnum.HARVESTER,
                         pathFromKey: '',
                         pathToKey: '',
-                        isMoving: true
+                        isMoving: true,
+                        framesToSource: -1
                     }, 'harvestInfoIndex');
                 }
                 else
@@ -148,7 +155,8 @@ var creepManager =
                         behavior: behaviorEnum.HARVESTER,
                         pathFromKey: '',
                         pathToKey: '',
-                        isMoving: true
+                        isMoving: true,
+                        framesToSource: -1
                     });
                 }
                 
@@ -161,7 +169,8 @@ var creepManager =
                         behavior: behaviorEnum.UPGRADER,
                         pathFromKey: '',
                         pathToKey: '',
-                        isMoving: true
+                        isMoving: true,
+                        framesToSource: -1
                     }, 'controlInfoIndex');
                 }
                 else
@@ -170,7 +179,8 @@ var creepManager =
                         behavior: behaviorEnum.UPGRADER,
                         pathFromKey: '',
                         pathToKey: '',
-                        isMoving: true
+                        isMoving: true,
+                        framesToSource: -1
                                 });
                 }
             }
