@@ -1,6 +1,5 @@
 var pathManager = require('pathManager');
 var mapUtils = require('mapUtils');
-var roomManager = require('roomManager');
 
 const NO_NEXT_POSITION = -6;
 const NEXT_POSITION_TAKEN = -7;
