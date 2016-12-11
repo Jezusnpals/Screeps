@@ -1,6 +1,7 @@
 var behaviorEnum = require('behaviorEnum');
 var mapUtils = require('mapUtils');
 var infoEnum = require('infoEnum');
+var creepUtils = require('creepUtils');
 
 function calculateCost(info, room)
 {
@@ -133,8 +134,31 @@ var creepManager =
         room.memory.collectionUsageDictonary[mapUtils
             .getComparableRoomPosition(info.collectionPosition)] -= percentAddingUnit;;
     },
+    resetReservedSources: function (room)
+    {
+        Object.keys(room.memory.reservedSources).forEach(function(sourceStringPosition)
+        {
+            if (room.memory.reservedSources[sourceStringPosition])
+            {
+                var creep = Game.creeps[room.memory.reservedSources[sourceStringPosition].name];
+                if (creep)
+                {
+                    if (creep.memory.framesToSource !==
+                        room.memory.reservedSources[sourceStringPosition].frames)
+                    {
+                        creepUtils.resetSavedPathToSource(creep);
+                    }
+                }
+                else
+                {
+                    room.memory.reservedSources[sourceStringPosition] = null;
+                }
+            }
+        });
+    },
     run: function (room, finsihedMapping)
     {
+        creepManager.resetReservedSources(room);
         if (Object.keys(Game.creeps).length < 200 && Game.spawns['Spawn1'].energy >= 200)
         {
             if (Object.keys(Game.creeps).length % 2 == 0)

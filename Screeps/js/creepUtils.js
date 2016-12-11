@@ -71,10 +71,10 @@ var creepUtils =
         {
             return;
         }
-        var hasSourceReserved = creep.room.memory.reservedSources[creep.memory.reservedSourceKey] === creep.memory.framesToSource;
+        var hasSourceReserved = creep.room.memory.reservedSources[creep.memory.reservedSourceKey].frames === creep.memory.framesToSource;
         if (hasSourceReserved)
         {
-            creep.room.memory.reservedSources[creep.memory.reservedSourceKey]--;
+            creep.room.memory.reservedSources[creep.memory.reservedSourceKey].frames--;
             creep.memory.framesToSource--;
         }
         else
@@ -90,7 +90,7 @@ var creepUtils =
             return false;
         }
         var terrainPathCost = pathManager.calculateTerrainPathCostToSource(terrainPath, creep.memory.creepInfo);
-        if (creep.room.memory.reservedSources[stringSourcePosition] && creep.room.memory.reservedSources[stringSourcePosition] < terrainPathCost)
+        if (creep.room.memory.reservedSources[stringSourcePosition] && creep.room.memory.reservedSources[stringSourcePosition].frames < terrainPathCost)
         {
             creepUtils.resetSavedPathToSource(creep, true);
             creep.memory.knownReservedSources.push(stringSourcePosition);
@@ -100,7 +100,7 @@ var creepUtils =
         {
             creepUtils.resetSavedPathToSource(creep, true);
             creep.memory.framesToSource = terrainPathCost;
-            creep.room.memory.reservedSources[stringSourcePosition] = terrainPathCost;
+            creep.room.memory.reservedSources[stringSourcePosition] = {frames: terrainPathCost, name: creep.name};
             creep.memory.reservedSourceKey = stringSourcePosition;
             return true;
         }
@@ -188,7 +188,7 @@ var creepUtils =
             path = terrainPath ? terrainPath.path : [];
             stringSourcePosition = terrainPath ? mapUtils.getComparableRoomPosition(path[path.length - 1]) : '';
 
-            var hasSourceReserved = creep.room.memory.reservedSources[stringSourcePosition] === creep.memory.framesToSource;
+            var hasSourceReserved = creep.room.memory.reservedSources[stringSourcePosition].frames === creep.memory.framesToSource;
             if (!hasSourceReserved && !creep.memory.knownReservedSources.includes(stringSourcePosition))
             {
                 creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition);

@@ -1,5 +1,4 @@
 var creepUtils = require('creepUtils');
-var roomManager = require('roomManager');
 var creepUtils = require('creepUtils');
 
 function transferEnergy(creep, creepControlInfo) {
