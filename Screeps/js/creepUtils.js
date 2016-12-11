@@ -30,6 +30,10 @@ function positionIsOpen(room, pos)
 
 function collectionPositionWillBeOpen(creep, path, goalPos)
 {
+    if (creep.memory.framesToSource === -1)
+    {
+        return false;
+    }
     var positionObjects = creep.room.lookAt(mapUtils.refreshRoomPosition(goalPos));
     if (positionObjects.length <= 1)
     {
@@ -42,8 +46,8 @@ function collectionPositionWillBeOpen(creep, path, goalPos)
     {
         return true;
     }
-    var framesLeftToMove = pathManager.calculateNumberOfRemaingPathPositions(creep.pos, path);
-    return framesLeftToMove > Game.creeps[myNonMovingCreeps[0].creep.name].memory.harvestFramesLeft;
+
+    return creep.memory.framesToSource > Game.creeps[myNonMovingCreeps[0].creep.name].memory.harvestFramesLeft;
 }
 
 var creepUtils =
@@ -170,8 +174,8 @@ var creepUtils =
                 if (!creep.memory.knownReservedSources.includes(comparableLinkedPosition))
                 {
                     var terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
-                    var reservedPath = terrainPath && collectionPositionWillBeOpen(creep, terrainPath.path, linkedPos) &&
-                        creepUtils.reserve_Source(creep, terrainPath, comparableLinkedPosition);
+                    var reservedPath = terrainPath && creepUtils.reserve_Source(creep, terrainPath, comparableLinkedPosition)
+                                       collectionPositionWillBeOpen(creep, terrainPath.path, linkedPos);
                     if (reservedPath)
                     {
                         return creepUtils.tryMoveByPath(creep, terrainPath.path);
