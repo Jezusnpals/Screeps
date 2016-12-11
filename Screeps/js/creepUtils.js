@@ -76,7 +76,9 @@ var creepUtils =
         {
             creep.room.memory.reservedSources[creep.memory.reservedSourceKey]--;
             creep.memory.framesToSource--;
-        } else {
+        }
+        else
+        {
             creepUtils.resetSavedPathToSource(creep);
         }
     },
@@ -96,6 +98,7 @@ var creepUtils =
         }
         else
         {
+            creepUtils.resetSavedPathToSource(creep, true);
             creep.memory.framesToSource = terrainPathCost;
             creep.room.memory.reservedSources[stringSourcePosition] = terrainPathCost;
             creep.memory.reservedSourceKey = stringSourcePosition;
@@ -203,7 +206,7 @@ var creepUtils =
         
         if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
-            creepUtils.resetSavedPathToSource(creep);
+            creepUtils.resetSavedPathToSource(creep, true);
             moveResults = creepUtils.moveToALinkedHarvestPosition(creep, mappedInfo);
         }
         if (creepUtils.recalculate_path_errors.includes(moveResults))
