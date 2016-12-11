@@ -52,10 +52,29 @@ var creepUtils =
     recalculate_path_errors: [NEXT_POSITION_TAKEN, NO_NEXT_POSITION, NO_PATH, ERR_NOT_FOUND],
     resetSavedPathToSource: function(creep) 
     {
-        creep.room.memory.reservedSources[creep.memory.reservedSourceKey] = null;
+        var hasSourceReserved = creep.memory.reservedSourceKey && creep.room.memory.reservedSources[creep.memory.reservedSourceKey] === creep.memory.framesToSource;
+        if (hasSourceReserved)
+        {
+            creep.room.memory.reservedSources[creep.memory.reservedSourceKey] = null;
+        }
         creep.memory.pathToKey = '';
         creep.memory.framesToSource = -1;
-        creep.memory.reservedSourceKey = ''
+        creep.memory.reservedSourceKey = '';
+    },
+    incrementFramesToSource: function (creep)
+    {
+        if (!creep.memory.reservedSourceKey)
+        {
+            return;
+        }
+        var hasSourceReserved = creep.room.memory.reservedSources[creep.memory.reservedSourceKey] === creep.memory.framesToSource;
+        if (hasSourceReserved)
+        {
+            creep.room.memory.reservedSources[creep.memory.reservedSourceKey]--;
+            creep.memory.framesToSource--;
+        } else {
+            creepUtils.resetSavedPathToSource(creep);
+        }
     },
     reserve_Source: function (creep, terrainPath, stringSourcePosition)
     {
@@ -182,12 +201,6 @@ var creepUtils =
             creepUtils.resetSavedPathToSource(creep);
             creep.moveTo(source.pos);
         }
-
-        if (creep.memory.framesToSource > 0)
-        {
-            creep.room.memory.reservedSources[stringSourcePosition]--;
-            creep.memory.framesToSource--;
-        }
     },
     harvestEnergy: function (creep, mappedInfo)
     {
@@ -204,6 +217,7 @@ var creepUtils =
         {
             creep.memory.isMoving = creep.fatigue === 0;
             creep.memory.harvestFramesLeft = 0;
+            creepUtils.incrementFramesToSource(creep);
             if (creep.memory.isMoving)
             {
                 if (mappedInfo)
@@ -219,6 +233,7 @@ var creepUtils =
         else
         {
             creep.memory.isMoving = false;
+            creepUtils.resetSavedPathToSource(creep);
             if (creep.memory.harvestFramesLeft === 0)
             {
                 creep.memory.harvestFramesLeft = creep.memory.creepInfo.harvestFrames - 1; //counts the current frame as a harvest frame
@@ -231,7 +246,6 @@ var creepUtils =
     },
     moveToStructureByMappedInfo: function (creep, structure, mappedInfo)
     {
-        creepUtils.resetSavedPathToSource(creep);
         if (!creep.memory.pathFromKey)
         {
             creep.memory.pathFromKey = pathManager.getKey(creep.pos, structure.pos);
