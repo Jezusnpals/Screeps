@@ -52,6 +52,9 @@ var creepUtils =
     recalculate_path_errors: [NEXT_POSITION_TAKEN, NO_NEXT_POSITION, NO_PATH, ERR_NOT_FOUND],
     reserve_Source: function (creep, terrainPath, stringSourcePosition)
     {
+        if (!terrainPath) {
+            return false;
+        }
         var terrainPathCost = pathManager.calculateTerrainPathCostToSource(terrainPath);
         if (creep.room.memory.reservedSources[stringSourcePosition] && creep.room.memory.reservedSources[stringSourcePosition] < terrainPathCost)
         {
@@ -145,9 +148,11 @@ var creepUtils =
             stringSourcePosition = terrainPath ? mapUtils.getComparableRoomPosition(path[path.length - 1]) : '';
 
             var hasSourceReserved = creep.room.memory.reservedSources[stringSourcePosition] === creep.memory.framesToSource;
-            if (!hasSourceReserved) {
+            if (!hasSourceReserved && terrainPath)
+            {
                 hasSourceReserved = creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition);
-                if (!hasSourceReserved) {
+                if (!hasSourceReserved)
+                {
                     creep.memory.pathToKey = '';
                     creep.memory.framesToSource = -1;
                 }
