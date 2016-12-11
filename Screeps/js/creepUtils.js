@@ -28,7 +28,7 @@ function positionIsOpen(room, pos)
     return true;
 }
 
-function collectionPositionWillBeOpen(creep, path, goalPos)
+function collectionPositionWillBeOpen(creep, goalPos)
 {
     if (creep.memory.framesToSource === -1)
     {
@@ -175,7 +175,7 @@ var creepUtils =
                 {
                     var terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
                     var reservedPath = terrainPath && creepUtils.reserve_Source(creep, terrainPath, comparableLinkedPosition)
-                                       collectionPositionWillBeOpen(creep, terrainPath.path, linkedPos);
+                                       collectionPositionWillBeOpen(creep, linkedPos);
                     if (reservedPath)
                     {
                         return creepUtils.tryMoveByPath(creep, terrainPath.path);
@@ -208,8 +208,8 @@ var creepUtils =
             }
         }
 
-        var canUseSavedPath = creep.memory.pathToKey &&
-                              collectionPositionWillBeOpen(creep, path, mappedInfo.collectionPosition);
+        var canUseSavedPath = creep.memory.pathToKey && path &&
+                              collectionPositionWillBeOpen(creep, mappedInfo.collectionPosition);
         var moveResults = NO_PATH;
 
         if (canUseSavedPath) 
