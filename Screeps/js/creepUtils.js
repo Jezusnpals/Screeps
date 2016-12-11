@@ -160,7 +160,7 @@ var creepUtils =
                     {
                         creep.memory.knownReservedSources.push(stringCollectionPosition);
                     }
-                    return pathToLinkedHarvestPosition(creep, mappedInfo); //try again without this goal position
+                    return creepUtils.pathToLinkedHarvestPosition(creep, mappedInfo); //try again without this goal position
                 }
             }
         }
