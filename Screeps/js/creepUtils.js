@@ -94,26 +94,26 @@ var creepUtils =
             creepUtils.resetSavedPathToSource(creep);
         }
     },
-    reserve_Source: function (creep, terrainPath, stringSourcePosition)
+    reserve_Source: function (creep, terrainPath, stringCollectionPosition)
     {
         if (!terrainPath)
         {
-            creep.memory.knownReservedSources.push(stringSourcePosition);
+            creep.memory.knownReservedSources.push(stringCollectionPosition);
             return false;
         }
         var terrainPathCost = pathManager.calculateTerrainPathCostToSource(terrainPath, creep.memory.creepInfo);
-        if (creep.room.memory.reservedSources[stringSourcePosition] && creep.room.memory.reservedSources[stringSourcePosition].frames < terrainPathCost)
+        if (creep.room.memory.reservedSources[stringCollectionPosition] && creep.room.memory.reservedSources[stringCollectionPosition].frames < terrainPathCost)
         {
             creepUtils.resetSavedPathToSource(creep, true);
-            creep.memory.knownReservedSources.push(stringSourcePosition);
+            creep.memory.knownReservedSources.push(stringCollectionPosition);
             return false;
         }
         else
         {
             creepUtils.resetReservedSource(creep);
             creep.memory.framesToSource = terrainPathCost;
-            creep.room.memory.reservedSources[stringSourcePosition] = {frames: terrainPathCost, name: creep.name};
-            creep.memory.reservedSourceKey = stringSourcePosition;
+            creep.room.memory.reservedSources[stringCollectionPosition] = {frames: terrainPathCost, name: creep.name};
+            creep.memory.reservedSourceKey = stringCollectionPosition;
             return true;
         }
     },
@@ -133,9 +133,6 @@ var creepUtils =
     },
     pathToLinkedHarvestPosition: function(creep, mappedInfo)
     {
-        var otherNonMovingCreepPositions = Object.keys(Game.creeps).map(function (key) {
-            return Game.creeps[key];
-        }).filter(c => c.id != creep.id && !c.memory.isMoving).map(c => c.pos);
 
         var goalPositions = mappedInfo.linkedCollectionPositions.concat(mappedInfo.collectionPosition)
                                       .filter(pos => !creep.memory.knownReservedSources.includes(mapUtils.getComparableRoomPosition(pos)));
@@ -144,7 +141,7 @@ var creepUtils =
             return ALL_PATHS_RESERVED;
         }
         var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos,
-                                          mapUtils.refreshRoomPositionArray(goalPositions), otherNonMovingCreepPositions, [], 50);
+                                          mapUtils.refreshRoomPositionArray(goalPositions), [], [], 50);
         if (!pathToLinkedHarvestPosition.incomplete && pathToLinkedHarvestPosition.path.length > 0)
         {
             var pathWithStartPosition = pathToLinkedHarvestPosition.path;
@@ -153,9 +150,16 @@ var creepUtils =
             var terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
             if (terrainPath)
             {
-                var stringSourcePosition = mapUtils.getComparableRoomPosition(terrainPath.path[terrainPath.path.length - 1]);
-                if (!creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition) && goalPositions.includes(stringSourcePosition))
+                var collectionPosition = terrainPath.path[terrainPath.path.length - 1];
+                var stringCollectionPosition = mapUtils.getComparableRoomPosition(collectionPosition);
+                if ( (!creepUtils.reserve_Source(creep, terrainPath, stringCollectionPosition) ||
+                     !collectionPositionWillBeOpen(creep, collectionPosition) ) &&
+                     goalPositions.map(gp => mapUtils.getComparableRoomPosition(gp)).includes(stringCollectionPosition))
                 {
+                    if (!creep.memory.knownReservedSources.includes(stringCollectionPosition))
+                    {
+                        creep.memory.knownReservedSources.push(stringCollectionPosition);
+                    }
                     return pathToLinkedHarvestPosition(creep, mappedInfo); //try again without this goal position
                 }
             }
@@ -189,7 +193,7 @@ var creepUtils =
     {
         var terrainPath;
         var path = [];
-        var stringSourcePosition = '';
+        var stringCollectionPosition = '';
         if (!creep.memory.pathToKey)
         {
             creep.memory.pathToKey = pathManager.getKey(creep.pos, mappedInfo.collectionPosition);
@@ -198,13 +202,13 @@ var creepUtils =
         {
             terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
             path = terrainPath ? terrainPath.path : [];
-            stringSourcePosition = terrainPath ? mapUtils.getComparableRoomPosition(path[path.length - 1]) : '';
+            stringCollectionPosition = terrainPath ? mapUtils.getComparableRoomPosition(path[path.length - 1]) : '';
 
-            var hasSourceReserved = creep.room.memory.reservedSources[stringSourcePosition] &&
-                                    creep.room.memory.reservedSources[stringSourcePosition].frames === creep.memory.framesToSource;
-            if (!hasSourceReserved && !creep.memory.knownReservedSources.includes(stringSourcePosition))
+            var hasSourceReserved = creep.room.memory.reservedSources[stringCollectionPosition] &&
+                                    creep.room.memory.reservedSources[stringCollectionPosition].frames === creep.memory.framesToSource;
+            if (!hasSourceReserved && !creep.memory.knownReservedSources.includes(stringCollectionPosition))
             {
-                creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition);
+                creepUtils.reserve_Source(creep, terrainPath, stringCollectionPosition);
             }
         }
 
