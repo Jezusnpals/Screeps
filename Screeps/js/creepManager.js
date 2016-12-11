@@ -147,6 +147,7 @@ var creepManager =
                         room.memory.reservedSources[sourceStringPosition].frames)
                     {
                         creepUtils.resetSavedPathToSource(creep);
+                        room.memory.reservedSources[sourceStringPosition] = null;
                     }
                 }
                 else
