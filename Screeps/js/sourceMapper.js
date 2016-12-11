@@ -10,7 +10,7 @@ var sourceMapper = {
         var possiblePositions = mapUtils.getAdjacentRoomPositions(originalSource.pos);
         for (var index in possiblePositions) {
             if (mapUtils.isWalkableTerrain(possiblePositions[index])) {
-                collectionPositions.push(possiblePositions[index])
+                collectionPositions.push(possiblePositions[index]);
             }
         }
         mappedSource.collectionPositionInfos = [];

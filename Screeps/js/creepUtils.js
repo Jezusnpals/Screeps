@@ -145,7 +145,6 @@ var creepUtils =
                                                             !comparableGoalPositions.includes(mapUtils.getComparableRoomPosition(c.pos)))
                                            .map(c => c.pos);
         
-
         if (goalPositions.length === 0)
         {
             return ALL_PATHS_RESERVED;
@@ -209,19 +208,27 @@ var creepUtils =
         if (creep.memory.pathToKey)
         {
             terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
-            path = terrainPath ? terrainPath.path : [];
-            stringCollectionPosition = terrainPath ? mapUtils.getComparableRoomPosition(path[path.length - 1]) : '';
-
-            var hasSourceReserved = creep.room.memory.reservedSources[stringCollectionPosition] &&
-                                    creep.room.memory.reservedSources[stringCollectionPosition].frames === creep.memory.framesToSource;
-            if (!hasSourceReserved && !creep.memory.knownReservedSources.includes(stringCollectionPosition))
+            if (terrainPath)
             {
-                creepUtils.reserve_Source(creep, terrainPath, stringCollectionPosition);
-            }
-        }
+                path =  terrainPath.path;
+                stringCollectionPosition = mapUtils.getComparableRoomPosition(path[path.length - 1]);
 
-        var goalPosition = path ? path[path.length - 1] : mappedInfo.collectionPosition;
-        var canUseSavedPath = creep.memory.pathToKey &&
+                var hasSourceReserved = creep.room.memory.reservedSources[stringCollectionPosition] &&
+                                        creep.room.memory.reservedSources[stringCollectionPosition].frames === creep.memory.framesToSource;
+                if (!hasSourceReserved && !creep.memory.knownReservedSources.includes(stringCollectionPosition))
+                {
+                    creepUtils.reserve_Source(creep, terrainPath, stringCollectionPosition);
+                }
+            }
+            else
+            {
+                creepUtils.resetSavedPathToSource(creep);
+            }
+            
+        }
+        var validPath = path && path.length > 0;
+        var goalPosition = validPath ? path[path.length - 1] : null;
+        var canUseSavedPath = validPath && creep.memory.pathToKey &&
                               collectionPositionWillBeOpen(creep, goalPosition);
         var moveResults = NO_PATH;
 
