@@ -55,7 +55,7 @@ var creepUtils =
         if (!terrainPath) {
             return false;
         }
-        var terrainPathCost = pathManager.calculateTerrainPathCostToSource(terrainPath, creep.creepInfo);
+        var terrainPathCost = pathManager.calculateTerrainPathCostToSource(terrainPath, creep.memory.creepInfo);
         if (creep.room.memory.reservedSources[stringSourcePosition] && creep.room.memory.reservedSources[stringSourcePosition] < terrainPathCost)
         {
             creep.memory.pathToKey = '';
