@@ -88,7 +88,7 @@ var pathManager =
     calculateTerrainPathCostToSource: function (terrainPath, creepInfo)
     {
         return (terrainPath.swampsCount * creepInfo.moveToSourceOnSwampRate) +
-            (terrainPath.plainsCount * creepInfo.moveToSourceOnSwampRate);
+            (terrainPath.plainsCount * creepInfo.moveToSourceOnPlainRate);
     },
     calculateTerrainPathCostFromSource: function (terrainPath, creepInfo)
     {

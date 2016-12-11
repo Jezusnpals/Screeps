@@ -50,22 +50,31 @@ var creepUtils =
 {
     
     recalculate_path_errors: [NEXT_POSITION_TAKEN, NO_NEXT_POSITION, NO_PATH, ERR_NOT_FOUND],
+    resetSavedPathToSource: function(creep) 
+    {
+        creep.room.memory.reservedSources[creep.memory.reservedSourceKey] = null;
+        creep.memory.pathToKey = '';
+        creep.memory.framesToSource = -1;
+        creep.memory.reservedSourceKey = ''
+    },
     reserve_Source: function (creep, terrainPath, stringSourcePosition)
     {
-        if (!terrainPath) {
+        if (!terrainPath)
+        {
+            creepUtils.resetSavedPathToSource(creep);
             return false;
         }
         var terrainPathCost = pathManager.calculateTerrainPathCostToSource(terrainPath, creep.memory.creepInfo);
         if (creep.room.memory.reservedSources[stringSourcePosition] && creep.room.memory.reservedSources[stringSourcePosition] < terrainPathCost)
         {
-            creep.memory.pathToKey = '';
-            creep.memory.framesToSource = -1;
+            creepUtils.resetSavedPathToSource(creep);
             return false;
         }
         else
         {
             creep.memory.framesToSource = terrainPathCost;
             creep.room.memory.reservedSources[stringSourcePosition] = terrainPathCost;
+            creep.memory.reservedSourceKey = stringSourcePosition;
             return true;
         }
     },
@@ -107,8 +116,7 @@ var creepUtils =
             
             if (!reservedSource)
             {
-                creep.memory.pathToKey = '';
-                creep.memory.framesToSource = -1;
+                creepUtils.resetSavedPathToSource(creep);
             }
         }
 
@@ -148,14 +156,9 @@ var creepUtils =
             stringSourcePosition = terrainPath ? mapUtils.getComparableRoomPosition(path[path.length - 1]) : '';
 
             var hasSourceReserved = creep.room.memory.reservedSources[stringSourcePosition] === creep.memory.framesToSource;
-            if (!hasSourceReserved && terrainPath)
+            if (!hasSourceReserved)
             {
-                hasSourceReserved = creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition);
-                if (!hasSourceReserved)
-                {
-                    creep.memory.pathToKey = '';
-                    creep.memory.framesToSource = -1;
-                }
+                creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition);
             }
         }
         
@@ -171,14 +174,12 @@ var creepUtils =
         
         if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
-            creep.room.memory.reservedSources[stringSourcePosition] = null;
-            creep.memory.pathToKey = '';
+            creepUtils.resetSavedPathToSource(creep);
             moveResults = creepUtils.moveToALinkedHarvestPosition(creep, mappedInfo);
         }
         if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
-            creep.room.memory.reservedSources[stringSourcePosition] = null;
-            creep.memory.pathToKey = '';
+            creepUtils.resetSavedPathToSource(creep);
             creep.moveTo(source.pos);
         }
 
@@ -230,7 +231,7 @@ var creepUtils =
     },
     moveToStructureByMappedInfo: function (creep, structure, mappedInfo)
     {
-        creep.memory.pathToKey = '';
+        creepUtils.resetSavedPathToSource(creep);
         if (!creep.memory.pathFromKey)
         {
             creep.memory.pathFromKey = pathManager.getKey(creep.pos, structure.pos);
