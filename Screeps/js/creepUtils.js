@@ -133,15 +133,21 @@ var creepUtils =
     },
     pathToLinkedHarvestPosition: function(creep, mappedInfo)
     {
+        var goalPositions = mappedInfo.linkedCollectionPositions.concat(mappedInfo.collectionPosition);
+        goalPositions = goalPositions.filter(pos => !creep.memory.knownReservedSources.includes(mapUtils.getComparableRoomPosition(pos)));
+        var comparableGoalPositions = goalPositions.map(gp => mapUtils.getComparableRoomPosition(gp));;
+        var allCreeps = Object.keys(Game.creeps).map(key => Game.creeps[key]);
+        var nonGoalNonMovingCreepPositions = allCreeps.filter(c => c.id !== creep.id && !c.memory.isMoving &&
+                                                            !comparableGoalPositions.includes(mapUtils.getComparableRoomPosition(c.pos)))
+                                           .map(c => c.pos);
+        
 
-        var goalPositions = mappedInfo.linkedCollectionPositions.concat(mappedInfo.collectionPosition)
-                                      .filter(pos => !creep.memory.knownReservedSources.includes(mapUtils.getComparableRoomPosition(pos)));
         if (goalPositions.length === 0)
         {
             return ALL_PATHS_RESERVED;
         }
         var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos,
-                                          mapUtils.refreshRoomPositionArray(goalPositions), [], [], 50);
+                                          mapUtils.refreshRoomPositionArray(goalPositions), nonGoalNonMovingCreepPositions, [], 50);
         if (!pathToLinkedHarvestPosition.incomplete && pathToLinkedHarvestPosition.path.length > 0)
         {
             var pathWithStartPosition = pathToLinkedHarvestPosition.path;
@@ -154,7 +160,7 @@ var creepUtils =
                 var stringCollectionPosition = mapUtils.getComparableRoomPosition(collectionPosition);
                 if ( (!creepUtils.reserve_Source(creep, terrainPath, stringCollectionPosition) ||
                      !collectionPositionWillBeOpen(creep, collectionPosition) ) &&
-                     goalPositions.map(gp => mapUtils.getComparableRoomPosition(gp)).includes(stringCollectionPosition))
+                     comparableGoalPositions.includes(stringCollectionPosition))
                 {
                     if (!creep.memory.knownReservedSources.includes(stringCollectionPosition))
                     {
@@ -212,8 +218,9 @@ var creepUtils =
             }
         }
 
-        var canUseSavedPath = creep.memory.pathToKey && path &&
-                              collectionPositionWillBeOpen(creep, mappedInfo.collectionPosition);
+        var goalPosition = path ? path[path.length - 1] : mappedInfo.collectionPosition;
+        var canUseSavedPath = creep.memory.pathToKey &&
+                              collectionPositionWillBeOpen(creep, goalPosition);
         var moveResults = NO_PATH;
 
         if (canUseSavedPath) 

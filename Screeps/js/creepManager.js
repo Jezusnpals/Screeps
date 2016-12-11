@@ -136,23 +136,26 @@ var creepManager =
     },
     resetReservedSources: function (room)
     {
-        Object.keys(room.memory.reservedSources).forEach(function(sourceStringPosition)
+        Object.keys(room.memory.reservedSources).forEach(function(stringCollectionPosition)
         {
-            if (room.memory.reservedSources[sourceStringPosition])
+            if (room.memory.reservedSources[stringCollectionPosition])
             {
-                var creep = Game.creeps[room.memory.reservedSources[sourceStringPosition].name];
+                var creep = Game.creeps[room.memory.reservedSources[stringCollectionPosition].name];
                 if (creep)
                 {
                     if (creep.memory.framesToSource !==
-                        room.memory.reservedSources[sourceStringPosition].frames)
+                        room.memory.reservedSources[stringCollectionPosition].frames)
                     {
-                        creepUtils.resetSavedPathToSource(creep);
-                        room.memory.reservedSources[sourceStringPosition] = null;
+                        if (creep.memory.reservedSourceKey === stringCollectionPosition)
+                        {
+                            creepUtils.resetSavedPathToSource(creep);
+                        }
+
+                        room.memory.reservedSources[stringCollectionPosition] = null;
                     }
-                }
-                else
-                {
-                    room.memory.reservedSources[sourceStringPosition] = null;
+                } else {
+                    room
+                        .memory.reservedSources[stringCollectionPosition] = null;
                 }
             }
         });
