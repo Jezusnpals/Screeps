@@ -95,8 +95,13 @@ var creepUtils =
             pathWithStartPosition.unshift(creep.pos);
             creep.memory.pathToKey = pathManager.addPath(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
             var terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
-            var stringSourcePosition = mapUtils.getComparableRoomPosition(terrainPath.path[terrainPath.path.length - 1]);
-            var reservedSource = creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition);
+            var reservedSource = false;
+            if (terrainPath)
+            {
+                var stringSourcePosition = mapUtils.getComparableRoomPosition(terrainPath.path[terrainPath.path.length - 1]);
+                reservedSource = creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition);
+            }
+            
             if (!reservedSource)
             {
                 creep.memory.pathToKey = '';
@@ -114,7 +119,7 @@ var creepUtils =
             if (creep.memory.pathToKey)
             {
                 var terrainPath = pathManager.terrainPath(creep.memory.pathToKey);
-                var reservedPath = collectionPositionWillBeOpen(creep, terrainPath.path, linkedPos) &&
+                var reservedPath = terrainPath && collectionPositionWillBeOpen(creep, terrainPath.path, linkedPos) &&
                     creepUtils.reserve_Source(creep, terrainPath, mapUtils.getComparableRoomPosition(linkedPos));
                 if (reservedPath)
                 {
@@ -127,26 +132,28 @@ var creepUtils =
     moveToSourceByMappedInfo: function (creep, source, mappedInfo)
     {
         var terrainPath;
-        var path;
-        var stringSourcePosition;
+        var path = [];
+        var stringSourcePosition = '';
         if (!creep.memory.pathToKey)
         {
             creep.memory.pathToKey = pathManager.getKey(creep.pos, mappedInfo.collectionPosition);
         }
-        terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
-        path = terrainPath.path;
-        stringSourcePosition = mapUtils.getComparableRoomPosition(path[path.length - 1]);
-
-        var hasSourceReserved = creep.room.memory.reservedSources[stringSourcePosition] === creep.memory.framesToSource;
-        if (!hasSourceReserved)
+        if (creep.memory.pathToKey)
         {
-            hasSourceReserved = creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition);
-            if (!hasSourceReserved)
-            {
-                creep.memory.pathToKey = '';
-                creep.memory.framesToSource = -1;
+            terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
+            path = terrainPath ? terrainPath.path : [];
+            stringSourcePosition = terrainPath ? mapUtils.getComparableRoomPosition(path[path.length - 1]) : '';
+
+            var hasSourceReserved = creep.room.memory.reservedSources[stringSourcePosition] === creep.memory.framesToSource;
+            if (!hasSourceReserved) {
+                hasSourceReserved = creepUtils.reserve_Source(creep, terrainPath, stringSourcePosition);
+                if (!hasSourceReserved) {
+                    creep.memory.pathToKey = '';
+                    creep.memory.framesToSource = -1;
+                }
             }
         }
+        
 
         var canUseSavedPath = creep.memory.pathToKey &&
                               collectionPositionWillBeOpen(creep, path, mappedInfo.collectionPosition);
