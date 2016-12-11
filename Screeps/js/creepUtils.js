@@ -121,7 +121,7 @@ var creepUtils =
             creep.memory.pathToKey = pathManager.getKey(creep.pos, linkedPos);
             if (creep.memory.pathToKey)
             {
-                var terrainPath = pathManager.terrainPath(creep.memory.pathToKey);
+                var terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
                 var reservedPath = terrainPath && collectionPositionWillBeOpen(creep, terrainPath.path, linkedPos) &&
                     creepUtils.reserve_Source(creep, terrainPath, mapUtils.getComparableRoomPosition(linkedPos));
                 if (reservedPath)
