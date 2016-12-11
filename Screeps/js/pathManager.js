@@ -49,7 +49,7 @@ var pathManager =
         if (Memory.pathManager.terrainPathDictonary[key]) 
         {
             Memory.pathManager.terrainPathDictonary[key].path = mapUtils.refreshRoomPositionArray(Memory.pathManager.terrainPathDictonary[key].path);
-            return Memory.pathManager.terrainPathDictonary[key].path;
+            return Memory.pathManager.terrainPathDictonary[key];
         }
         else
         {
