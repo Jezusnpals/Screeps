@@ -77,6 +77,7 @@ var creepUtils =
         if (!creep.room.memory.reservedSources[creep.memory.reservedSourceKey])
         {
             creepUtils.resetSavedPathToSource(creep);
+            return;
         }
         var hasSourceReserved = creep.room.memory.reservedSources[creep.memory.reservedSourceKey].frames === creep.memory.framesToSource;
         if (hasSourceReserved)
