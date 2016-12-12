@@ -85,8 +85,10 @@ var roomManager =
     },
     cleanUp: function(room, deadCreepNames)
     {
-        deadCreepNames.forEach(function(name, i)
-        {
+        deadCreepNames.forEach(function(name, i) {
+            var reservedKeysOfDead = Object.keys(room.memory.reservedSources)
+                .filter(key => room.memory.reservedSources[key].name === name);
+            reservedKeysOfDead.forEach(key => room.memory.reservedSources[key] = null);
             if (Memory.creeps[name].harvestInfoIndex)
             {
                 var nameIndex = room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex].creepNames.indexOf(name);
