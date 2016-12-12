@@ -87,7 +87,7 @@ var roomManager =
     {
         deadCreepNames.forEach(function(name, i) {
             var reservedKeysOfDead = Object.keys(room.memory.reservedSources)
-                .filter(key => room.memory.reservedSources[key].name === name);
+                .filter(key => room.memory.reservedSources[key] && room.memory.reservedSources[key].name === name);
             reservedKeysOfDead.forEach(key => room.memory.reservedSources[key] = null);
             if (Memory.creeps[name].harvestInfoIndex)
             {
