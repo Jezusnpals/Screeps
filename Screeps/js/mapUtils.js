@@ -79,7 +79,20 @@ var mapUtils = {
         var mappedFilterPositions = this.mapRoomPositionArray(filterPositions);
         return originalPositions.filter(pos => mappedFilterPositions.indexOf(mapUtils.getComparableRoomPosition(pos)) < 0);
     },
-    refreshRoomPosition: function (pos) {
+    refreshRoomPosition: function (pos)
+    {
+        if (!pos.roomName)
+        {
+            var possibleRoomName = Object.keys(pos).filter(key => key.includes('room'));
+            if (possibleRoomName.length === 1)
+            {
+                return new RoomPosition(pos.x, pos.y, pos[possibleRoomName[0]]);
+            }
+            else
+            {
+                return new RoomPosition(pos.x, pos.y, '');
+            }
+        }
         return new RoomPosition(pos.x, pos.y, pos.roomName);
     },
     refreshRoomPositionArray: function (positions)
