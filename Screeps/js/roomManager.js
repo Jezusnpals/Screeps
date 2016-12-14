@@ -126,7 +126,7 @@ var roomManager =
             room.memory.addedFirstExtension = roomManager.addExtensionInfo(room);
         }
 
-        completePendingExtensionInfos(room);
+        roomManager.completePendingExtensionInfos(room);
 
         creepManager.run(room, room.memory.finishedMapping);
 
