@@ -103,7 +103,7 @@ var roomManager =
 
         if (!room.memory.addedFirstExtension && room.memory.finishedMapping && room.controller.level > 0)
         {
-            room.memory.addedFirstExtension = addExtensionInfo(room);
+            room.memory.addedFirstExtension = roomManager.addExtensionInfo(room);
         }
 
         creepManager.run(room, room.memory.finishedMapping);
