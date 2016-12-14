@@ -16,7 +16,7 @@ var roomManager =
         room.memory.controlInfos = [];
         room.memory.buildingInfos = [];
         room.memory.reservedSources = {};
-        room.memory.extensionsNumber = 0;
+        room.memory.extensionsCount = 0;
 
         var sources = room.find(FIND_SOURCES);
         for (var index in sources)
@@ -36,7 +36,7 @@ var roomManager =
     addExtensionInfo: function (room)
     {
         var maxExtensions = room.controller.level * 5;
-        if (extensionsNumber + 1 > maxExtensions)
+        if (room.memory.extensionsCount + 1 > maxExtensions)
             return false;
         var extensionInfo = creepManager.calculateNextExtensionInfo(room);
         var constructionSiteResult = room.createConstructionSite(extensionInfo.extensionPosition, STRUCTURE_EXTENSION);
