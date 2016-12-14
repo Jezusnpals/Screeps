@@ -38,6 +38,8 @@ var roomManager =
         if (room.memory.extensionsCount + 1 > maxExtensions)
             return false;
         var extensionInfo = creepManager.calculateNextExtensionInfo(room);
+        if (!extensionInfo)
+            return false;
         var constructionSiteResult = room.createConstructionSite(extensionInfo.extensionPosition, STRUCTURE_EXTENSION);
         if (constructionSiteResult === OK)
         {

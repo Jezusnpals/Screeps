@@ -14,9 +14,10 @@ var extensionMapper = {
         possibleExtensionPositions = mapUtils.filterPositionsFromArray(possibleExtensionPositions, relatedPathPositions);
         var currentLowestCost = -1;
         var currentBestPosition = null;
-        possibleExtensionPositions.forEach(function (pos)
-        {
-            var pathResults = mapUtils.findPath(collectionPositionInfo.originalPos, pos, [], [], 200);
+        var refreshedOriginalPos = mapUtils.refreshRoomPosition(collectionPositionInfo.originalPos);
+        possibleExtensionPositions.forEach(function (pos) {
+           
+            var pathResults = mapUtils.findPath(refreshedOriginalPos, pos, [], [], 200);
             if(!pathResults.incomplete && (currentLowestCost === -1 ||pathResults.cost < currentLowestCost)) 
             {
                 currentLowestCost = pathResults.cost;
