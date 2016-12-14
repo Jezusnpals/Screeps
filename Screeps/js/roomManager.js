@@ -14,6 +14,7 @@ var roomManager =
         room.memory.harvestInfos = [];
         room.memory.controlInfos = [];
         room.memory.buildingInfos = [];
+        room.memory.pendingExtensionInfos = [];
         room.memory.reservedSources = {};
         room.memory.extensionsCount = 0;
 
@@ -32,30 +33,48 @@ var roomManager =
 
         creepManager.initialize(room, room.memory.mappedSources);
     },
-    addExtensionInfo: function (room)
+    completePendingExtensionInfos: function(room) 
     {
-        var maxExtensions = (room.controller.level-1) * 5;
-        if (room.memory.extensionsCount + 1 > maxExtensions)
-            return false;
-        var extensionInfo = creepManager.calculateNextExtensionInfo(room);
-        if (!extensionInfo)
-            return false;
-        var constructionSiteResult = room.createConstructionSite(extensionInfo.extensionPosition, STRUCTURE_EXTENSION);
-        if (constructionSiteResult === OK)
+        for(let i = 0; i < room.memory.pendingExtensionInfos.length; i++) 
         {
+            var pendingExtensionInfo = room.memory.pendingExtensionInfos[i];
             var extensions = room.find(FIND_MY_STRUCTURES, {
                 filter: { structureType: STRUCTURE_EXTENSION }
             });
             var currentExtension = extensions.filter(e => mapUtils.getComparableRoomPosition(e.pos) ==
-                mapUtils.getComparableRoomPosition(extensionInfo.extensionPosition));
+                mapUtils.getComparableRoomPosition(pendingExtensionInfo.extensionPosition));
             currentExtension = currentExtension.length === 1 ? currentExtension[0] : null;
             if (currentExtension)
             {
-                extensionInfo.strucutreId = currentExtension.id;
-                buildingInfos.push(extensionInfo);
-                return true;
+                pendingExtensionInfo.strucutreId = currentExtension.id;
+                buildingInfos.push(pendingExtensionInfo);
+                room.memory.pendingExtensionInfos.splice(i, 1);
+                i--;
             }
+        };
+    },
+    addExtensionInfo: function (room)
+    {
+        var maxExtensions = (room.controller.level-1) * 5;
+        if (room.memory.extensionsCount + 1 > maxExtensions) 
+        {
+            return false;
         }
+            
+        var extensionInfo = creepManager.calculateNextExtensionInfo(room);
+        if (!extensionInfo) 
+        {
+            return false;
+        }
+           
+        var constructionSiteResult = room.createConstructionSite(extensionInfo.extensionPosition, STRUCTURE_EXTENSION);
+
+        if (constructionSiteResult === OK)
+        {
+            room.memory.pendingExtensionInfos.push(extensionInfo);
+            return true;
+        }
+
         return false;
     },
     mapInfos: function(room, spawns)
@@ -106,6 +125,8 @@ var roomManager =
         {
             room.memory.addedFirstExtension = roomManager.addExtensionInfo(room);
         }
+
+        completePendingExtensionInfos(room);
 
         creepManager.run(room, room.memory.finishedMapping);
 
