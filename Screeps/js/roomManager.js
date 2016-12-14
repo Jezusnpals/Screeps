@@ -40,6 +40,8 @@ var roomManager =
             var pendingExtensionInfo = room.memory.pendingExtensionInfos[i];
             var refreshExtensionPosition = mapUtils.refreshRoomPosition(pendingExtensionInfo.extensionPosition);
             var extensionConstructionSite = room.lookAt(refreshExtensionPosition).filter(e => e.type === 'constructionSite')[0];
+            if (!extensionConstructionSite)
+                continue;
             var currentExtensionId = extensionConstructionSite.constructionSite ? extensionConstructionSite.constructionSite.id : null;
             if (currentExtensionId)
             {
