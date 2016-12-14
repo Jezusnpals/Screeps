@@ -19,7 +19,7 @@ var extensionMapper = {
             var pathResults = mapUtils.findPath(collectionPositionInfo.originalPos, pos, [], [], 200);
             if(!pathResults.incomplete && (currentLowestCost === -1 ||pathResults.cost < currentLowestCost)) 
             {
-                currentLowestCost = cost;
+                currentLowestCost = pathResults.cost;
                 currentBestPosition = pos;
             }
         });
@@ -35,4 +35,4 @@ var extensionMapper = {
     }
 };
 
-module.exports = sourceMapper;
+module.exports = extensionMapper;

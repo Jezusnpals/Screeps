@@ -3,7 +3,7 @@ var sourceMapper = require('sourceMapper');
 var spawnMapper = require('spawnMapper');
 var controlMapper = require('controlMapper');
 var creepManager = require('creepManager');
-var infoMapper = require('infoMapper');
+var extensionMapper = require('extensionMapper');
 var infoEnum = require('infoEnum');
 
 var roomManager =
@@ -14,6 +14,7 @@ var roomManager =
         room.memory.mappedSources = [];
         room.memory.harvestInfos = [];
         room.memory.controlInfos = [];
+        room.memory.extensionInfos = [];
         room.memory.reservedSources = {};
 
         var sources = room.find(FIND_SOURCES);
@@ -28,6 +29,43 @@ var roomManager =
         room.memory.currentMappingType = infoEnum.SPAWN;
 
         creepManager.initialize(room, room.memory.mappedSources);
+    },
+    mapExtensionInfos: function(room) {
+        var possibleCollectionPositionInfos = room.memory.mappedSources.map(s => s.collectionPositionInfos).reduce((c1, c2) => c1.concat(c2));
+        var currentExtensionComparablePositions = room.memory.extensionInfos.map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
+        possibleCollectionPositionInfos = possibleCollectionPositionInfos.filter(pes => !currentExtensionComparablePositions
+                                                                         .includes(mapUtils.getComparableRoomPosition(pes.originalPos)));
+        var collectionPositionCosts = possibleCollectionPositionInfos.map(function(collectionPositionInfo) {
+            var comparableCollectionPosition = mapUtils.getComparableRoomPosition(collectionPositionInfo.originalPos);
+            var relatedHarvestInfo = room.memory.harvestInfos
+                .filter(hi => mapUtils
+                    .getComparableRoomPosition(hi.collectionPosition) ===
+                    comparableCollectionPosition);
+            var harvestCost = relatedHarvestInfo.length === 1 ? relatedHarvestInfo[0].costTo : 0;
+            var relatedControlInfo = room.memory.controlInfos
+                .filter(ci => mapUtils
+                    .getComparableRoomPosition(ci.collectionPosition) ===
+                    comparableCollectionPosition);
+            var controlCost = relatedControlInfo.length === 1 ? relatedControlInfo[0].costTo : 0;
+            return harvestCost + controlCost;
+        });
+
+        var bestExtensionPositionInfo = null;
+        var highestCost = -1;
+        
+        for (let i = 0; i < possibleCollectionPositionInfos.length && i < collectionPositionCosts.length; i++)
+        {
+            if (collectionPositionCosts[i] > highestCost) {
+                bestExtensionPositionInfo = possibleCollectionPositionInfos[i];
+                highestCost = collectionPositionCosts[i];
+            }
+        }
+
+        if (!bestExtensionPositionInfo) {
+            return null;
+        }
+
+        return extensionMapper.mapExtension(bestExtensionPositionInfo, bestExtensionPositionInfo.sourceId);
     },
     mapInfos: function(room, spawns)
     {

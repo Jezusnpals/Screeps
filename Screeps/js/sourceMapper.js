@@ -32,7 +32,8 @@ var sourceMapper = {
 
             mappedSource.collectionPositionInfos.push({
                 originalPos: originalPos,
-                linkedCollectionPositions: linkedCollectionPositions
+                linkedCollectionPositions: linkedCollectionPositions,
+                sourceId: originalSource.id
             });
         });
 
