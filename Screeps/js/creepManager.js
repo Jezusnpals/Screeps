@@ -68,21 +68,60 @@ var creepManager =
         var moveFromSourceOnSwampRate = Math.ceil(swamp * (numberOfWeightBodyParts + numberOfCarryParts) / numberOfMoveParts);
 
         var numberOfWorkParts = creepBodies.filter(cb => cb === WORK).length;
+        var buildRate = (structureRatePerWork * numberOfWorkParts);
         var maxCarryAmount = (resourcesPerCarry * numberOfCarryParts);
         var harvestFrames = Math.ceil(maxCarryAmount / (harvestRatePerWork * numberOfWorkParts));
-        var buildFrames = Math.ceil(maxCarryAmount / (structureRatePerWork * numberOfWorkParts));
+        var buildFrames = Math.ceil(maxCarryAmount / buildRate);
         var upgradeFrames = Math.ceil(maxCarryAmount / (upgradeRatePerWork * numberOfWorkParts));
 
         return  {
             harvestFrames: harvestFrames,
             buildFrames: buildFrames,
             upgradeFrames: upgradeFrames,
+            buildRate: buildRate,
             moveToSourceOnPlainRate: moveToSourceOnPlainRate,
             moveFromSourceOnPlainRate: moveFromSourceOnPlainRate,
             moveToSourceOnSwampRate: moveToSourceOnSwampRate,
             moveFromSourceOnSwampRate: moveFromSourceOnSwampRate,
             maxCarryAmount: maxCarryAmount
         }
+    },
+    calculateNextExtensionInfo: function (room)
+    {
+        var possibleCollectionPositionInfos = room.memory.mappedSources.map(s => s.collectionPositionInfos).reduce((c1, c2) => c1.concat(c2));
+        var currentExtensionComparablePositions = room.memory.buildingInfos.map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
+        possibleCollectionPositionInfos = possibleCollectionPositionInfos.filter(pes => !currentExtensionComparablePositions
+                                                                         .includes(mapUtils.getComparableRoomPosition(pes.originalPos)));
+        var collectionPositionCosts = possibleCollectionPositionInfos.map(function (collectionPositionInfo) {
+            var comparableCollectionPosition = mapUtils.getComparableRoomPosition(collectionPositionInfo.originalPos);
+            var relatedHarvestInfo = room.memory.harvestInfos
+                .filter(hi => mapUtils
+                    .getComparableRoomPosition(hi.collectionPosition) ===
+                    comparableCollectionPosition);
+            var harvestCost = relatedHarvestInfo.length === 1 ? relatedHarvestInfo[0].costTo : 0;
+            var relatedControlInfo = room.memory.controlInfos
+                .filter(ci => mapUtils
+                    .getComparableRoomPosition(ci.collectionPosition) ===
+                    comparableCollectionPosition);
+            var controlCost = relatedControlInfo.length === 1 ? relatedControlInfo[0].costTo : 0;
+            return harvestCost + controlCost;
+        });
+
+        var bestExtensionPositionInfo = null;
+        var highestCost = -1;
+
+        for (let i = 0; i < possibleCollectionPositionInfos.length && i < collectionPositionCosts.length; i++) {
+            if (collectionPositionCosts[i] > highestCost) {
+                bestExtensionPositionInfo = possibleCollectionPositionInfos[i];
+                highestCost = collectionPositionCosts[i];
+            }
+        }
+
+        if (!bestExtensionPositionInfo) {
+            return null;
+        }
+
+        return extensionMapper.mapExtension(bestExtensionPositionInfo, bestExtensionPositionInfo.sourceId);
     },
     calculateBestSource: function (infos, room, creepInfo)
     {
@@ -153,7 +192,8 @@ var creepManager =
 
                         room.memory.reservedSources[stringCollectionPosition] = null;
                     }
-                } else {
+                } else
+                {
                     room
                         .memory.reservedSources[stringCollectionPosition] = null;
                 }

@@ -1,5 +1,4 @@
 var creepUtils = require('creepUtils');
-var creepUtils = require('creepUtils');
 
 function transferEnergy(creep, creepControlInfo) {
     var controller = creep.room.controller;

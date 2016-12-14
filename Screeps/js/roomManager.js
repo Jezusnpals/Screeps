@@ -14,8 +14,9 @@ var roomManager =
         room.memory.mappedSources = [];
         room.memory.harvestInfos = [];
         room.memory.controlInfos = [];
-        room.memory.extensionInfos = [];
+        room.memory.buildingInfos = [];
         room.memory.reservedSources = {};
+        room.memory.extensionsNumber = 0;
 
         var sources = room.find(FIND_SOURCES);
         for (var index in sources)
@@ -26,46 +27,35 @@ var roomManager =
 
         room.memory.currentPositionIndex = [0,0];
         room.memory.finishedMapping = false;
+        room.memory.addedFirstExtension = false;
+        
         room.memory.currentMappingType = infoEnum.SPAWN;
 
         creepManager.initialize(room, room.memory.mappedSources);
     },
-    mapExtensionInfos: function(room) {
-        var possibleCollectionPositionInfos = room.memory.mappedSources.map(s => s.collectionPositionInfos).reduce((c1, c2) => c1.concat(c2));
-        var currentExtensionComparablePositions = room.memory.extensionInfos.map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
-        possibleCollectionPositionInfos = possibleCollectionPositionInfos.filter(pes => !currentExtensionComparablePositions
-                                                                         .includes(mapUtils.getComparableRoomPosition(pes.originalPos)));
-        var collectionPositionCosts = possibleCollectionPositionInfos.map(function(collectionPositionInfo) {
-            var comparableCollectionPosition = mapUtils.getComparableRoomPosition(collectionPositionInfo.originalPos);
-            var relatedHarvestInfo = room.memory.harvestInfos
-                .filter(hi => mapUtils
-                    .getComparableRoomPosition(hi.collectionPosition) ===
-                    comparableCollectionPosition);
-            var harvestCost = relatedHarvestInfo.length === 1 ? relatedHarvestInfo[0].costTo : 0;
-            var relatedControlInfo = room.memory.controlInfos
-                .filter(ci => mapUtils
-                    .getComparableRoomPosition(ci.collectionPosition) ===
-                    comparableCollectionPosition);
-            var controlCost = relatedControlInfo.length === 1 ? relatedControlInfo[0].costTo : 0;
-            return harvestCost + controlCost;
-        });
-
-        var bestExtensionPositionInfo = null;
-        var highestCost = -1;
-        
-        for (let i = 0; i < possibleCollectionPositionInfos.length && i < collectionPositionCosts.length; i++)
+    addExtensionInfo: function (room)
+    {
+        var maxExtensions = room.controller.level * 5;
+        if (extensionsNumber + 1 > maxExtensions)
+            return false;
+        var extensionInfo = creepManager.calculateNextExtensionInfo(room);
+        var constructionSiteResult = room.createConstructionSite(extensionInfo.extensionPosition, STRUCTURE_EXTENSION);
+        if (constructionSiteResult === OK)
         {
-            if (collectionPositionCosts[i] > highestCost) {
-                bestExtensionPositionInfo = possibleCollectionPositionInfos[i];
-                highestCost = collectionPositionCosts[i];
+            var extensions = room.find(FIND_MY_STRUCTURES, {
+                filter: { structureType: STRUCTURE_EXTENSION }
+            });
+            var currentExtension = extensions.filter(e => mapUtils.getComparableRoomPosition(e.pos) ==
+                mapUtils.getComparableRoomPosition(extensionInfo.extensionPosition));
+            currentExtension = currentExtension.length === 1 ? currentExtension[0] : null;
+            if (currentExtension)
+            {
+                extensionInfo.strucutreId = currentExtension.id;
+                buildingInfos.push(extensionInfo);
+                return true;
             }
         }
-
-        if (!bestExtensionPositionInfo) {
-            return null;
-        }
-
-        return extensionMapper.mapExtension(bestExtensionPositionInfo, bestExtensionPositionInfo.sourceId);
+        return false;
     },
     mapInfos: function(room, spawns)
     {
@@ -111,15 +101,14 @@ var roomManager =
             return;
         }
 
+        if (!room.memory.addedFirstExtension && room.memory.finishedMapping && room.controller.level > 0)
+        {
+            room.memory.addedFirstExtension = addExtensionInfo(room);
+        }
+
         creepManager.run(room, room.memory.finishedMapping);
 
-        if (this.createdConstructionSites) {
-            room.createConstructionSite(25, 25, STRUCTURE_EXTENSION)
-            this.createdConstructionSites = true;
-        }
-        else {
-            room.createConstructionSite(40, 44, STRUCTURE_EXTENSION);
-        }
+        
     },
     cleanUp: function(room, deadCreepNames)
     {

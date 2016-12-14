@@ -30,7 +30,8 @@ var extensionMapper = {
         }
         else
         {
-            return infoMapper.calculateMappedInfo(currentBestPosition, collectionPositionInfo, 3, infoEnum.EXTENSION, sourceId);
+            var mappedInfo = infoMapper.calculateMappedInfo(currentBestPosition, collectionPositionInfo, 3, infoEnum.EXTENSION, sourceId);
+            mappedInfo.extensionPosition = currentBestPosition;
         }
     }
 };

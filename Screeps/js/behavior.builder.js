@@ -1,30 +1,47 @@
+var creepUtils = require('creepUtils');
+
+function transferEnergy(creep, creepBuildInfo)
+{
+    var structure = creepBuildInfo ? Game.getObjectById(creepBuildInfo.structureId) :
+        null;
+    if (!structure || !creepBuildInfo)
+        return;
+
+    var buildResult = creep.build(structure);
+
+    if (buildResult === ERR_NOT_IN_RANGE || creep.energy <= creep.memory.creepInfo.buildRate)
+    {
+        creep.memory.isMoving = creep.fatigue === 0;
+        if (creep.memory.isMoving)
+        {
+            creepUtils.moveToStructureByMappedInfo(creep, structure, creepBuildInfo);
+        }
+    }
+}
+
 var builder = {
 
     /** @param {Creep} creep **/
-    run: function (creep) {
+    run: function (creep)
+    {
 
-        if (creep.memory.building && creep.carry.energy == 0) {
+        if (creep.memory.building && creep.carry.energy === 0)
+        {
             creep.memory.building = false;
-            creep.say('harvesting');
         }
-        if (!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
+        if (!creep.memory.building && creep.carry.energy === creep.carryCapacity)
+        {
             creep.memory.building = true;
-            creep.say('building');
         }
 
-        if (creep.memory.building) {
-            var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-            if (targets.length) {
-                if (creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0]);
-                }
-            }
+        var creepBuildInfo = creep.memory.buildInfoIndex >= 0 ? creep.room.memory.controlInfos[creep.memory.buildInfoIndex] : null;
+        if (creep.memory.building)
+        {
+            transferEnergy(creep, creepBuildInfo);
         }
-        else {
-            var sources = creep.room.find(FIND_SOURCES);
-            if (creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[1]);
-            }
+        else
+        {
+            creepUtils.harvestEnergy(creep, creepBuildInfo);
         }
     }
 };
