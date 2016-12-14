@@ -95,6 +95,15 @@ var pathManager =
     {
         return (terrainPath.swampsCount * creepInfo.moveFromSourceOnSwampRate) +
             (terrainPath.plainsCount * creepInfo.moveFromSourceOnPlainRate);
+    },
+    getRelatedPathPositions(originPosition)
+    {
+        var comparablePoint = mapUtils.getComparableRoomPosition(originPosition);
+        var relatedPathKeys = Object.keys(Memory.pathManager.terrainPathDictonary)
+                                    .filter(key => key.includes(comparablePoint));
+        var relatedPaths = relatedPathKeys.map(key => Memory.pathManager.terrainPathDictonary[key].path);
+        var relatedPositions = relatedPaths.reduce((p1, p2) => p1.concat(p2));
+        return relatedPositions;
     }
 };
 

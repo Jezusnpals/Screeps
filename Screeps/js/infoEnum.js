@@ -1,7 +1,8 @@
 var infoEnum =
 {
     SPAWN: 'spawn',
-    CONTROL: 'control'
+    CONTROL: 'control',
+    EXTENSION: 'extension'
 };
 
 module.exports = infoEnum;

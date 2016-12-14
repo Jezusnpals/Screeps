@@ -1,5 +1,3 @@
-var mapUtils = require('mapUtils');
-var pathManager = require('pathManager');
 var infoMapper = require('infoMapper');
 var infoEnum = require('infoEnum');
 

@@ -58,13 +58,13 @@ var mapUtils = {
     {
         return pos.x + ' ' + pos.y + pos.roomName;
     },
-    mapRoomPositionArray: function (posArray) {
+    getComparableRoomPositionArray: function (posArray) {
         return posArray.map(function (pos) {
             return mapUtils.getComparableRoomPosition(pos);
         });
     },
     removeRoomPositionFromArray: function (posArray, posToRemove) {
-        var mappedPosArray = this.mapRoomPositionArray(posArray);
+        var mappedPosArray = this.getComparableRoomPositionArray(posArray);
         var mappedPosToRemove = this.getComparableRoomPosition(posToRemove);
         var index = mappedPosArray.indexOf(mappedPosToRemove);
         if (index != -1) {
@@ -72,11 +72,11 @@ var mapUtils = {
         }
     },
     getSameRoomPositionsFromArray: function (posArray1, posArray2) {
-        var mappedPosArray1 = this.mapRoomPositionArray(posArray1);
+        var mappedPosArray1 = this.getComparableRoomPositionArray(posArray1);
         return posArray2.filter(pos => mappedPosArray1.indexOf(mapUtils.getComparableRoomPosition(pos)) >= 0);
     },
     filterPositionsFromArray: function (originalPositions, filterPositions) {
-        var mappedFilterPositions = this.mapRoomPositionArray(filterPositions);
+        var mappedFilterPositions = this.getComparableRoomPositionArray(filterPositions);
         return originalPositions.filter(pos => mappedFilterPositions.indexOf(mapUtils.getComparableRoomPosition(pos)) < 0);
     },
     refreshRoomPosition: function (pos)
