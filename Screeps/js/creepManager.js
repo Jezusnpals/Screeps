@@ -2,6 +2,7 @@ var behaviorEnum = require('behaviorEnum');
 var mapUtils = require('mapUtils');
 var infoEnum = require('infoEnum');
 var creepUtils = require('creepUtils');
+var extensionMapper = require('extensionMapper');
 
 function calculateCost(info, room)
 {

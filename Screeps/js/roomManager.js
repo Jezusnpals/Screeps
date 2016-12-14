@@ -3,7 +3,6 @@ var sourceMapper = require('sourceMapper');
 var spawnMapper = require('spawnMapper');
 var controlMapper = require('controlMapper');
 var creepManager = require('creepManager');
-var extensionMapper = require('extensionMapper');
 var infoEnum = require('infoEnum');
 
 var roomManager =
