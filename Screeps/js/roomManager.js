@@ -35,19 +35,16 @@ var roomManager =
     },
     completePendingExtensionInfos: function(room) 
     {
-        for(let i = 0; i < room.memory.pendingExtensionInfos.length; i++) 
+        for (let i = 0; i < room.memory.pendingExtensionInfos.length; i++)
         {
             var pendingExtensionInfo = room.memory.pendingExtensionInfos[i];
-            var extensions = room.find(FIND_MY_STRUCTURES, {
-                filter: { structureType: STRUCTURE_EXTENSION }
-            });
-            var currentExtension = extensions.filter(e => mapUtils.getComparableRoomPosition(e.pos) ==
-                mapUtils.getComparableRoomPosition(pendingExtensionInfo.extensionPosition));
-            currentExtension = currentExtension.length === 1 ? currentExtension[0] : null;
-            if (currentExtension)
+            var refreshExtensionPosition = mapUtils.refreshRoomPosition(pendingExtensionInfo.extensionPosition);
+            var extensionConstructionSite = room.lookAt(refreshExtensionPosition).filter(e => e.type === 'constructionSite')[0];
+            var currentExtensionId = extensionConstructionSite.constructionSite ? extensionConstructionSite.constructionSite.id : null;
+            if (currentExtensionId)
             {
-                pendingExtensionInfo.strucutreId = currentExtension.id;
-                buildingInfos.push(pendingExtensionInfo);
+                pendingExtensionInfo.strucutreId = currentExtensionId;
+                room.memory.buildingInfos.push(pendingExtensionInfo);
                 room.memory.pendingExtensionInfos.splice(i, 1);
                 i--;
             }
@@ -112,6 +109,7 @@ var roomManager =
                     creepManager.resetCreepInfos(room);
                 }
                 room.memory.currentMappingType = infoEnum.SPAWN;
+                
             }
         }
     },
