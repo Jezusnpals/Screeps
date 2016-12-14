@@ -34,7 +34,7 @@ var roomManager =
     },
     addExtensionInfo: function (room)
     {
-        var maxExtensions = room.controller.level * 5;
+        var maxExtensions = (room.controller.level-1) * 5;
         if (room.memory.extensionsCount + 1 > maxExtensions)
             return false;
         var extensionInfo = creepManager.calculateNextExtensionInfo(room);
@@ -102,7 +102,7 @@ var roomManager =
             return;
         }
 
-        if (!room.memory.addedFirstExtension && room.memory.finishedMapping && room.controller.level > 0)
+        if (!room.memory.addedFirstExtension && room.memory.finishedMapping && room.controller.level > 1)
         {
             room.memory.addedFirstExtension = roomManager.addExtensionInfo(room);
         }
