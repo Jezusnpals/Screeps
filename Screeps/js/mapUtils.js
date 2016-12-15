@@ -14,12 +14,12 @@ var mapUtils = {
         }
         var adjacentPositions = [];
 
-        for (var i = -maxDistance; i <= maxDistance; i++)
+        for (let i = -maxDistance; i <= maxDistance; i++)
         {
-            for (var j = -maxDistance; j <= maxDistance; j++)
+            for (let j = -maxDistance; j <= maxDistance; j++)
             {
-                var lessThanMinDistance = i < minDistance && j < minDistance;
-                if (this.checkInBounds(roomPos.x + i, roomPos.y + j) && !lessThanMinDistance) {
+                var closerThanMinDistance = Math.abs(i) < minDistance && Math.abs(j) < minDistance;
+                if (this.checkInBounds(roomPos.x + i, roomPos.y + j) && !closerThanMinDistance) {
                     adjacentPositions.push(new RoomPosition(roomPos.x + i, roomPos.y + j, roomPos.roomName));
                 }
             }
