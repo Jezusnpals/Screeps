@@ -1,4 +1,5 @@
 var creepUtils = require('creepUtils');
+var mapUtils = require('mapUtils');
 
 function transferEnergy(creep, creepBuildInfo)
 {
@@ -19,8 +20,9 @@ function transferEnergy(creep, creepBuildInfo)
     }
     else {
         var onACollectionPosition = creepBuildInfo.linkedCollectionPositions
-                                   .concat([creepBuildInfo.originalPos])
-                                   .includes(creep.pos);
+                                   .concat([creepBuildInfo.collectionPosition])
+                                   .map(pos => mapUtils.getComparableRoomPosition(pos))
+                                   .includes(mapUtils.getComparableRoomPosition(creep.pos));
         if (onACollectionPosition)
         {
             creepUtils.moveToStructureByMappedInfo(creep, structure, creepBuildInfo);
