@@ -123,7 +123,8 @@ var roomManager =
             return;
         }
 
-        if (!room.memory.addedFirstExtension && room.memory.finishedMapping && room.controller.level > 1)
+        if (room.memory.finishedMapping && room.controller.level > 1 &&
+            room.memory.pendingExtensionInfos.length === 0)
         {
             room.memory.addedFirstExtension = roomManager.addExtensionInfo(room);
         }
