@@ -26,7 +26,7 @@ var roomManager =
             room.memory.mappedSources.push(mappedSource);
         }
 
-        room.memory.currentPositionIndex = [0,0];
+        room.memory.currentMappingIndex = [0,0];
         room.memory.finishedMapping = false;
         room.memory.addedFirstExtension = false;
         
@@ -86,8 +86,8 @@ var roomManager =
             {
                 spawns.forEach(function (spawn)
                 {
-                    var mappedSource = room.memory.mappedSources[room.memory.currentPositionIndex[0]];
-                    var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentPositionIndex[1]];
+                    var mappedSource = room.memory.mappedSources[room.memory.currentMappingIndex[0]];
+                    var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentMappingIndex[1]];
                     var harvestInfo = spawnMapper.mapSingleCollectionPosition(spawn, collectionPositionInfo, mappedSource.sourceId);
                     room.memory.harvestInfos.push(harvestInfo);
                 });
@@ -95,19 +95,19 @@ var roomManager =
             }
             else if (room.memory.currentMappingType == infoEnum.CONTROL)
             {
-                var mappedSource = room.memory.mappedSources[room.memory.currentPositionIndex[0]];
-                var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentPositionIndex[1]];
+                var mappedSource = room.memory.mappedSources[room.memory.currentMappingIndex[0]];
+                var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentMappingIndex[1]];
                 var controlInfo = controlMapper.mapSingleCollectionPosition(room.controller, collectionPositionInfo, mappedSource.sourceId);
                 room.memory.controlInfos.push(controlInfo);
 
-                room.memory.currentPositionIndex[1]++;
-                if (room.memory.currentPositionIndex[1] >= mappedSource.collectionPositionInfos.length)
+                room.memory.currentMappingIndex[1]++;
+                if (room.memory.currentMappingIndex[1] >= mappedSource.collectionPositionInfos.length)
                 {
-                    room.memory.currentPositionIndex[0]++;
-                    room.memory.currentPositionIndex[1] = 0;
+                    room.memory.currentMappingIndex[0]++;
+                    room.memory.currentMappingIndex[1] = 0;
                 }
 
-                if (room.memory.currentPositionIndex[0] >= room.memory.mappedSources.length)
+                if (room.memory.currentMappingIndex[0] >= room.memory.mappedSources.length)
                 {
                     room.memory.finishedMapping = true;
                     creepManager.resetCreepInfos(room);
