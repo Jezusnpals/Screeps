@@ -3,18 +3,23 @@ var mapUtils = {
         var roomSize = 50;
         return x >= 0 && x < roomSize && y >= 0 && y <= roomSize;
     },
-    getAdjacentRoomPositions: function (roomPos, maxDistance)
+    getAdjacentRoomPositions: function (roomPos, maxDistance, minDistance)
     {
+        if (!minDistance) {
+            minDistance = 1;
+        }
         if (!maxDistance)
         {
             maxDistance = 1;
         }
         var adjacentPositions = [];
 
-        for (var i = -maxDistance; i <= maxDistance; i++) {
-            for (var j = -maxDistance; j <= maxDistance; j++) {
-                var samePos = i == 0 && j == 0;
-                if (this.checkInBounds(roomPos.x + i, roomPos.y + j) && !samePos) {
+        for (var i = -maxDistance; i <= maxDistance; i++)
+        {
+            for (var j = -maxDistance; j <= maxDistance; j++)
+            {
+                var lessThanMinDistance = i < minDistance && j < minDistance;
+                if (this.checkInBounds(roomPos.x + i, roomPos.y + j) && !lessThanMinDistance) {
                     adjacentPositions.push(new RoomPosition(roomPos.x + i, roomPos.y + j, roomPos.roomName));
                 }
             }

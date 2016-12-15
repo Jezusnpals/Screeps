@@ -17,6 +17,15 @@ function transferEnergy(creep, creepBuildInfo)
             creepUtils.moveToStructureByMappedInfo(creep, structure, creepBuildInfo);
         }
     }
+    else {
+        var onACollectionPosition = creepBuildInfo.linkedCollectionPositions
+                                   .concat([creepBuildInfo.originalPos])
+                                   .includes(creep.pos);
+        if (onACollectionPosition)
+        {
+            creepUtils.moveToStructureByMappedInfo(creep, structure, creepBuildInfo);
+        }
+    }
 }
 
 var builder = {

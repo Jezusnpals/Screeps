@@ -3,12 +3,12 @@ var pathManager = require('pathManager');
 var infoMapper = require('infoMapper');
 var infoEnum = require('infoEnum');
 
-const extensionSearchRange = 5;
+const extensionSearchRange = 8;
 
 var extensionMapper = {
     mapExtension: function (collectionPositionInfo, sourceId)
     {
-        var possibleExtensionPositions = mapUtils.getAdjacentRoomPositions(collectionPositionInfo.originalPos, extensionSearchRange);
+        var possibleExtensionPositions = mapUtils.getAdjacentRoomPositions(collectionPositionInfo.originalPos, extensionSearchRange, 2);
         var relatedPathPositions = pathManager.getRelatedPathPositions(collectionPositionInfo.originalPos);
         possibleExtensionPositions.filter(pos => mapUtils.isWalkableTerrain(pos));
         possibleExtensionPositions = mapUtils.filterPositionsFromArray(possibleExtensionPositions, relatedPathPositions);
