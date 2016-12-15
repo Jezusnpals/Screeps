@@ -46,7 +46,7 @@ var roomManager =
             var currentExtensionId = extensionConstructionSite.constructionSite ? extensionConstructionSite.constructionSite.id : null;
             if (currentExtensionId)
             {
-                pendingExtensionInfo.strucutreId = currentExtensionId;
+                pendingExtensionInfo.structureId = currentExtensionId;
                 room.memory.buildingInfos.push(pendingExtensionInfo);
                 room.memory.extensionIndexes.push(room.memory.buildingInfos.length - 1);
                 room.memory.pendingExtensionInfos.splice(i, 1);
