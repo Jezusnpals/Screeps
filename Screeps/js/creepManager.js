@@ -3,6 +3,7 @@ var mapUtils = require('mapUtils');
 var infoEnum = require('infoEnum');
 var creepUtils = require('creepUtils');
 var extensionMapper = require('extensionMapper');
+var pathManager = require('pathManager');
 
 function calculateCost(info, room)
 {
@@ -13,8 +14,11 @@ function calculateCost(info, room)
 
 function calculatePercentUsage(info, creepInfo)
 {
-    var moveToSourceFrames = info.costTo * creepInfo.moveToSourceOnPlainRate;
-    var moveFromSourceFrames = info.costTo * creepInfo.moveFromSourceOnPlainRate;
+    var toTerrainPath = pathManager.getTerrainPath(info.pathToKey);
+    var fromTerrainPath = info.pathFromKey ? pathManager.getTerrainPath(info.pathFromKey) : null;
+
+    var moveToSourceFrames = toTerrainPath ? pathManager.calculateTerrainPathCostToSource(toTerrainPath, creepInfo): 0;
+    var moveFromSourceFrames = fromTerrainPath ? pathManager.calculateTerrainPathCostFromSource(fromTerrainPath, creepInfo) : 0;
     var transferFrames = info.type === infoEnum.CONTROL ? creepInfo.upgradeFrames : 1; //1 frame for spwan transfer
     var totalFrames = transferFrames + moveToSourceFrames + moveFromSourceFrames + creepInfo.harvestFrames;
     return creepInfo.harvestFrames / totalFrames;
