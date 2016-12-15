@@ -11,9 +11,9 @@ var flagDrawer = {
     showFlags: function(room)
     {
         if (showAllPointsForAllPaths) {
-            var keys = Object.keys(room.memory.pathManager.terrainPathDictonary);
+            var keys = Object.keys(Memory.pathManager.terrainPathDictonary);
             keys.forEach(function(key, i) {
-                var path = mapUtils.refreshRoomPositionArray(room.memory.pathManager.terrainPathDictonary[key].path);
+                var path = mapUtils.refreshRoomPositionArray(Memory.pathManager.terrainPathDictonary[key].path);
                 path.forEach(function (pos, j)
                 {
                     var colors = [
