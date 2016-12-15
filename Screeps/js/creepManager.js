@@ -150,7 +150,8 @@ var creepManager =
         var creepBodies = [WORK, CARRY, MOVE];
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         var bestInfo = this.calculateBestSource(infos, room, startMemory.creepInfo);
-        if (bestInfo != null) {
+        if (bestInfo != null)
+        {
             var bestInfoIndex = infos.indexOf(bestInfo);
             var creepName = 'c' + new Date().getTime();
             startMemory[infoIndexName] = bestInfoIndex;
@@ -159,8 +160,10 @@ var creepManager =
             {
                 infos[bestInfoIndex].creepNames.push(creepName);
                 addPercentFilled(infos[bestInfoIndex], room, startMemory.creepInfo);
+                return true;
             }
         }
+        return false;
     },
     createCreepWithoutInfo: function(room, startMemory)
     {
@@ -204,8 +207,25 @@ var creepManager =
     run: function (room, finsihedMapping)
     {
         creepManager.resetReservedSources(room);
-        if (Object.keys(Game.creeps).length < 200 && Game.spawns['Spawn1'].energy >= 200)
+        if (Object.keys(Game.creeps).length < 500 && Game.spawns['Spawn1'].energy >= 200)
         {
+            if (finsihedMapping && room.memory.extensionIndexes.length > 0)
+            {
+                var extensionInfos = room.memory.extensionIndexes.map(index => room.memory.buildingInfos[index]);
+                var createdCreep = this.createCreep(room, extensionInfos, {
+                    behavior: behaviorEnum.BUILDER,
+                    pathFromKey: '',
+                    pathToKey: '',
+                    isMoving: true,
+                    framesToSource: -1,
+                    knownReservedSources: []
+                }, 'buildInfoIndex');
+
+                if (createdCreep)
+                {
+                    return;
+                }
+            }
             if (Object.keys(Game.creeps).length % 2 == 0)
             {
                 if (finsihedMapping)

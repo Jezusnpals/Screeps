@@ -17,6 +17,7 @@ var roomManager =
         room.memory.pendingExtensionInfos = [];
         room.memory.reservedSources = {};
         room.memory.extensionsCount = 0;
+        room.memory.extensionIndexes = [];
 
         var sources = room.find(FIND_SOURCES);
         for (var index in sources)
@@ -47,6 +48,7 @@ var roomManager =
             {
                 pendingExtensionInfo.strucutreId = currentExtensionId;
                 room.memory.buildingInfos.push(pendingExtensionInfo);
+                room.memory.extensionIndexes.push(room.memory.buildingInfos.length - 1);
                 room.memory.pendingExtensionInfos.splice(i, 1);
                 i--;
             }
