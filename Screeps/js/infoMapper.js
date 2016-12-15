@@ -27,9 +27,12 @@ var infoMapper = {
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
-            var pathFromGoal = pathToWithStartPosition.splice(0).reverse();
-
-            pathManager.addPath(pathFromGoal, startPosition);
+            if (pathToWithStartPositionlength.length > returnRange)
+            {
+                var pathFromGoal = pathToWithStartPosition.slice().reverse();
+                pathFromGoal.splice(pathToWithStartPosition.length - returnRange - 1, returnRange); //remove the elements closer than the range
+                mappedInfo.pathFromKey = pathManager.addPath(pathFromGoal, startPosition);
+            }
         }
 
         return mappedInfo;
