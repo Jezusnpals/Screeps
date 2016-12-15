@@ -27,7 +27,7 @@ var infoMapper = {
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
-            if (pathToWithStartPositionlength.length > returnRange)
+            if (pathToWithStartPosition.length > returnRange)
             {
                 var pathFromGoal = pathToWithStartPosition.slice().reverse();
                 pathFromGoal.splice(pathToWithStartPosition.length - returnRange - 1, returnRange); //remove the elements closer than the range
