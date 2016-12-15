@@ -5,10 +5,25 @@ var infoEnum = require('infoEnum');
 var showFlagsForToPaths = false;
 var showFlagsForSourcePoints = false;
 var showFlagsForFromPaths = false;
+var showAllPointsForAllPaths = false;
 
 var flagDrawer = {
     showFlags: function(room)
     {
+        if (showAllPointsForAllPaths) {
+            var keys = Object.keys(room.memory.pathManager.terrainPathDictonary);
+            keys.forEach(function(key, i) {
+                var path = mapUtils.refreshRoomPositionArray(room.memory.pathManager.terrainPathDictonary[key].path);
+                path.forEach(function (pos, j)
+                {
+                    var colors = [
+                        COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE
+                    ];
+                    room.createFlag(pos, 'a' + i + j, colors[i % colors.length]);
+                });
+            });
+        }
+
         if (showFlagsForToPaths) {
             room.memory.harvestInfos.forEach(function (info, i)
             {

@@ -15,9 +15,14 @@ var extensionMapper = {
         var currentLowestCost = -1;
         var currentBestPosition = null;
         var refreshedOriginalPos = mapUtils.refreshRoomPosition(collectionPositionInfo.originalPos);
-        possibleExtensionPositions.forEach(function (pos) {
-           
-            var pathResults = mapUtils.findPath(refreshedOriginalPos, pos, [], [], 200);
+        possibleExtensionPositions.forEach(function (pos)
+        {
+            var rangedPos =
+            {
+                pos: pos,
+                range: 3
+            }
+            var pathResults = mapUtils.findPath(refreshedOriginalPos, rangedPos, [], [], 200);
             if(!pathResults.incomplete && (currentLowestCost === -1 ||pathResults.cost < currentLowestCost)) 
             {
                 currentLowestCost = pathResults.cost;
