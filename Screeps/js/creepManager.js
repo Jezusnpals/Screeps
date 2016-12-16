@@ -180,7 +180,7 @@ var creepManager =
         }
         return false;
     },
-    createCreepWithoutInfo: function(room, startMemory)
+    createCreepWithoutInfo: function (room, behaviorType)
     {
         var startMemory = {
             behavior: behaviorType,
