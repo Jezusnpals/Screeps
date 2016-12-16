@@ -284,9 +284,10 @@ var creepManager =
         var creepsInThisRoom = Object.keys(Game.creeps)
                                 .map(k => Game.creeps[k])
                                 .filter(c => c.room.name == room.name);
-        creepsInThisRoom.forEach(function(creep)
+        creepsInThisRoom.forEach(function (creep)
         {
-            var bestInfo = creepManager.calculateBestSource(room.memory.Infos[creep.memory.behavior], room, creep.memory.creepInfo);
+            var infos = room.memory.Infos[creep.memory.behavior];
+            var bestInfo = creepManager.calculateBestSource(infos, room, creep.memory.creepInfo);
             if (bestInfo != null)
             {
                 var bestInfoIndex = infos.indexOf(bestInfo);
