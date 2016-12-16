@@ -4,6 +4,7 @@ var spawnMapper = require('spawnMapper');
 var controlMapper = require('controlMapper');
 var creepManager = require('creepManager');
 var infoEnum = require('infoEnum');
+var behaviorEnum = require('behaviorEnum');
 
 var roomManager =
 {
@@ -11,13 +12,16 @@ var roomManager =
     initialize: function (room, spawns) {
         room.memory.initialized = true;
         room.memory.mappedSources = [];
-        room.memory.harvestInfos = [];
-        room.memory.controlInfos = [];
-        room.memory.buildingInfos = [];
+        room.memory.Infos = {};
+        room.memory.Infos[behaviorEnum.HARVESTER] = [];
+        room.memory.Infos[behaviorEnum.UPGRADER] = [];
+        room.memory.Infos[behaviorEnum.BUILDER] = [];
         room.memory.pendingExtensionInfos = [];
         room.memory.reservedSources = {};
         room.memory.extensionsCount = 0;
         room.memory.extensionIndexes = [];
+
+        
 
         var sources = room.find(FIND_SOURCES);
         for (var index in sources)
@@ -47,8 +51,8 @@ var roomManager =
             if (currentExtensionId)
             {
                 pendingExtensionInfo.structureId = currentExtensionId;
-                room.memory.buildingInfos.push(pendingExtensionInfo);
-                room.memory.extensionIndexes.push(room.memory.buildingInfos.length - 1);
+                room.memory.Infos[behaviorEnum.BUILDER].push(pendingExtensionInfo);
+                room.memory.extensionIndexes.push(room.memory.Infos[behaviorEnum.BUILDER].length - 1);
                 room.memory.pendingExtensionInfos.splice(i, 1);
                 i--;
             }
@@ -89,7 +93,7 @@ var roomManager =
                     var mappedSource = room.memory.mappedSources[room.memory.currentMappingIndex[0]];
                     var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentMappingIndex[1]];
                     var harvestInfo = spawnMapper.mapSingleCollectionPosition(spawn, collectionPositionInfo, mappedSource.sourceId);
-                    room.memory.harvestInfos.push(harvestInfo);
+                    room.memory.Infos[behaviorEnum.HARVESTER].push(harvestInfo);
                 });
                 room.memory.currentMappingType = infoEnum.CONTROL;
             }
@@ -98,7 +102,7 @@ var roomManager =
                 var mappedSource = room.memory.mappedSources[room.memory.currentMappingIndex[0]];
                 var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentMappingIndex[1]];
                 var controlInfo = controlMapper.mapSingleCollectionPosition(room.controller, collectionPositionInfo, mappedSource.sourceId);
-                room.memory.controlInfos.push(controlInfo);
+                room.memory.Infos[behaviorEnum.UPGRADER].push(controlInfo);
 
                 room.memory.currentMappingIndex[1]++;
                 if (room.memory.currentMappingIndex[1] >= mappedSource.collectionPositionInfos.length)
@@ -143,16 +147,16 @@ var roomManager =
             reservedKeysOfDead.forEach(key => room.memory.reservedSources[key] = null);
             if (Memory.creeps[name].harvestInfoIndex)
             {
-                var nameIndex = room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex].creepNames.indexOf(name);
-                room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex].creepNames.splice(nameIndex, 1);
-                creepManager.removeUsageFromInfo(room, room.memory.harvestInfos[Memory.creeps[name].harvestInfoIndex],
+                var nameIndex = room.memory.Infos[behaviorEnum.HARVESTER][Memory.creeps[name].harvestInfoIndex].creepNames.indexOf(name);
+                room.memory.Infos[behaviorEnum.HARVESTER][Memory.creeps[name].harvestInfoIndex].creepNames.splice(nameIndex, 1);
+                creepManager.removeUsageFromInfo(room, room.memory.Infos[behaviorEnum.HARVESTER][Memory.creeps[name].harvestInfoIndex],
                     Memory.creeps[name].creepInfo);
             }
             else if (Memory.creeps[name].controlInfoIndex)
             {
-                var nameIndex = room.memory.controlInfos[Memory.creeps[name].controlInfoIndex].creepNames.indexOf(name);
-                room.memory.controlInfos[Memory.creeps[name].controlInfoIndex].creepNames.splice(nameIndex, 1);
-                creepManager.removeUsageFromInfo(room, room.memory.controlInfos[Memory.creeps[name].controlInfoIndex],
+                var nameIndex = room.memory.Infos[behaviorEnum.UPGRADER][Memory.creeps[name].controlInfoIndex].creepNames.indexOf(name);
+                room.memory.Infos[behaviorEnum.UPGRADER][Memory.creeps[name].controlInfoIndex].creepNames.splice(nameIndex, 1);
+                creepManager.removeUsageFromInfo(room, room.memory.Infos[behaviorEnum.UPGRADER][Memory.creeps[name].controlInfoIndex],
                     Memory.creeps[name].creepInfo);
             }
             delete Memory.creeps[name];

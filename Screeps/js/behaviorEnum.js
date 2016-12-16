@@ -1,8 +1,10 @@
+var behaviorEnum = require('behaviorEnum');
+
 var behaviorEnum =
 {
     HARVESTER: 'harvester',
     UPGRADER: 'upgrader',
-    BUILDER: 'builder',
+    BUILDER: 'builder'
 };
 
 module.exports = behaviorEnum;

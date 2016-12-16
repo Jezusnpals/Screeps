@@ -94,17 +94,17 @@ var creepManager =
     calculateNextExtensionInfo: function (room)
     {
         var possibleCollectionPositionInfos = room.memory.mappedSources.map(s => s.collectionPositionInfos).reduce((c1, c2) => c1.concat(c2));
-        var currentExtensionComparablePositions = room.memory.buildingInfos.map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
+        var currentExtensionComparablePositions = room.memory.Infos[behaviorEnum.BUILDER].map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
         possibleCollectionPositionInfos = possibleCollectionPositionInfos.filter(pes => !currentExtensionComparablePositions
                                                                          .includes(mapUtils.getComparableRoomPosition(pes.originalPos)));
         var collectionPositionCosts = possibleCollectionPositionInfos.map(function (collectionPositionInfo) {
             var comparableCollectionPosition = mapUtils.getComparableRoomPosition(collectionPositionInfo.originalPos);
-            var relatedHarvestInfo = room.memory.harvestInfos
+            var relatedHarvestInfo = room.memory.Infos[behaviorEnum.HARVESTER]
                 .filter(hi => mapUtils
                     .getComparableRoomPosition(hi.collectionPosition) ===
                     comparableCollectionPosition);
             var harvestCost = relatedHarvestInfo.length === 1 ? relatedHarvestInfo[0].costTo : 0;
-            var relatedControlInfo = room.memory.controlInfos
+            var relatedControlInfo = room.memory.Infos[behaviorEnum.UPGRADER]
                 .filter(ci => mapUtils
                     .getComparableRoomPosition(ci.collectionPosition) ===
                     comparableCollectionPosition);
@@ -215,7 +215,7 @@ var creepManager =
         {
             if (finsihedMapping && room.memory.extensionIndexes.length > 0)
             {
-                var extensionInfos = room.memory.extensionIndexes.map(index => room.memory.buildingInfos[index]);
+                var extensionInfos = room.memory.extensionIndexes.map(index => room.memory.Infos[behaviorEnum.BUILDER][index]);
                 var createdCreep = this.createCreep(room, extensionInfos, {
                     behavior: behaviorEnum.BUILDER,
                     pathFromKey: '',
@@ -234,7 +234,7 @@ var creepManager =
             {
                 if (finsihedMapping)
                 {
-                    this.createCreep(room, room.memory.harvestInfos, {
+                    this.createCreep(room, room.memory.Infos[behaviorEnum.HARVESTER], {
                         behavior: behaviorEnum.HARVESTER,
                         pathFromKey: '',
                         pathToKey: '',
@@ -260,7 +260,7 @@ var creepManager =
             {
                 if (finsihedMapping)
                 {
-                    this.createCreep(room, room.memory.controlInfos, {
+                    this.createCreep(room, room.memory.Infos[behaviorEnum.UPGRADER], {
                         behavior: behaviorEnum.UPGRADER,
                         pathFromKey: '',
                         pathToKey: '',
@@ -285,11 +285,11 @@ var creepManager =
     },
     resetCreepInfos: function(room)
     {
-        room.memory.harvestInfos.forEach(function (info)
+        room.memory.Infos[behaviorEnum.HARVESTER].forEach(function (info)
         {
             info.creepNames = [];
         });
-        room.memory.controlInfos.forEach(function (info)
+        room.memory.Infos[behaviorEnum.UPGRADER].forEach(function (info)
         {
             info.creepNames = [];
         });
@@ -307,12 +307,12 @@ var creepManager =
             var indexName = '';
             if(creep.memory.behavior == behaviorEnum.HARVESTER)
             {
-                infos = room.memory.harvestInfos;
+                infos = room.memory.Infos[behaviorEnum.HARVESTER];
                 indexName = 'harvestInfoIndex';
             }
             else if (creep.memory.behavior == behaviorEnum.UPGRADER)
             {
-                infos = room.memory.controlInfos;
+                infos = room.memory.Infos[behaviorEnum.UPGRADER];
                 indexName = 'controlInfoIndex';
             }
 

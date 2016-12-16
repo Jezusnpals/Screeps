@@ -1,5 +1,6 @@
 var creepUtils = require('creepUtils');
 var mapUtils = require('mapUtils');
+var behaviorEnum = require('behaviorEnum');
 
 function transferEnergy(creep, creepBuildInfo)
 {
@@ -45,7 +46,7 @@ var builder = {
             creep.memory.building = true;
         }
 
-        var creepBuildInfo = creep.memory.buildInfoIndex >= 0 ? creep.room.memory.buildingInfos[creep.memory.buildInfoIndex] : null;
+        var creepBuildInfo = creep.memory.buildInfoIndex >= 0 ? creep.room.memory.Infos[behaviorEnum.BUILDER][creep.memory.buildInfoIndex] : null;
         if (creep.memory.building)
         {
             transferEnergy(creep, creepBuildInfo);

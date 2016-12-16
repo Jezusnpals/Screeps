@@ -1,5 +1,5 @@
-var pathManager = require('pathManager');
 var creepUtils = require('creepUtils');
+var behaviorEnum = require('behaviorEnum');
 
 function transferEnergy(creep, creepHarvestInfo)
 {
@@ -33,7 +33,7 @@ var harvester =
     run: function (creep)
     {
         var creepNeedsEnergy = creep.carry.energy < creep.carryCapacity;
-        var creepHarvestInfo = creep.memory.harvestInfoIndex >= 0 ? creep.room.memory.harvestInfos[creep.memory.harvestInfoIndex] : null;
+        var creepHarvestInfo = creep.memory.harvestInfoIndex >= 0 ? creep.room.memory.Infos[behaviorEnum.HARVESTER][creep.memory.harvestInfoIndex] : null;
         if (creepNeedsEnergy)
         {
             creepUtils.harvestEnergy(creep, creepHarvestInfo);
