@@ -141,26 +141,22 @@ var roomManager =
     },
     cleanUp: function(room, deadCreepNames)
     {
-        deadCreepNames.forEach(function(name, i) {
+        deadCreepNames.forEach(function (name, i)
+        {
             var reservedKeysOfDead = Object.keys(room.memory.reservedSources)
                 .filter(key => room.memory.reservedSources[key] && room.memory.reservedSources[key].name === name);
             reservedKeysOfDead.forEach(key => room.memory.reservedSources[key] = null);
-            if (Memory.creeps[name].harvestInfoIndex)
-            {
-                var nameIndex = room.memory.Infos[behaviorEnum.HARVESTER][Memory.creeps[name].harvestInfoIndex].creepNames.indexOf(name);
-                room.memory.Infos[behaviorEnum.HARVESTER][Memory.creeps[name].harvestInfoIndex].creepNames.splice(nameIndex, 1);
-                creepManager.removeUsageFromInfo(room, room.memory.Infos[behaviorEnum.HARVESTER][Memory.creeps[name].harvestInfoIndex],
-                    Memory.creeps[name].creepInfo);
-            }
-            else if (Memory.creeps[name].controlInfoIndex)
-            {
-                var nameIndex = room.memory.Infos[behaviorEnum.UPGRADER][Memory.creeps[name].controlInfoIndex].creepNames.indexOf(name);
-                room.memory.Infos[behaviorEnum.UPGRADER][Memory.creeps[name].controlInfoIndex].creepNames.splice(nameIndex, 1);
-                creepManager.removeUsageFromInfo(room, room.memory.Infos[behaviorEnum.UPGRADER][Memory.creeps[name].controlInfoIndex],
-                    Memory.creeps[name].creepInfo);
-            }
+
+            var creepMemory = Memory.creeps[name];
+            var infos = room.memory.Infos[creepMemory.behavior];
+            var infoIndex = creepMemory.infoIndexes[creepMemory.behavior];
+            var currentInfo = infos[infoIndex];
+
+            var infoCreepNameIndex = currentInfo.creepNames.indexOf(name);
+            currentInfo.creepNames.splice(infoCreepNameIndex, 1);
+            creepManager.removeUsageFromInfo(room, currentInfo, creepMemory.creepInfo);
+
             delete Memory.creeps[name];
-            
         });
         
     }

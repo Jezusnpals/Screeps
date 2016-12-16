@@ -149,16 +149,27 @@ var creepManager =
 
         return openInfos[lowestCostIndex];
     },
-    createCreep(room, infos, startMemory, infoIndexName) 
+    createCreep(room, behaviorType) 
     {
+        var infos = room.memory.Infos[behaviorType];
         var creepBodies = [WORK, CARRY, MOVE];
+        var startMemory = {
+            behavior: behaviorType,
+            pathFromKey: '',
+            pathToKey: '',
+            isMoving: true,
+            framesToSource: -1,
+            knownReservedSources: [],
+            infoIndexes: {}
+        };
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
+
         var bestInfo = this.calculateBestSource(infos, room, startMemory.creepInfo);
         if (bestInfo != null)
         {
             var bestInfoIndex = infos.indexOf(bestInfo);
             var creepName = 'c' + new Date().getTime();
-            startMemory[infoIndexName] = bestInfoIndex;
+            startMemory.infoIndexes[behaviorType] = bestInfoIndex;
             var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
             if (creepResult == creepName) 
             {
@@ -171,6 +182,15 @@ var creepManager =
     },
     createCreepWithoutInfo: function(room, startMemory)
     {
+        var startMemory = {
+            behavior: behaviorType,
+            pathFromKey: '',
+            pathToKey: '',
+            isMoving: true,
+            framesToSource: -1,
+            knownReservedSources: [],
+            infoIndexes: {}
+        };
         var creepName = 'c' + new Date().getTime();
         var creepBodies = [WORK, CARRY, MOVE];
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
@@ -215,15 +235,7 @@ var creepManager =
         {
             if (finsihedMapping && room.memory.extensionIndexes.length > 0)
             {
-                var extensionInfos = room.memory.extensionIndexes.map(index => room.memory.Infos[behaviorEnum.BUILDER][index]);
-                var createdCreep = this.createCreep(room, extensionInfos, {
-                    behavior: behaviorEnum.BUILDER,
-                    pathFromKey: '',
-                    pathToKey: '',
-                    isMoving: true,
-                    framesToSource: -1,
-                    knownReservedSources: []
-                }, 'buildInfoIndex');
+                var createdCreep = this.createCreep(room, behaviorEnum.BUILDER);
 
                 if (createdCreep)
                 {
@@ -234,51 +246,22 @@ var creepManager =
             {
                 if (finsihedMapping)
                 {
-                    this.createCreep(room, room.memory.Infos[behaviorEnum.HARVESTER], {
-                        behavior: behaviorEnum.HARVESTER,
-                        pathFromKey: '',
-                        pathToKey: '',
-                        isMoving: true,
-                        framesToSource: -1,
-                        knownReservedSources: []
-                    }, 'harvestInfoIndex');
+                    this.createCreep(room, behaviorEnum.HARVESTER);
                 }
                 else
                 {
-                    this.createCreepWithoutInfo(room, {
-                        behavior: behaviorEnum.HARVESTER,
-                        pathFromKey: '',
-                        pathToKey: '',
-                        isMoving: true,
-                        framesToSource: -1,
-                        knownReservedSources: []
-                    });
+                    this.createCreepWithoutInfo(room, behaviorEnum.HARVESTER);
                 }
-                
             }
             else
             {
                 if (finsihedMapping)
                 {
-                    this.createCreep(room, room.memory.Infos[behaviorEnum.UPGRADER], {
-                        behavior: behaviorEnum.UPGRADER,
-                        pathFromKey: '',
-                        pathToKey: '',
-                        isMoving: true,
-                        framesToSource: -1,
-                        knownReservedSources: []
-                    }, 'controlInfoIndex');
+                    this.createCreep(room, behaviorEnum.UPGRADER);
                 }
                 else
                 {
-                    this.createCreepWithoutInfo(room, {
-                        behavior: behaviorEnum.UPGRADER,
-                        pathFromKey: '',
-                        pathToKey: '',
-                        isMoving: true,
-                        framesToSource: -1,
-                        knownReservedSources: []
-                                });
+                    this.createCreepWithoutInfo(room, behaviorEnum.UPGRADER);
                 }
             }
         }
@@ -303,25 +286,12 @@ var creepManager =
                                 .filter(c => c.room.name == room.name);
         creepsInThisRoom.forEach(function(creep)
         {
-            var infos = [];
-            var indexName = '';
-            if(creep.memory.behavior == behaviorEnum.HARVESTER)
-            {
-                infos = room.memory.Infos[behaviorEnum.HARVESTER];
-                indexName = 'harvestInfoIndex';
-            }
-            else if (creep.memory.behavior == behaviorEnum.UPGRADER)
-            {
-                infos = room.memory.Infos[behaviorEnum.UPGRADER];
-                indexName = 'controlInfoIndex';
-            }
-
-            var bestInfo = creepManager.calculateBestSource(infos, room, creep.memory.creepInfo);
+            var bestInfo = creepManager.calculateBestSource(room.memory.Infos[creep.memory.behavior], room, creep.memory.creepInfo);
             if (bestInfo != null)
             {
                 var bestInfoIndex = infos.indexOf(bestInfo);
-                creep.memory[indexName] = bestInfoIndex;
-                infos[bestInfoIndex].creepNames.push(creep.name);
+                creep.memory.infoIndexes[creep.memory.behavior] = bestInfoIndex;
+                room.memory.Infos[creep.memory.behavior][bestInfoIndex].creepNames.push(creep.name);
                 addPercentFilled(infos[bestInfoIndex], room, creep.memory.creepInfo);
             }
         });
