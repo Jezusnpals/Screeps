@@ -267,13 +267,13 @@ var creepManager =
     },
     resetCreepInfos: function(room)
     {
-        room.memory.Infos[behaviorEnum.HARVESTER].forEach(function (info)
+        Object.keys(room.memory.Infos[behaviorEnum.HARVESTER]).forEach(function (key)
         {
-            info.creepNames = [];
+            room.memory.Infos[behaviorEnum.HARVESTER][key].creepNames = [];
         });
-        room.memory.Infos[behaviorEnum.UPGRADER].forEach(function (info)
+        Object.keys(room.memory.Infos[behaviorEnum.UPGRADER]).forEach(function (key)
         {
-            info.creepNames = [];
+            room.memory.Infos[behaviorEnum.UPGRADER][key].creepNames = [];
         });
         Object.keys(room.memory.collectionUsageDictonary).forEach(function (key)
         {

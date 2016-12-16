@@ -25,9 +25,12 @@ var flagDrawer = {
             });
         }
 
-        if (showFlagsForToPaths) {
-            room.memory.Infos[behaviorEnum.HARVESTER].forEach(function (info, i)
+        if (showFlagsForToPaths)
+        {
+
+            Object.keys(room.memory.Infos[behaviorEnum.HARVESTER]).forEach(function (key, i)
             {
+                var info = room.memory.Infos[behaviorEnum.HARVESTER][key];
                 pathManager.getPath(info.pathToKey).forEach(function (pointOnPath, j)
                 {
                     var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
@@ -41,7 +44,9 @@ var flagDrawer = {
                     room.createFlag(pointOnPath, 'f' +i + j, colors[0]);
                 });
             });
-            room.memory.Infos[behaviorEnum.UPGRADER].forEach(function (info, i) {
+            Object.keys(room.memory.Infos[behaviorEnum.UPGRADER]).forEach(function (key, i)
+            {
+                var info = room.memory.Infos[behaviorEnum.UPGRADER][key];
                 pathManager.getPath(info.pathToKey).forEach(function (pointOnPath, j) {
                     var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
                     room.createFlag(pointOnPath, 'ct' + i + j, colors[4]);
