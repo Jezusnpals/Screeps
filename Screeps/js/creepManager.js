@@ -100,12 +100,16 @@ var creepManager =
                                                                          .includes(mapUtils.getComparableRoomPosition(pes.originalPos)));
         var collectionPositionCosts = possibleCollectionPositionInfos.map(function (collectionPositionInfo) {
             var comparableCollectionPosition = mapUtils.getComparableRoomPosition(collectionPositionInfo.originalPos);
-            var relatedHarvestInfo = room.memory.Infos[behaviorEnum.HARVESTER]
+            var harvestInfoArray = Object.keys(room.memory.Infos[behaviorEnum.HARVESTER])
+                .map(key => room.memory.Infos[behaviorEnum.HARVESTER][key]);
+            var relatedHarvestInfo = harvestInfoArray
                 .filter(hi => mapUtils
                     .getComparableRoomPosition(hi.collectionPosition) ===
                     comparableCollectionPosition);
             var harvestCost = relatedHarvestInfo.length === 1 ? relatedHarvestInfo[0].costTo : 0;
-            var relatedControlInfo = room.memory.Infos[behaviorEnum.UPGRADER]
+            var controlInfoArray = Object.keys(room.memory.Infos[behaviorEnum.UPGRADER])
+                .map(key => room.memory.Infos[behaviorEnum.UPGRADER][key]);
+            var relatedControlInfo = controlInfoArray
                 .filter(ci => mapUtils
                     .getComparableRoomPosition(ci.collectionPosition) ===
                     comparableCollectionPosition);
