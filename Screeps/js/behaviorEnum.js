@@ -1,4 +1,3 @@
-var behaviorEnum = require('behaviorEnum');
 
 var behaviorEnum =
 {
