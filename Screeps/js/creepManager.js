@@ -94,7 +94,7 @@ var creepManager =
     calculateNextExtensionInfo: function (room)
     {
         var possibleCollectionPositionInfos = room.memory.mappedSources.map(s => s.collectionPositionInfos).reduce((c1, c2) => c1.concat(c2));
-        var currentExtensionComparablePositions = room.memory.Infos[behaviorEnum.BUILDER].map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
+        var currentExtensionComparablePositions = room.memory.Infos[behaviorEnum.BUILDER].map(ei => ei && mapUtils.getComparableRoomPosition(ei.collectionPosition));
         possibleCollectionPositionInfos = possibleCollectionPositionInfos.filter(pes => !currentExtensionComparablePositions
                                                                          .includes(mapUtils.getComparableRoomPosition(pes.originalPos)));
         var collectionPositionCosts = possibleCollectionPositionInfos.map(function (collectionPositionInfo) {
@@ -160,21 +160,20 @@ var creepManager =
             isMoving: true,
             framesToSource: -1,
             knownReservedSources: [],
-            infoIndexes: {}
+            infoKeys: {}
         };
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
 
         var bestInfo = this.calculateBestSource(infos, room, startMemory.creepInfo);
         if (bestInfo != null)
         {
-            var bestInfoIndex = infos.indexOf(bestInfo);
             var creepName = 'c' + new Date().getTime();
-            startMemory.infoIndexes[behaviorType] = bestInfoIndex;
+            startMemory.infoKeys[behaviorType] = bestInfo.key;
             var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
             if (creepResult == creepName) 
             {
-                infos[bestInfoIndex].creepNames.push(creepName);
-                addPercentFilled(infos[bestInfoIndex], room, startMemory.creepInfo);
+                bestInfo.creepNames.push(creepName);
+                addPercentFilled(bestInfo, room, startMemory.creepInfo);
                 return true;
             }
         }
@@ -189,7 +188,7 @@ var creepManager =
             isMoving: true,
             framesToSource: -1,
             knownReservedSources: [],
-            infoIndexes: {}
+            infoKeys: {}
         };
         var creepName = 'c' + new Date().getTime();
         var creepBodies = [WORK, CARRY, MOVE];
@@ -233,7 +232,7 @@ var creepManager =
         creepManager.resetReservedSources(room);
         if (Object.keys(Game.creeps).length < 500 && Game.spawns['Spawn1'].energy >= 200)
         {
-            if (finsihedMapping && room.memory.extensionIndexes.length > 0)
+            if (finsihedMapping && room.memory.extensionKeys.length > 0)
             {
                 var createdCreep = this.createCreep(room, behaviorEnum.BUILDER);
 
@@ -290,31 +289,27 @@ var creepManager =
             var bestInfo = creepManager.calculateBestSource(infos, room, creep.memory.creepInfo);
             if (bestInfo != null)
             {
-                var bestInfoIndex = infos.indexOf(bestInfo);
-                creep.memory.infoIndexes[creep.memory.behavior] = bestInfoIndex;
-                room.memory.Infos[creep.memory.behavior][bestInfoIndex].creepNames.push(creep.name);
-                addPercentFilled(infos[bestInfoIndex], room, creep.memory.creepInfo);
+                creep.memory.infoKeys[creep.memory.behavior] = bestInfo.key;
+                bestInfo.creepNames.push(creep.name);
+                addPercentFilled(bestInfo, room, creep.memory.creepInfo);
             }
         });
     },
     OnStructureComplete: function (creep, newStructureId)
     {
-        var behavior = creep.memory.behavior
+        var behavior = creep.memory.behavior;
         if (behavior !== behaviorEnum.BUILDER) {
             return;
         }
-        var info = creep.room.memory.Infos[behavior][creep.memory.infoIndexes[behavior]];
+        var info = creep.room.memory.Infos[behavior][creep.memory.infoKeys[behavior]];
         info.type = infoEnum.HARVESTER;
         info.structureId = newStructureId;
 
-        var infoIndex = creep.room.memory.Infos[behavior].indexOf(info);
-        creep.room.memory.Infos[behavior][infoIndex] = null; //set to null rather than delete because creeps save the index.
+        delete creep.room.memory.Infos[behavior][info.key];
+        delete creep.memory.infoKeys[behavior];
 
-        creep.room.memory.Infos[behaviorEnum.HARVESTER].push(info);
-        var harvestIndex = creep.room.memory.Infos[behaviorEnum.HARVESTER].length - 1;
-
-        delete creep.memory.infoIndexes[behavior];
-        creep.memory.infoIndexes[behaviorEnum.HARVESTER] = harvestIndex;
+        creep.room.memory.Infos[behaviorEnum.HARVESTER][info.key] = info;
+        creep.memory.infoKeys[behaviorEnum.HARVESTER] = info.key;
         creep.memory.behavior = behaviorEnum.HARVESTER;
     }
 }

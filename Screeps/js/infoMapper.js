@@ -14,7 +14,8 @@ var infoMapper = {
             pathFromKey: '',
             type: infoType,
             sourceId: sourceId,
-            linkedCollectionPositions: collectionPositionInfo.linkedCollectionPositions
+            linkedCollectionPositions: collectionPositionInfo.linkedCollectionPositions,
+            key: mapUtils.getComparableRoomPosition(startPosition) + mapUtils.getComparableRoomPosition(collectionPosition)
         };
 
         var pathToResults = mapUtils.findPath(startPosition, collectionPosition);

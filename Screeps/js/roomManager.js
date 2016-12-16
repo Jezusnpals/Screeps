@@ -13,13 +13,13 @@ var roomManager =
         room.memory.initialized = true;
         room.memory.mappedSources = [];
         room.memory.Infos = {};
-        room.memory.Infos[behaviorEnum.HARVESTER] = [];
-        room.memory.Infos[behaviorEnum.UPGRADER] = [];
-        room.memory.Infos[behaviorEnum.BUILDER] = [];
+        room.memory.Infos[behaviorEnum.HARVESTER] = {};
+        room.memory.Infos[behaviorEnum.UPGRADER] = {};
+        room.memory.Infos[behaviorEnum.BUILDER] = {};
         room.memory.pendingExtensionInfos = [];
         room.memory.reservedSources = {};
         room.memory.extensionsCount = 0;
-        room.memory.extensionIndexes = [];
+        room.memory.extensionKeys = {};
 
         
 
@@ -51,8 +51,9 @@ var roomManager =
             if (currentExtensionId)
             {
                 pendingExtensionInfo.structureId = currentExtensionId;
-                room.memory.Infos[behaviorEnum.BUILDER].push(pendingExtensionInfo);
-                room.memory.extensionIndexes.push(room.memory.Infos[behaviorEnum.BUILDER].length - 1);
+                var extentionKey = pendingExtensionInfo.key;
+                room.memory.Infos[behaviorEnum.BUILDER][extentionKey] = pendingExtensionInfo;
+                room.memory.extensionKeys.push(extentionKey);
                 room.memory.pendingExtensionInfos.splice(i, 1);
                 i--;
             }
@@ -76,6 +77,7 @@ var roomManager =
 
         if (constructionSiteResult === OK)
         {
+            room.memory.extensionsCount++;;
             room.memory.pendingExtensionInfos.push(extensionInfo);
             return true;
         }
@@ -86,23 +88,23 @@ var roomManager =
     {
         if (!room.memory.finishedMapping)
         {
-            if (room.memory.currentMappingType == infoEnum.SPAWN)
+            if (room.memory.currentMappingType === infoEnum.SPAWN)
             {
                 spawns.forEach(function (spawn)
                 {
                     var mappedSource = room.memory.mappedSources[room.memory.currentMappingIndex[0]];
                     var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentMappingIndex[1]];
                     var harvestInfo = spawnMapper.mapSingleCollectionPosition(spawn, collectionPositionInfo, mappedSource.sourceId);
-                    room.memory.Infos[behaviorEnum.HARVESTER].push(harvestInfo);
+                    room.memory.Infos[behaviorEnum.HARVESTER][harvestInfo.key] = harvestInfo;
                 });
                 room.memory.currentMappingType = infoEnum.CONTROL;
             }
-            else if (room.memory.currentMappingType == infoEnum.CONTROL)
+            else if (room.memory.currentMappingType === infoEnum.CONTROL)
             {
                 var mappedSource = room.memory.mappedSources[room.memory.currentMappingIndex[0]];
                 var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentMappingIndex[1]];
                 var controlInfo = controlMapper.mapSingleCollectionPosition(room.controller, collectionPositionInfo, mappedSource.sourceId);
-                room.memory.Infos[behaviorEnum.UPGRADER].push(controlInfo);
+                room.memory.Infos[behaviorEnum.UPGRADER][controlInfo.key] = controlInfo;
 
                 room.memory.currentMappingIndex[1]++;
                 if (room.memory.currentMappingIndex[1] >= mappedSource.collectionPositionInfos.length)
@@ -149,7 +151,7 @@ var roomManager =
 
             var creepMemory = Memory.creeps[name];
             var infos = room.memory.Infos[creepMemory.behavior];
-            var infoIndex = creepMemory.infoIndexes[creepMemory.behavior];
+            var infoIndex = creepMemory.infoKeys[creepMemory.behavior];
             var currentInfo = infos[infoIndex];
 
             var infoCreepNameIndex = currentInfo.creepNames.indexOf(name);
