@@ -308,7 +308,7 @@ var creepManager =
         info.structureId = newStructureId;
 
         var infoIndex = creep.room.memory.Infos[behavior].indexOf(info);
-        creep.room.memory.Infos[behavior].splice(infoIndex, 1);
+        creep.room.memory.Infos[behavior][infoIndex] = null; //set to null rather than delete because creeps save the index.
 
         creep.room.memory.Infos[behaviorEnum.HARVESTER].push(info);
         var harvestIndex = creep.room.memory.Infos[behaviorEnum.HARVESTER].length - 1;

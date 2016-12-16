@@ -12,7 +12,7 @@ function transferEnergy(creep, creepBuildInfo)
 {
     var structure = creepBuildInfo ? Game.getObjectById(creepBuildInfo.structureId) :
         null;
-    if (!structure)
+    if (!structure && creepBuildInfo)
     {
         var structuresInRoom = creep.room.lookAt(mapUtils.refreshRoomPosition(creepBuildInfo.extensionPosition))
                                .filter(rla => rla.type === 'structure');
