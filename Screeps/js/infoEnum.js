@@ -4,7 +4,7 @@ var infoEnum =
     SPAWN: 'spawn',
     CONTROL: 'control',
     EXTENSION: 'extension',
-    BehaviorDictonary: {}
+    IndexNameDictonary: {}
 };
 
 infoEnum.IndexNameDictonary[infoEnum.SPAWN] = behaviorEnum.HARVESTER;
