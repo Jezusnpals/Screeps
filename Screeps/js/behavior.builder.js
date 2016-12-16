@@ -69,7 +69,8 @@ var builder = {
             creep.memory.building = true;
         }
 
-        var creepBuildInfo = creep.memory.infoKeys[behaviorEnum.BUILDER] >= 0 ? creep.room.memory.Infos[behaviorEnum.BUILDER][creep.memory.infoKeys[behaviorEnum.BUILDER]] : null;
+        var infoKey = creep.memory.infoKeys[behaviorEnum.BUILDER];
+        var creepBuildInfo = infoKey ? creep.room.memory.Infos[behaviorEnum.BUILDER][infoKey] : null;
         if (creep.memory.building)
         {
             transferEnergy(creep, creepBuildInfo);

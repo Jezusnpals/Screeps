@@ -33,7 +33,8 @@ var harvester =
     run: function (creep)
     {
         var creepNeedsEnergy = creep.carry.energy < creep.carryCapacity;
-        var creepHarvestInfo = creep.memory.infoKeys[behaviorEnum.HARVESTER] >= 0 ? creep.room.memory.Infos[behaviorEnum.HARVESTER][creep.memory.infoKeys[behaviorEnum.HARVESTER]] : null;
+        var infoKey = creep.memory.infoKeys[behaviorEnum.HARVESTER];
+        var creepHarvestInfo = infoKey ? creep.room.memory.Infos[behaviorEnum.HARVESTER][infoKey] : null;
         if (creepNeedsEnergy)
         {
             creepUtils.harvestEnergy(creep, creepHarvestInfo);

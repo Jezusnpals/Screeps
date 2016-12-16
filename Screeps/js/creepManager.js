@@ -174,6 +174,7 @@ var creepManager =
         if (bestInfo != null)
         {
             var creepName = 'c' + new Date().getTime();
+            
             startMemory.infoKeys[behaviorType] = bestInfo.key;
             var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
             if (creepResult == creepName) 

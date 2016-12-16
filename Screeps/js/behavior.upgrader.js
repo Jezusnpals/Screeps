@@ -40,7 +40,8 @@ var upgrader =
             creep.memory.upgrading = true;
         }
 
-        var creepControlInfo = creep.memory.infoKeys[behaviorEnum.UPGRADER] >= 0 ? creep.room.memory.Infos[behaviorEnum.UPGRADER][creep.memory.infoKeys[behaviorEnum.UPGRADER]] : null;
+        var infoKey = creep.memory.infoKeys[behaviorEnum.UPGRADER];
+        var creepControlInfo = infoKey ? creep.room.memory.Infos[behaviorEnum.UPGRADER][infoKey] : null;
         if (creep.memory.upgrading)
         {
             transferEnergy(creep, creepControlInfo);
