@@ -94,7 +94,8 @@ var creepManager =
     calculateNextExtensionInfo: function (room)
     {
         var possibleCollectionPositionInfos = room.memory.mappedSources.map(s => s.collectionPositionInfos).reduce((c1, c2) => c1.concat(c2));
-        var currentExtensionComparablePositions = room.memory.Infos[behaviorEnum.BUILDER].map(ei => ei && mapUtils.getComparableRoomPosition(ei.collectionPosition));
+        var extentionInfos = room.memory.extensionKeys.map(key => room.memory.Infos[behaviorEnum.BUILDER][key]);
+        var currentExtensionComparablePositions = extentionInfos.map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
         possibleCollectionPositionInfos = possibleCollectionPositionInfos.filter(pes => !currentExtensionComparablePositions
                                                                          .includes(mapUtils.getComparableRoomPosition(pes.originalPos)));
         var collectionPositionCosts = possibleCollectionPositionInfos.map(function (collectionPositionInfo) {

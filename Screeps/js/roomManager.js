@@ -19,7 +19,7 @@ var roomManager =
         room.memory.pendingExtensionInfos = [];
         room.memory.reservedSources = {};
         room.memory.extensionsCount = 0;
-        room.memory.extensionKeys = {};
+        room.memory.extensionKeys = [];
 
         
 
