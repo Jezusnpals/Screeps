@@ -130,6 +130,7 @@ var creepManager =
     },
     calculateBestSource: function (infos, room, creepInfo)
     {
+        infos = Object.keys(infos).map(key => infos[key]);
         var openInfos = infos.filter(info => checkOpenInfo(info, room, creepInfo)); //maxCreeps
         if (openInfos.length == 0)
         {
