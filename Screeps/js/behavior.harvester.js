@@ -3,7 +3,7 @@ var behaviorEnum = require('behaviorEnum');
 
 function transferEnergy(creep, creepHarvestInfo)
 {
-    var structure = creepHarvestInfo ? Game.getObjectById(creepHarvestInfo.spawnId) :
+    var structure = creepHarvestInfo ? Game.getObjectById(creepHarvestInfo.structureId) :
         creep.room.find(FIND_STRUCTURES).filter(s => s.structureType == STRUCTURE_SPAWN)[0];
     var transferResults = creep.transfer(structure, RESOURCE_ENERGY);
 

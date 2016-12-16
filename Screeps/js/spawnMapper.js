@@ -11,7 +11,7 @@ var spawnMapper = {
     {
         this.mapAllPathsToCollectionPosition(spawn, collectionPositionInfo.originalPos);
         var mappedInfo = infoMapper.calculateMappedInfo(spawn.pos, collectionPositionInfo, 1, infoEnum.SPAWN, sourceId);
-        mappedInfo.spawnId = spawn.id;
+        mappedInfo.structureId = spawn.id;
         return mappedInfo;
     }
 }

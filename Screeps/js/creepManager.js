@@ -283,7 +283,7 @@ var creepManager =
 
         var creepsInThisRoom = Object.keys(Game.creeps)
                                 .map(k => Game.creeps[k])
-                                .filter(c => c.room.name == room.name);
+                                .filter(c => c.room.name === room.name);
         creepsInThisRoom.forEach(function (creep)
         {
             var infos = room.memory.Infos[creep.memory.behavior];
@@ -296,6 +296,26 @@ var creepManager =
                 addPercentFilled(infos[bestInfoIndex], room, creep.memory.creepInfo);
             }
         });
+    },
+    OnStructureComplete: function (creep, newStructureId)
+    {
+        var behavior = creep.memory.behavior
+        if (behavior !== behaviorEnum.BUILDER) {
+            return;
+        }
+        var info = creep.room.memory.Infos[behavior][creep.memory.infoIndexes[behavior]];
+        info.type = infoEnum.HARVESTER;
+        info.structureId = newStructureId;
+
+        var infoIndex = creep.room.memory.Infos[behavior].indexOf(info);
+        creep.room.memory.Infos[behavior].splice(infoIndex, 1);
+
+        creep.room.memory.Infos[behaviorEnum.HARVESTER].push(info);
+        var harvestIndex = creep.room.memory.Infos[behaviorEnum.HARVESTER].length - 1;
+
+        delete creep.memory.infoIndexes[behavior];
+        creep.memory.infoIndexes[behaviorEnum.HARVESTER] = harvestIndex;
+        creep.memory.behavior = behaviorEnum.HARVESTER;
     }
 }
 module.exports = creepManager;
