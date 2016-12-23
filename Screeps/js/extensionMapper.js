@@ -1,6 +1,6 @@
 var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
-var collectionInfoMapper = require('infoMapper');
+var collectionInfoMapper = require('collectionInfoMapper');
 var infoEnum = require('infoEnum');
 
 const extensionSearchRange = 8;

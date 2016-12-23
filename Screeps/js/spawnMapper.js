@@ -1,4 +1,4 @@
-var collectionInfoMapper = require('infoMapper');
+var collectionInfoMapper = require('collectionInfoMapper');
 var infoEnum = require('infoEnum');
 
 
