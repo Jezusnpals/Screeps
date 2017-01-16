@@ -1,7 +1,7 @@
 var mapUtils = {
     checkInBounds: function (x, y) {
         var roomSize = 50;
-        return x >= 0 && x < roomSize && y >= 0 && y <= roomSize;
+        return x >= 0 && x < roomSize && y >= 0 && y < roomSize;
     },
     getAdjacentRoomPositions: function (roomPos, maxDistance, minDistance)
     {
