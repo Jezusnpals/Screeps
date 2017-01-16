@@ -1,7 +1,7 @@
 var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
 
-var infoMapper = {
+var collectionInfoMapper = {
     calculateMappedInfo: function (startPosition, collectionPositionInfo, returnRange, infoType, sourceId)
     {
         var collectionPosition = mapUtils.refreshRoomPosition(collectionPositionInfo.originalPos);
@@ -56,5 +56,5 @@ var infoMapper = {
     }
     };
 
-module.exports = infoMapper;
+module.exports = collectionInfoMapper;
 

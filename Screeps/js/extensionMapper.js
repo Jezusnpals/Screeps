@@ -1,6 +1,6 @@
 var mapUtils = require('mapUtils');
 var pathManager = require('pathManager');
-var infoMapper = require('infoMapper');
+var collectionInfoMapper = require('collectionInfoMapper');
 var infoEnum = require('infoEnum');
 
 const extensionSearchRange = 8;
@@ -36,7 +36,7 @@ var extensionMapper = {
         }
         else
         {
-            var mappedInfo = infoMapper.calculateMappedInfo(currentBestPosition, collectionPositionInfo, 3, infoEnum.EXTENSION, sourceId);
+            var mappedInfo = collectionInfoMapper.calculateMappedInfo(currentBestPosition, collectionPositionInfo, 3, infoEnum.EXTENSION, sourceId);
             mappedInfo.extensionPosition = currentBestPosition;
             return mappedInfo;
         }
