@@ -32,7 +32,7 @@ module.exports.loop = function ()
     {
         var room = Game.rooms[name];
 
-        var deadCreepNames = Object.keys(Memory.creeps).filter
+        var deadCreepNames = Object.keys(Game.creeps).filter
             (n => !Object.keys(Game.creeps).includes(n));
 
         roomManager.cleanUp(room, deadCreepNames);
