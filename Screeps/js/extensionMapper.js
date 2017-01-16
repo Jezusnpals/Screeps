@@ -10,7 +10,7 @@ var extensionMapper = {
     {
         var possibleExtensionPositions = mapUtils.getAdjacentRoomPositions(collectionPositionInfo.originalPos, extensionSearchRange, 2);
         var relatedPathPositions = pathManager.getRelatedPathPositions(collectionPositionInfo.originalPos);
-        possibleExtensionPositions.filter(pos => mapUtils.isWalkableTerrain(pos));
+        possibleExtensionPositions = possibleExtensionPositions.filter(pos => mapUtils.isWalkableTerrain(pos));
         possibleExtensionPositions = mapUtils.filterPositionsFromArray(possibleExtensionPositions, relatedPathPositions);
         var currentLowestCost = -1;
         var currentBestPosition = null;

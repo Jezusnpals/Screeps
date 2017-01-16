@@ -27,7 +27,12 @@ var mapUtils = {
 
         return adjacentPositions;
     },
-    isWalkableTerrain: function (roomPos) {
+    isWalkableTerrain: function (roomPos)
+    {
+        if (!checkInBounds(roomPos))
+        {
+            return false;
+        }
         var walkableTerrain = ['plain', 'swamp']
         var currentTerrain = Game.map.getTerrainAt(roomPos);
         return walkableTerrain.includes(currentTerrain);
