@@ -29,7 +29,7 @@ var mapUtils = {
     },
     isWalkableTerrain: function (roomPos)
     {
-        if (!checkInBounds(roomPos))
+        if (!mapUtils.checkInBounds(roomPos))
         {
             return false;
         }
