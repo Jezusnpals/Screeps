@@ -255,7 +255,11 @@ var creepManager =
         creepManager.resetReservedSources(room);
         if (room.energyAvailable >= 200)
         {
-            if (finsihedMapping && room.memory.extensionKeys.length > 0)
+            var creeps = Object.keys(Game.creeps).map(key => Game.creeps[key]);
+            var numHarvestors = creeps.filter(c => c.memory.behavior === behaviorEnum.HARVESTER).length;
+            var numUpgraders = creeps.filter(c => c.memory.behavior === behaviorEnum.UPGRADER).length;
+            var atLeastOneUpgraderAndHarvester = numHarvestors > 0 && numUpgraders > 0;
+            if (finsihedMapping && room.memory.extensionKeys.length > 0 && atLeastOneUpgraderAndHarvester)
             {
                 createdCreep = this.createWorker(room, behaviorEnum.BUILDER);
 
