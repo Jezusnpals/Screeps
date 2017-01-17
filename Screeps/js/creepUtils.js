@@ -196,14 +196,13 @@ var creepUtils =
         });
         return creepUtils.pathToLinkedHarvestPosition(creep, mappedInfo);
     },
-    moveToSourceByMappedInfo: function (creep, source, mappedInfo)
-    {
+    moveToPositionBySavedPath: function (creep, position) {
         var terrainPath;
         var path = [];
         var stringCollectionPosition = '';
         if (!creep.memory.pathToKey)
         {
-            creep.memory.pathToKey = pathManager.getKey(creep.pos, mappedInfo.collectionPosition);
+            creep.memory.pathToKey = pathManager.getKey(creep.pos, position);
         }
         if (creep.memory.pathToKey)
         {
@@ -236,6 +235,12 @@ var creepUtils =
         {
             moveResults = creepUtils.tryMoveByPath(creep, path);
         }
+
+        return moveResults;
+    },
+    moveToSourceByMappedInfo: function (creep, source, mappedInfo)
+    {
+        var moveResults = creepUtils.moveToPositionBySavedPath(creep, mappedInfo.collectionPosition)
         
         if (creepUtils.recalculate_path_errors.includes(moveResults))
         {

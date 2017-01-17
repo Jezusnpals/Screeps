@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{81A7AC18-DF34-44FA-A71E-9144FE283E7D}"
 EndProject
@@ -31,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{ED7930A4-F8D1-
 		..\Screeps\js\behavior.builder.js = ..\Screeps\js\behavior.builder.js
 		..\Screeps\js\behavior.harvester.js = ..\Screeps\js\behavior.harvester.js
 		..\Screeps\js\behavior.js = ..\Screeps\js\behavior.js
+		..\Screeps\js\behavior.scout.js = ..\Screeps\js\behavior.scout.js
 		..\Screeps\js\behavior.upgrader.js = ..\Screeps\js\behavior.upgrader.js
 		..\Screeps\js\behaviorEnum.js = ..\Screeps\js\behaviorEnum.js
 		..\Screeps\js\collectionInfoMapper.js = ..\Screeps\js\collectionInfoMapper.js
