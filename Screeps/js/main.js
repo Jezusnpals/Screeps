@@ -32,8 +32,7 @@ module.exports.loop = function ()
         return Game.spawns[key];
     });
 
-    for (var name in Game.rooms)
-    {
+    Object.keys(Game.rooms).forEach(function (name) {
         var room = Game.rooms[name];
 
         if (!room.controller || !room.controller.my) //skip unowned rooms
@@ -41,8 +40,7 @@ module.exports.loop = function ()
             return;
         }
 
-        if (Memory.creeps)
-        {
+        if (Memory.creeps) {
             var deadCreepNames = Object.keys(Memory.creeps).filter
             (n => !Object.keys(Game.creeps).includes(n));
 
@@ -50,8 +48,7 @@ module.exports.loop = function ()
         }
 
         var currentRoomSpawns = allSpawns.filter(x => x.room.name == name);
-        if (!room.memory.initialized)
-        {
+        if (!room.memory.initialized) {
             roomManager.initialize(room, currentRoomSpawns);
         }
         //flagDrawer.showFlags(room);
@@ -61,7 +58,7 @@ module.exports.loop = function ()
         }
 
         roomManager.run(room);
-    }
+    });
     //console.log(Date.now() - start);
     Memory.frame++;
 }
