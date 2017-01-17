@@ -32,6 +32,11 @@ module.exports.loop = function ()
     {
         var room = Game.rooms[name];
 
+        if (!room.controller.my) //skip unowned rooms
+        {
+            return;
+        }
+
         var deadCreepNames = Object.keys(Game.creeps).filter
             (n => !Object.keys(Game.creeps).includes(n));
 
