@@ -5,6 +5,7 @@ var controlMapper = require('controlMapper');
 var creepManager = require('creepManager');
 var infoEnum = require('infoEnum');
 var behaviorEnum = require('behaviorEnum');
+var explorationManager = require('explorationManager');
 
 var roomManager =
 {
@@ -20,6 +21,8 @@ var roomManager =
         room.memory.reservedSources = {};
         room.memory.extensionsCount = 0;
         room.memory.extensionKeys = [];
+        
+        
 
         
 
@@ -150,13 +153,21 @@ var roomManager =
             reservedKeysOfDead.forEach(key => room.memory.reservedSources[key] = null);
 
             var creepMemory = Memory.creeps[name];
-            var infos = room.memory.Infos[creepMemory.behavior];
-            var infoIndex = creepMemory.infoKeys[creepMemory.behavior];
-            var currentInfo = infos[infoIndex];
 
-            var infoCreepNameIndex = currentInfo.creepNames.indexOf(name);
-            currentInfo.creepNames.splice(infoCreepNameIndex, 1);
-            creepManager.removeUsageFromInfo(room, currentInfo, creepMemory.creepInfo);
+            if (creepMemory.role === "WORKER")
+            {
+                var infos = room.memory.Infos[creepMemory.behavior];
+                var infoIndex = creepMemory.infoKeys[creepMemory.behavior];
+                var currentInfo = infos[infoIndex];
+
+                var infoCreepNameIndex = currentInfo.creepNames.indexOf(name);
+                currentInfo.creepNames.splice(infoCreepNameIndex, 1);
+                creepManager.removeUsageFromInfo(room, currentInfo, creepMemory.creepInfo);
+            }
+            else if (creepMemory.role === "EXPLORER")
+            {
+                explorationManager.unReserveRoom(name);
+            }
 
             delete Memory.creeps[name];
         });

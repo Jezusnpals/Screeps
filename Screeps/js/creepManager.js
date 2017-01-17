@@ -155,7 +155,7 @@ var creepManager =
 
         return openInfos[lowestCostIndex];
     },
-    createCreep(room, behaviorType) 
+    createWorker(room, behaviorType) 
     {
         var infos = room.memory.Infos[behaviorType];
         var creepBodies = [WORK, CARRY, MOVE];
@@ -166,7 +166,8 @@ var creepManager =
             isMoving: true,
             framesToSource: -1,
             knownReservedSources: [],
-            infoKeys: {}
+            infoKeys: {},
+            role: 'WORKER'
         };
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
 
@@ -186,7 +187,7 @@ var creepManager =
         }
         return false;
     },
-    createCreepWithoutInfo: function (room, behaviorType)
+    createWorkerWithoutInfo: function (room, behaviorType)
     {
         var startMemory = {
             behavior: behaviorType,
@@ -195,7 +196,8 @@ var creepManager =
             isMoving: true,
             framesToSource: -1,
             knownReservedSources: [],
-            infoKeys: {}
+            infoKeys: {},
+            role: 'WORKER'
         };
         var creepName = 'c' + new Date().getTime();
         var creepBodies = [WORK, CARRY, MOVE];
@@ -237,11 +239,11 @@ var creepManager =
     run: function (room, finsihedMapping)
     {
         creepManager.resetReservedSources(room);
-        if (Object.keys(Game.creeps).length < 500 && Game.spawns['Spawn1'].energy >= 200)
+        if (Game.spawns['Spawn1'].energy >= 200)
         {
             if (finsihedMapping && room.memory.extensionKeys.length > 0)
             {
-                var createdCreep = this.createCreep(room, behaviorEnum.BUILDER);
+                var createdCreep = this.createWorker(room, behaviorEnum.BUILDER);
 
                 if (createdCreep)
                 {
@@ -252,22 +254,22 @@ var creepManager =
             {
                 if (finsihedMapping)
                 {
-                    this.createCreep(room, behaviorEnum.HARVESTER);
+                    this.createWorker(room, behaviorEnum.HARVESTER);
                 }
                 else
                 {
-                    this.createCreepWithoutInfo(room, behaviorEnum.HARVESTER);
+                    this.createWorkerWithoutInfo(room, behaviorEnum.HARVESTER);
                 }
             }
             else
             {
                 if (finsihedMapping)
                 {
-                    this.createCreep(room, behaviorEnum.UPGRADER);
+                    this.createWorker(room, behaviorEnum.UPGRADER);
                 }
                 else
                 {
-                    this.createCreepWithoutInfo(room, behaviorEnum.UPGRADER);
+                    this.createWorkerWithoutInfo(room, behaviorEnum.UPGRADER);
                 }
             }
         }
@@ -287,10 +289,11 @@ var creepManager =
             room.memory.collectionUsageDictonary[key] = 0;
         });
 
-        var creepsInThisRoom = Object.keys(Game.creeps)
+        var workersInThisRoom = Object.keys(Game.creeps)
                                 .map(k => Game.creeps[k])
-                                .filter(c => c.room.name === room.name);
-        creepsInThisRoom.forEach(function (creep)
+                                .filter(c => c.room.name === room.name
+                                && c.memory.role === "WORKER");
+        workersInThisRoom.forEach(function (creep)
         {
             var infos = room.memory.Infos[creep.memory.behavior];
             var bestInfo = creepManager.calculateBestSource(infos, room, creep.memory.creepInfo);
