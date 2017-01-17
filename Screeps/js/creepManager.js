@@ -220,7 +220,7 @@ var creepManager =
     removeUsageFromInfo: function (room, info, creepInfo) {
         var percentAddingUnit = calculatePercentUsage(info, creepInfo);
         room.memory.collectionUsageDictonary[mapUtils
-            .getComparableRoomPosition(info.collectionPosition)] -= percentAddingUnit;;
+            .getComparableRoomPosition(info.collectionPosition)] -= percentAddingUnit;
     },
     resetReservedSources: function (room)
     {
@@ -253,7 +253,7 @@ var creepManager =
     {
         var createdCreep = false;
         creepManager.resetReservedSources(room);
-        if (room.energyAvailable >= 150)
+        if (room.energyAvailable >= 200)
         {
             if (finsihedMapping && room.memory.extensionKeys.length > 0)
             {
