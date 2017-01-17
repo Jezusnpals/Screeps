@@ -174,7 +174,7 @@ var creepManager =
         var bestInfo = this.calculateBestSource(infos, room, startMemory.creepInfo);
         if (bestInfo != null)
         {
-            var creepName = 'c' + new Date().getTime();
+            var creepName = 'cW' + new Date().getTime();
             
             startMemory.infoKeys[behaviorType] = bestInfo.key;
             var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
@@ -199,8 +199,21 @@ var creepManager =
             infoKeys: {},
             role: 'WORKER'
         };
-        var creepName = 'c' + new Date().getTime();
+        var creepName = 'cW' + new Date().getTime();
         var creepBodies = [WORK, CARRY, MOVE];
+        startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
+        Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
+    },
+    createScout: function(room)
+    {
+        var startMemory = {
+            behavior: behaviorEnum.SCOUT,
+            pathToKey: '',
+            isMoving: true,
+            role: 'EXPLORER'
+        };
+        var creepName = 'cS' + new Date().getTime();
+        var creepBodies = [ATTACK, MOVE, MOVE];
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
     },
@@ -238,12 +251,13 @@ var creepManager =
     },
     run: function (room, finsihedMapping)
     {
+        var createdCreep = false;
         creepManager.resetReservedSources(room);
         if (Game.spawns['Spawn1'].energy >= 200)
         {
             if (finsihedMapping && room.memory.extensionKeys.length > 0)
             {
-                var createdCreep = this.createWorker(room, behaviorEnum.BUILDER);
+                createdCreep = this.createWorker(room, behaviorEnum.BUILDER);
 
                 if (createdCreep)
                 {
@@ -254,23 +268,29 @@ var creepManager =
             {
                 if (finsihedMapping)
                 {
-                    this.createWorker(room, behaviorEnum.HARVESTER);
+                    createdCreep = this.createWorker(room, behaviorEnum.HARVESTER);
                 }
                 else
                 {
                     this.createWorkerWithoutInfo(room, behaviorEnum.HARVESTER);
+                    createdCreep = true;
                 }
             }
             else
             {
                 if (finsihedMapping)
                 {
-                    this.createWorker(room, behaviorEnum.UPGRADER);
+                    createdCreep = this.createWorker(room, behaviorEnum.UPGRADER);
                 }
                 else
                 {
                     this.createWorkerWithoutInfo(room, behaviorEnum.UPGRADER);
+                    createdCreep = true;
                 }
+            }
+            if (!createdCreep)
+            {
+                this.createScout(room);
             }
         }
     },

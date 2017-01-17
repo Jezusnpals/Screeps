@@ -36,15 +36,18 @@ module.exports.loop = function ()
     {
         var room = Game.rooms[name];
 
-        if (!room.controller.my) //skip unowned rooms
+        if (!room.controller || !room.controller.my) //skip unowned rooms
         {
             return;
         }
 
-        var deadCreepNames = Object.keys(Memory.creeps).filter
+        if (Memory.creeps)
+        {
+            var deadCreepNames = Object.keys(Memory.creeps).filter
             (n => !Object.keys(Game.creeps).includes(n));
 
-        roomManager.cleanUp(room, deadCreepNames);
+            roomManager.cleanUp(room, deadCreepNames);
+        }
 
         var currentRoomSpawns = allSpawns.filter(x => x.room.name == name);
         if (!room.memory.initialized)

@@ -12,7 +12,7 @@ var explorationManager =
     {
         var reservedRoomNames = Object.keys(Memory.explorationManager.reservedRooms)
                                 .map(key => Memory.explorationManager.reservedRooms[key]);
-        var avalibleRoomNames = roomsToExplore.filter(rte => !reservedRoomNames.includes(rte));
+        var avalibleRoomNames = Memory.explorationManager.roomsToExplore.filter(rte => !reservedRoomNames.includes(rte));
 
         if (avalibleRoomNames.length === 0)
         {
@@ -28,7 +28,7 @@ var explorationManager =
             if(currentDistance < lowestDistance)
             {
                 lowestDistance = currentDistance;
-                currentBestRoom = avalibleRoomNames;
+                currentBestRoom = avalibleRoomNames[i];
             }
         }
 
@@ -38,7 +38,8 @@ var explorationManager =
     {
         var exits = Game.map.describeExits(roomName);
         exits = Object.keys(exits).map(key => exits[key]); //convert to array
-        exits = exits.filter(e => !Object.keys(Game.rooms).includes(e)); //filter out known rooms
+        exits = exits.filter(e => !Object.keys(Game.rooms).includes(e))
+                     .filter(e => !Memory.explorationManager.roomsToExplore.includes(e)); //filter out known rooms
         Memory.explorationManager.roomsToExplore = Memory.explorationManager.roomsToExplore
                                                    .concat(exits);
         var exploredRoomIndex = Memory.explorationManager.roomsToExplore.indexOf(roomName);

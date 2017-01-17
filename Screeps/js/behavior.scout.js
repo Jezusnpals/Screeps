@@ -4,7 +4,7 @@ var explorationManager = require('explorationManager');
 
 function findRoomToScout(creep)
 {
-    var roomToScout = explorationManager.findRoomToScout(creep);
+    var roomToScout = explorationManager.getNextRoomToExplore(creep);
 
     if (!roomToScout)
     {
@@ -16,17 +16,17 @@ function findRoomToScout(creep)
     return true;
 }
 
-function checkValidScoutRoom(creep)
+function checkForScoutableRoom(creep)
 {
     var hasScoutRoom = creep.memory.ScoutRoomName;
     if (!hasScoutRoom) {
         var findRoomToScoutResult = findRoomToScout(creep);
         if (!findRoomToScoutResult) {
-            return;
+            return false;
         }
     }
 
-    var inScoutingRoom = roomToScout === creep.room.name;
+    var inScoutingRoom = creep.memory.ScoutRoomName === creep.room.name;
     if (inScoutingRoom)
     {
         explorationManager.onRoomExplored(creep.room.name);
@@ -34,16 +34,21 @@ function checkValidScoutRoom(creep)
         var findRoomToScoutResult = findRoomToScout(creep);
         if (!findRoomToScoutResult)
         {
-            return;
+            return false;
         }
     }
+
+    return true;
 }
 
 var scout =
 {
     run: function (creep)
     {
-        checkValidScoutRoom(creep);
+        if (!checkForScoutableRoom(creep))
+        {
+            return;
+        }
         
         var scoutPosition = new RoomPosition(25, 25, creep.memory.ScoutRoomName);
 

@@ -160,6 +160,12 @@ var roomManager =
                 var infoIndex = creepMemory.infoKeys[creepMemory.behavior];
                 var currentInfo = infos[infoIndex];
 
+                if (!currentInfo)
+                {
+                    delete Memory.creeps[name];
+                    return;
+                }
+
                 var infoCreepNameIndex = currentInfo.creepNames.indexOf(name);
                 currentInfo.creepNames.splice(infoCreepNameIndex, 1);
                 creepManager.removeUsageFromInfo(room, currentInfo, creepMemory.creepInfo);
