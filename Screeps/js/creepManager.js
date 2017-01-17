@@ -253,7 +253,7 @@ var creepManager =
     {
         var createdCreep = false;
         creepManager.resetReservedSources(room);
-        if (Game.spawns['Spawn1'].energy >= 200)
+        if (room.energyAvailable >= 150)
         {
             if (finsihedMapping && room.memory.extensionKeys.length > 0)
             {
