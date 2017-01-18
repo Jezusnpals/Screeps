@@ -157,7 +157,7 @@ var creepManager =
 
         return openInfos[lowestCostIndex];
     },
-    createWorker(room, behaviorType) 
+    tryCreateWorker(room, behaviorType) 
     {
         var infos = room.memory.Infos[behaviorType];
         var creepBodies = [WORK, CARRY, MOVE];
@@ -206,16 +206,16 @@ var creepManager =
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
     },
-    createExplorer: function(room)
+    createScout: function (room, behaviorType)
     {
         var startMemory = {
-            behavior: behaviorEnum.EXPLORER,
+            behavior: behaviorType,
             pathToKey: '',
             isMoving: true,
             role: roleEnum.SCOUT
         };
         var creepName = 'cS' + new Date().getTime();
-        var creepBodies = [ATTACK, MOVE, MOVE];
+        var creepBodies = [TOUGH, MOVE, MOVE];
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
     },
@@ -263,18 +263,18 @@ var creepManager =
             var atLeastOneUpgraderAndHarvester = numHarvestors > 0 && numUpgraders > 0;
             if (finsihedMapping && room.memory.extensionKeys.length > 0 && atLeastOneUpgraderAndHarvester)
             {
-                createdCreep = this.createWorker(room, behaviorEnum.BUILDER);
+                createdCreep = this.tryCreateWorker(room, behaviorEnum.BUILDER);
 
                 if (createdCreep)
                 {
                     return;
                 }
             }
-            if (Object.keys(Game.creeps).length % 2 == 0)
+            if (numHarvestors <= numUpgraders)
             {
                 if (finsihedMapping)
                 {
-                    createdCreep = this.createWorker(room, behaviorEnum.HARVESTER);
+                    createdCreep = this.tryCreateWorker(room, behaviorEnum.HARVESTER);
                 }
                 else
                 {
@@ -286,7 +286,7 @@ var creepManager =
             {
                 if (finsihedMapping)
                 {
-                    createdCreep = this.createWorker(room, behaviorEnum.UPGRADER);
+                    createdCreep = this.tryCreateWorker(room, behaviorEnum.UPGRADER);
                 }
                 else
                 {
@@ -294,9 +294,17 @@ var creepManager =
                     createdCreep = true;
                 }
             }
-            if (!createdCreep && explorationManager.checkExistAvailableRoomToExplore())
+            if (!createdCreep)
             {
-                this.createExplorer(room);
+                if (explorationManager.checkExistAvailableRoomToExplore())
+                {
+                    this.createScout(room, behaviorEnum.EXPLORER);
+                }
+                else if (explorationManager.checkExistAvailableRoomToWatch())
+                {
+                    this.createScout(room, behaviorEnum.WATCH);
+                }
+                
             }
         }
     },

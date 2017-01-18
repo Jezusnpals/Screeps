@@ -166,7 +166,7 @@ var roomManager =
                 currentInfo.creepNames.splice(infoCreepNameIndex, 1);
                 creepManager.removeUsageFromInfo(room, currentInfo, creepMemory.creepInfo);
             }
-            else if (creepMemory.role === roleEnum.EXPLORER)
+            else if (creepMemory.role === roleEnum.SCOUT)
             {
                 explorationManager.unReserveRoom(name);
             }

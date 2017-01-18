@@ -10,7 +10,7 @@ var explorationManager =
             reservedRooms: {}
         };
     },
-    getAvailableRooms: function ()
+    getAvailableRoomsToExplore: function ()
     {
         var reservedRoomNames = Object.keys(Memory.explorationManager.reservedRooms)
                                 .map(key => Memory.explorationManager.reservedRooms[key]);
@@ -18,43 +18,61 @@ var explorationManager =
     },
     checkExistAvailableRoomToExplore: function ()
     {
-        return explorationManager.getAvailableRooms().length > 0;
+        return explorationManager.getAvailableRoomsToExplore().length > 0;
     },
     getNextRoomToExplore: function (creep)
     {
-        var availableRoomNames = explorationManager.getAvailableRooms();
+        var availableRoomNames = explorationManager.getAvailableRoomsToExplore();
 
         if (availableRoomNames.length === 0)
         {
             return null;
         }
-        
-        var lowestDistance = Game.map.getRoomLinearDistance(creep.room.name, availableRoomNames[0], false);
-        var currentBestRoom = availableRoomNames[0];
-        for(let i = 1; i < availableRoomNames.length; i++)
-        {
-            var currentDistance = Game.map.getRoomLinearDistance(creep.room.name, availableRoomNames[i], false);
 
-            if(currentDistance < lowestDistance)
-            {
-                lowestDistance = currentDistance;
-                currentBestRoom = availableRoomNames[i];
-            }
-        }
+        var closestRoomToCreep = availableRoomNames.reduce(function (r1, r2) {
+            var r1Distance = Game.map.getRoomLinearDistance(creep.room.name, r1, false);
+            var r2Distance = Game.map.getRoomLinearDistance(creep.room.name, r2, false);
+            return r1Distance < r2Distance ? r1 : r2;
+        });
 
-        return currentBestRoom;
+        return closestRoomToCreep;
     },
-    mapRoom: function(room) {
+    getAvailableRoomsToWatch: function() 
+    {
+        var mappedRoomNames = Object.keys(Memory.explorationManager.mappedRooms);
+        var exploredRoomsWithAttackers = mappedRoomNames
+            .filter(mrn => Memory.explorationManager.mappedRooms[mrn].numberOfAttackers > 0)
+            .filter(e => !Memory.explorationManager.roomsToExplore.includes(e));
+        return exploredRoomsWithAttackers;
+    },
+    checkExistAvailableRoomToWatch: function ()
+    {
+        return explorationManager.getAvailableRoomsToWatch().length > 0;
+    },
+    getNextRoomToWatch: function ()
+    {
+        var availableRoomsToWatch = explorationManager.getAvailableRoomsToWatch();
+
+        var closestRoomToStart = availableRoomsToWatch.reduce(function (r1, r2) {
+            var r1Distance = Game.map.getRoomLinearDistance(Memory.startRoomName, r1, false);
+            var r2Distance = Game.map.getRoomLinearDistance(Memory.startRoomName, r2, false);
+            return r1Distance < r2Distance ? r1 : r2;
+        });
+
+        return closestRoomToStart;
+    },
+    mapRoom: function (room)
+    {
         Memory.explorationManager.mappedRooms[room.name] = roomMapper.mapRoom(room);
     },
-    onRoomExplored: function (room)
+    onRoomExplored: function (room) 
     {
         var exploredRoomNames = Object.keys(Memory.explorationManager.mappedRooms);
 
         var exits = Game.map.describeExits(room.name);
-        exits = Object.keys(exits).map(key => exits[key]); //convert to array
+        exits = Object.keys(exits).map(key => exits[key]);
         exits = exits.filter(e => !exploredRoomNames.includes(e))
-                     .filter(e => !Memory.explorationManager.roomsToExplore.includes(e)); //filter out known rooms
+                     .filter(e => !Memory.explorationManager.roomsToExplore.includes(e)); 
         Memory.explorationManager.roomsToExplore = Memory.explorationManager.roomsToExplore
                                                    .concat(exits);
         var exploredRoomIndex = Memory.explorationManager.roomsToExplore.indexOf(room.name);

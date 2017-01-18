@@ -17,8 +17,8 @@ module.exports.loop = function ()
     {
         pathManager.initialize();
         explorationManager.initialize();
-        var startRoomName = Object.keys(Game.rooms)[0];
-        explorationManager.onRoomExplored(Game.rooms[startRoomName]);
+        Memory.startRoomName = Object.keys(Game.rooms)[0];
+        explorationManager.onRoomExplored(Game.rooms[Memory.startRoomName]);
         Memory.frame = 0;
         Memory.initialized = true;
     }
