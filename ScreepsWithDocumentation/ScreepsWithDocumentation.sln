@@ -37,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mappers", "Mappers", "{73D3
 		..\Screeps\js\collectionInfoMapper.js = ..\Screeps\js\collectionInfoMapper.js
 		..\Screeps\js\controlMapper.js = ..\Screeps\js\controlMapper.js
 		..\Screeps\js\extensionMapper.js = ..\Screeps\js\extensionMapper.js
+		..\Screeps\js\roomMapper.js = ..\Screeps\js\roomMapper.js
 		..\Screeps\js\sourceMapper.js = ..\Screeps\js\sourceMapper.js
 		..\Screeps\js\spawnMapper.js = ..\Screeps\js\spawnMapper.js
 	EndProjectSection

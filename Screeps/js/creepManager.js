@@ -4,6 +4,7 @@ var infoEnum = require('infoEnum');
 var creepUtils = require('creepUtils');
 var extensionMapper = require('extensionMapper');
 var pathManager = require('pathManager');
+var explorationManager = require('explorationManager');
 
 function calculateCost(info, room)
 {
@@ -292,7 +293,7 @@ var creepManager =
                     createdCreep = true;
                 }
             }
-            if (!createdCreep)
+            if (!createdCreep && explorationManager.checkExistAvailableRoomToExplore())
             {
                 this.createScout(room);
             }

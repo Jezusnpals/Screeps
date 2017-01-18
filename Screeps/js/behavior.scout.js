@@ -31,7 +31,7 @@ function checkForScoutableRoom(creep)
     var inScoutingRoom = creep.memory.ScoutRoomName === creep.room.name;
     if (inScoutingRoom)
     {
-        explorationManager.onRoomExplored(creep.room.name);
+        explorationManager.onRoomExplored(creep.room);
         explorationManager.unReserveRoom(creep.name);
         creep.memory.ScoutRoomName = null;
         var findRoomToScoutResult = findRoomToScout(creep);
