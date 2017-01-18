@@ -45,10 +45,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Behaviors", "Behaviors", "{E14F61A3-99D3-48C8-AEE7-7204AA698492}"
 	ProjectSection(SolutionItems) = preProject
 		..\Screeps\js\behavior.builder.js = ..\Screeps\js\behavior.builder.js
+		..\Screeps\js\behavior.explorer.js = ..\Screeps\js\behavior.explorer.js
 		..\Screeps\js\behavior.harvester.js = ..\Screeps\js\behavior.harvester.js
 		..\Screeps\js\behavior.js = ..\Screeps\js\behavior.js
-		..\Screeps\js\behavior.scout.js = ..\Screeps\js\behavior.scout.js
 		..\Screeps\js\behavior.upgrader.js = ..\Screeps\js\behavior.upgrader.js
+		..\Screeps\js\behavior.watch.js = ..\Screeps\js\behavior.watch.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Managers", "Managers", "{5077280C-2603-4C4B-8924-69FAD00998C0}"
@@ -63,6 +64,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Enums", "Enums", "{4D3D8B89
 	ProjectSection(SolutionItems) = preProject
 		..\Screeps\js\behaviorEnum.js = ..\Screeps\js\behaviorEnum.js
 		..\Screeps\js\infoEnum.js = ..\Screeps\js\infoEnum.js
+		..\Screeps\js\roleEnum.js = ..\Screeps\js\roleEnum.js
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{A7B94C7E-0DC1-480F-9A98-0BABB5C5484B}"

@@ -1,4 +1,5 @@
 var behaviorEnum = require('behaviorEnum');
+var roleEnum = require('roleEnum');
 var mapUtils = require('mapUtils');
 var infoEnum = require('infoEnum');
 var creepUtils = require('creepUtils');
@@ -168,7 +169,7 @@ var creepManager =
             framesToSource: -1,
             knownReservedSources: [],
             infoKeys: {},
-            role: 'WORKER'
+            role: roleEnum.WORKER
         };
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
 
@@ -198,20 +199,20 @@ var creepManager =
             framesToSource: -1,
             knownReservedSources: [],
             infoKeys: {},
-            role: 'WORKER'
+            role: roleEnum.WORKER
         };
         var creepName = 'cW' + new Date().getTime();
         var creepBodies = [WORK, CARRY, MOVE];
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
     },
-    createScout: function(room)
+    createExplorer: function(room)
     {
         var startMemory = {
-            behavior: behaviorEnum.SCOUT,
+            behavior: behaviorEnum.EXPLORER,
             pathToKey: '',
             isMoving: true,
-            role: 'EXPLORER'
+            role: roleEnum.SCOUT
         };
         var creepName = 'cS' + new Date().getTime();
         var creepBodies = [ATTACK, MOVE, MOVE];
@@ -295,7 +296,7 @@ var creepManager =
             }
             if (!createdCreep && explorationManager.checkExistAvailableRoomToExplore())
             {
-                this.createScout(room);
+                this.createExplorer(room);
             }
         }
     },
@@ -317,7 +318,7 @@ var creepManager =
         var workersInThisRoom = Object.keys(Game.creeps)
                                 .map(k => Game.creeps[k])
                                 .filter(c => c.room.name === room.name
-                                && c.memory.role === "WORKER");
+                                && c.memory.role === roleEnum.WORKER);
         workersInThisRoom.forEach(function (creep)
         {
             var infos = room.memory.Infos[creep.memory.behavior];

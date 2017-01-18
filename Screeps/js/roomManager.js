@@ -5,6 +5,7 @@ var controlMapper = require('controlMapper');
 var creepManager = require('creepManager');
 var infoEnum = require('infoEnum');
 var behaviorEnum = require('behaviorEnum');
+var roleEnum = require('roleEnum');
 var explorationManager = require('explorationManager');
 
 var roomManager =
@@ -149,7 +150,7 @@ var roomManager =
 
             var creepMemory = Memory.creeps[name];
 
-            if (creepMemory.role === "WORKER")
+            if (creepMemory.role === roleEnum.WORKER)
             {
                 var infos = room.memory.Infos[creepMemory.behavior];
                 var infoIndex = creepMemory.infoKeys[creepMemory.behavior];
@@ -165,7 +166,7 @@ var roomManager =
                 currentInfo.creepNames.splice(infoCreepNameIndex, 1);
                 creepManager.removeUsageFromInfo(room, currentInfo, creepMemory.creepInfo);
             }
-            else if (creepMemory.role === "EXPLORER")
+            else if (creepMemory.role === roleEnum.EXPLORER)
             {
                 explorationManager.unReserveRoom(name);
             }

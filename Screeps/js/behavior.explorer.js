@@ -1,13 +1,9 @@
-var creepUtils = require('creepUtils');
-var behaviorEnum = require('behaviorEnum');
 var explorationManager = require('explorationManager');
 
-function findRoomToScout(creep)
-{
+function findRoomToScout(creep) {
     var roomToScout = explorationManager.getNextRoomToExplore(creep);
 
-    if (!roomToScout)
-    {
+    if (!roomToScout) {
         return false;
     }
 
@@ -16,27 +12,22 @@ function findRoomToScout(creep)
     return true;
 }
 
-function checkForScoutableRoom(creep)
-{
+function checkForScoutableRoom(creep) {
     var hasScoutRoom = creep.memory.ScoutRoomName;
-    if (!hasScoutRoom)
-    {
+    if (!hasScoutRoom) {
         var findRoomToScoutResult = findRoomToScout(creep);
-        if (!findRoomToScoutResult)
-        {
+        if (!findRoomToScoutResult) {
             return false;
         }
     }
 
     var inScoutingRoom = creep.memory.ScoutRoomName === creep.room.name;
-    if (inScoutingRoom)
-    {
+    if (inScoutingRoom) {
         explorationManager.onRoomExplored(creep.room);
         explorationManager.unReserveRoom(creep.name);
         creep.memory.ScoutRoomName = null;
         var findRoomToScoutResult = findRoomToScout(creep);
-        if (!findRoomToScoutResult)
-        {
+        if (!findRoomToScoutResult) {
             return false;
         }
     }
@@ -44,19 +35,17 @@ function checkForScoutableRoom(creep)
     return true;
 }
 
-var scout =
+var explorer =
 {
-    run: function (creep)
-    {
-        if (!checkForScoutableRoom(creep))
-        {
+    run: function (creep) {
+        if (!checkForScoutableRoom(creep)) {
             return;
         }
-        
+
         var scoutPosition = new RoomPosition(25, 25, creep.memory.ScoutRoomName);
 
         creep.moveTo(scoutPosition);
     }
 };
 
-module.exports = scout;
+module.exports = explorer;
