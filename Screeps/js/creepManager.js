@@ -96,7 +96,7 @@ var creepManager =
     calculateNextExtensionInfo: function (room)
     {
         var possibleCollectionPositionInfos = room.memory.mappedSources.map(s => s.collectionPositionInfos).reduce((c1, c2) => c1.concat(c2));
-        var extentionInfos = room.memory.extensionKeys.map(key => room.memory.Infos[behaviorEnum.BUILDER][key]);
+        var extentionInfos = room.memory.extensionBuildKeys.map(key => room.memory.Infos[behaviorEnum.BUILDER][key]);
         var currentExtensionComparablePositions = extentionInfos.map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
         possibleCollectionPositionInfos = possibleCollectionPositionInfos.filter(pes => !currentExtensionComparablePositions
                                                                          .includes(mapUtils.getComparableRoomPosition(pes.originalPos)));
@@ -261,7 +261,7 @@ var creepManager =
             var numHarvestors = creeps.filter(c => c.memory.behavior === behaviorEnum.HARVESTER).length;
             var numUpgraders = creeps.filter(c => c.memory.behavior === behaviorEnum.UPGRADER).length;
             var atLeastOneUpgraderAndHarvester = numHarvestors > 0 && numUpgraders > 0;
-            if (finsihedMapping && room.memory.extensionKeys.length > 0 && atLeastOneUpgraderAndHarvester)
+            if (finsihedMapping && room.memory.extensionBuildKeys.length > 0 && atLeastOneUpgraderAndHarvester)
             {
                 createdCreep = this.tryCreateWorker(room, behaviorEnum.BUILDER);
 
@@ -344,17 +344,20 @@ var creepManager =
         var behavior = creep.memory.behavior;
         if (behavior !== behaviorEnum.BUILDER)
         {
+            console.log(`Error: OnStructureComplete but not builder, creep: ${creep.name}`);
             return;
         }
+
         var info = creep.room.memory.Infos[behavior][creep.memory.infoKeys[behavior]];
         info.type = infoEnum.HARVESTER;
         info.structureId = newStructureId;
 
-        var extensionKeyIndex = creep.room.memory.extensionKeys.indexOf(creep.memory.infoKeys[behavior]);
+        var extensionKeyIndex = creep.room.memory.extensionBuildKeys.indexOf(creep.memory.infoKeys[behavior]);
         var isAnExtensionKey = extensionKeyIndex >= 0;
         if (isAnExtensionKey)
         {
-            creep.room.memory.extensionKeys.splice(extensionKeyIndex, 1);
+            creep.room.memory.extensionBuildKeys.splice(extensionKeyIndex, 1);
+            creep.room.memory.extensionHarvestKeys.push(creep.memory.infoKeys[behavior]);
         }
 
         delete creep.room.memory.Infos[behavior][info.key];

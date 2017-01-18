@@ -18,10 +18,12 @@ var roomManager =
         room.memory.Infos[behaviorEnum.HARVESTER] = {};
         room.memory.Infos[behaviorEnum.UPGRADER] = {};
         room.memory.Infos[behaviorEnum.BUILDER] = {};
+
         room.memory.pendingExtensionInfos = [];
         room.memory.reservedSources = {};
         room.memory.extensionsCount = 0;
-        room.memory.extensionKeys = [];
+        room.memory.extensionBuildKeys = [];
+        room.memory.extensionHarvestKeys = [];
         
         var sources = room.find(FIND_SOURCES);
         for (var index in sources)
@@ -53,7 +55,7 @@ var roomManager =
                 pendingExtensionInfo.structureId = currentExtensionId;
                 var extentionKey = pendingExtensionInfo.key;
                 room.memory.Infos[behaviorEnum.BUILDER][extentionKey] = pendingExtensionInfo;
-                room.memory.extensionKeys.push(extentionKey);
+                room.memory.extensionBuildKeys.push(extentionKey);
                 room.memory.pendingExtensionInfos.splice(i, 1);
                 i--;
             }

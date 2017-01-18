@@ -257,8 +257,8 @@ var creepUtils =
     {
         var source = mappedInfo ? Game.getObjectById(mappedInfo.sourceId) :
             creep.room.find(FIND_SOURCES).reduce(function (s1, s2) {
-                var s1Distance = mapUtils.calculateDistanceBetweenTwoPoints(creep.pos, s1.pos);
-                var s2Distance = mapUtils.calculateDistanceBetweenTwoPoints(creep.pos, s2.pos);
+                var s1Distance = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, s1.pos);
+                var s2Distance = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, s2.pos);
                 return s1Distance < s2Distance ? s1 : s2;
             });
         var harvestResult = creep.harvest(source)

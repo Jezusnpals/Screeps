@@ -8,7 +8,7 @@ var watch =
         {
             var roomToWatch = explorationManager.getNextRoomToWatch()
             creep.memory.RoomToWatch = roomToWatch;
-            explorationManager.reserveRoom(roomToWatch);
+            explorationManager.reserveRoom(creep, roomToWatch);
         }
 
         if (creep.memory.RoomToWatch === creep.room.name)

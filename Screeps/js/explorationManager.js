@@ -39,10 +39,12 @@ var explorationManager =
     },
     getAvailableRoomsToWatch: function() 
     {
+        var reservedRoomNames = Object.keys(Memory.explorationManager.reservedRooms)
+                                .map(key => Memory.explorationManager.reservedRooms[key]);
         var mappedRoomNames = Object.keys(Memory.explorationManager.mappedRooms);
         var exploredRoomsWithAttackers = mappedRoomNames
             .filter(mrn => Memory.explorationManager.mappedRooms[mrn].numberOfAttackers > 0)
-            .filter(e => !Memory.explorationManager.roomsToExplore.includes(e));
+            .filter(mrn => !reservedRoomNames.includes(mrn));
         return exploredRoomsWithAttackers;
     },
     checkExistAvailableRoomToWatch: function ()
