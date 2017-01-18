@@ -28,26 +28,46 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ScreepsAutocomplete-master"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "js", "js", "{ED7930A4-F8D1-434C-988C-B5D0BA8627E5}"
 	ProjectSection(SolutionItems) = preProject
+		..\Screeps\js\flagDrawer.js = ..\Screeps\js\flagDrawer.js
+		..\Screeps\js\main.js = ..\Screeps\js\main.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mappers", "Mappers", "{73D30224-1F3E-4870-A86E-F17244C13C42}"
+	ProjectSection(SolutionItems) = preProject
+		..\Screeps\js\collectionInfoMapper.js = ..\Screeps\js\collectionInfoMapper.js
+		..\Screeps\js\controlMapper.js = ..\Screeps\js\controlMapper.js
+		..\Screeps\js\extensionMapper.js = ..\Screeps\js\extensionMapper.js
+		..\Screeps\js\sourceMapper.js = ..\Screeps\js\sourceMapper.js
+		..\Screeps\js\spawnMapper.js = ..\Screeps\js\spawnMapper.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Behaviors", "Behaviors", "{E14F61A3-99D3-48C8-AEE7-7204AA698492}"
+	ProjectSection(SolutionItems) = preProject
 		..\Screeps\js\behavior.builder.js = ..\Screeps\js\behavior.builder.js
 		..\Screeps\js\behavior.harvester.js = ..\Screeps\js\behavior.harvester.js
 		..\Screeps\js\behavior.js = ..\Screeps\js\behavior.js
 		..\Screeps\js\behavior.scout.js = ..\Screeps\js\behavior.scout.js
 		..\Screeps\js\behavior.upgrader.js = ..\Screeps\js\behavior.upgrader.js
-		..\Screeps\js\behaviorEnum.js = ..\Screeps\js\behaviorEnum.js
-		..\Screeps\js\collectionInfoMapper.js = ..\Screeps\js\collectionInfoMapper.js
-		..\Screeps\js\controlMapper.js = ..\Screeps\js\controlMapper.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Managers", "Managers", "{5077280C-2603-4C4B-8924-69FAD00998C0}"
+	ProjectSection(SolutionItems) = preProject
 		..\Screeps\js\creepManager.js = ..\Screeps\js\creepManager.js
-		..\Screeps\js\creepUtils.js = ..\Screeps\js\creepUtils.js
 		..\Screeps\js\explorationManager.js = ..\Screeps\js\explorationManager.js
-		..\Screeps\js\extensionMapper.js = ..\Screeps\js\extensionMapper.js
-		..\Screeps\js\flagDrawer.js = ..\Screeps\js\flagDrawer.js
-		..\Screeps\js\infoEnum.js = ..\Screeps\js\infoEnum.js
-		..\Screeps\js\main.js = ..\Screeps\js\main.js
-		..\Screeps\js\mapUtils.js = ..\Screeps\js\mapUtils.js
 		..\Screeps\js\pathManager.js = ..\Screeps\js\pathManager.js
 		..\Screeps\js\roomManager.js = ..\Screeps\js\roomManager.js
-		..\Screeps\js\sourceMapper.js = ..\Screeps\js\sourceMapper.js
-		..\Screeps\js\spawnMapper.js = ..\Screeps\js\spawnMapper.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Enums", "Enums", "{4D3D8B89-ADFA-4466-BBF7-EFAA4434962A}"
+	ProjectSection(SolutionItems) = preProject
+		..\Screeps\js\behaviorEnum.js = ..\Screeps\js\behaviorEnum.js
+		..\Screeps\js\infoEnum.js = ..\Screeps\js\infoEnum.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{A7B94C7E-0DC1-480F-9A98-0BABB5C5484B}"
+	ProjectSection(SolutionItems) = preProject
+		..\Screeps\js\creepUtils.js = ..\Screeps\js\creepUtils.js
+		..\Screeps\js\mapUtils.js = ..\Screeps\js\mapUtils.js
 	EndProjectSection
 EndProject
 Global
@@ -64,5 +84,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{49101EBC-65FB-4A0A-83DE-B773935643EC} = {81A7AC18-DF34-44FA-A71E-9144FE283E7D}
 		{ED7930A4-F8D1-434C-988C-B5D0BA8627E5} = {81A7AC18-DF34-44FA-A71E-9144FE283E7D}
+		{73D30224-1F3E-4870-A86E-F17244C13C42} = {ED7930A4-F8D1-434C-988C-B5D0BA8627E5}
+		{E14F61A3-99D3-48C8-AEE7-7204AA698492} = {ED7930A4-F8D1-434C-988C-B5D0BA8627E5}
+		{5077280C-2603-4C4B-8924-69FAD00998C0} = {ED7930A4-F8D1-434C-988C-B5D0BA8627E5}
+		{4D3D8B89-ADFA-4466-BBF7-EFAA4434962A} = {ED7930A4-F8D1-434C-988C-B5D0BA8627E5}
+		{A7B94C7E-0DC1-480F-9A98-0BABB5C5484B} = {ED7930A4-F8D1-434C-988C-B5D0BA8627E5}
 	EndGlobalSection
 EndGlobal

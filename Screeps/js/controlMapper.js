@@ -1,9 +1,5 @@
-var mapUtils = require('mapUtils');
-var pathManager = require('pathManager');
 var collectionInfoMapper = require('collectionInfoMapper');
 var infoEnum = require('infoEnum');
-var mapUtils = require('mapUtils');
-var pathManager = require('pathManager');
 
 var controlMapper =
     {

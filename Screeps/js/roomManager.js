@@ -22,10 +22,6 @@ var roomManager =
         room.memory.extensionsCount = 0;
         room.memory.extensionKeys = [];
         
-        
-
-        
-
         var sources = room.find(FIND_SOURCES);
         for (var index in sources)
         {
@@ -122,7 +118,6 @@ var roomManager =
                     creepManager.resetCreepInfos(room);
                 }
                 room.memory.currentMappingType = infoEnum.SPAWN;
-                
             }
         }
     },

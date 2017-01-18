@@ -5,6 +5,7 @@ var explorationManager =
     {
         Memory.explorationManager = {
             roomsToExplore: [],
+            exploredRooms: [],
             reservedRooms: {}
         };
     },
@@ -36,9 +37,11 @@ var explorationManager =
     },
     onRoomExplored(roomName)
     {
+        Memory.explorationManager.exploredRooms.push(roomName);
+
         var exits = Game.map.describeExits(roomName);
         exits = Object.keys(exits).map(key => exits[key]); //convert to array
-        exits = exits.filter(e => !Object.keys(Game.rooms).includes(e))
+        exits = exits.filter(e => !Memory.explorationManager.exploredRooms.includes(e))
                      .filter(e => !Memory.explorationManager.roomsToExplore.includes(e)); //filter out known rooms
         Memory.explorationManager.roomsToExplore = Memory.explorationManager.roomsToExplore
                                                    .concat(exits);

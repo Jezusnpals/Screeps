@@ -19,9 +19,11 @@ function findRoomToScout(creep)
 function checkForScoutableRoom(creep)
 {
     var hasScoutRoom = creep.memory.ScoutRoomName;
-    if (!hasScoutRoom) {
+    if (!hasScoutRoom)
+    {
         var findRoomToScoutResult = findRoomToScout(creep);
-        if (!findRoomToScoutResult) {
+        if (!findRoomToScoutResult)
+        {
             return false;
         }
     }
@@ -31,6 +33,7 @@ function checkForScoutableRoom(creep)
     {
         explorationManager.onRoomExplored(creep.room.name);
         explorationManager.unReserveRoom(creep.name);
+        creep.memory.ScoutRoomName = null;
         var findRoomToScoutResult = findRoomToScout(creep);
         if (!findRoomToScoutResult)
         {

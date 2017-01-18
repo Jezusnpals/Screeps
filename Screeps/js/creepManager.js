@@ -332,12 +332,20 @@ var creepManager =
     OnStructureComplete: function (creep, newStructureId)
     {
         var behavior = creep.memory.behavior;
-        if (behavior !== behaviorEnum.BUILDER) {
+        if (behavior !== behaviorEnum.BUILDER)
+        {
             return;
         }
         var info = creep.room.memory.Infos[behavior][creep.memory.infoKeys[behavior]];
         info.type = infoEnum.HARVESTER;
         info.structureId = newStructureId;
+
+        var extensionKeyIndex = creep.room.memory.extensionKeys.indexOf(creep.memory.infoKeys[behavior]);
+        var isAnExtensionKey = extensionKeyIndex >= 0;
+        if (isAnExtensionKey)
+        {
+            creep.room.memory.extensionKeys.splice(extensionKeyIndex, 1);
+        }
 
         delete creep.room.memory.Infos[behavior][info.key];
         delete creep.memory.infoKeys[behavior];
