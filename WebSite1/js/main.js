@@ -66,5 +66,7 @@ module.exports.loop = function() {
     var percentUsed = Game.cpu.tickLimit / Game.cpu.limit * 100;
     console.log(`cpu percentUsed ${percentUsed}`);
     
+
     Memory.frame++;
+
 }
