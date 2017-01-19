@@ -2,7 +2,7 @@ var behaviorEnum = require('behaviorEnum');
 var roleEnum = require('roleEnum');
 var collectionInfoManager = require('collectionInfoManager');
 var infoEnum = require('infoEnum');
-var explorationManager = require('explorationManager');
+var explorationUtils = require('explorationUtils');
 var creepUtils = require('creepUtils');
 
 var creepManager =
@@ -156,11 +156,11 @@ var creepManager =
             }
             if (!createdCreep)
             {
-                if (explorationManager.checkExistAvailableRoomToExplore())
+                if (explorationUtils.checkExistAvailableRoomToExplore())
                 {
                     this.createScout(room, behaviorEnum.EXPLORER);
                 }
-                else if (explorationManager.checkExistAvailableRoomToWatch())
+                else if (explorationUtils.checkExistAvailableRoomToWatch())
                 {
                     this.createScout(room, behaviorEnum.WATCH);
                 }

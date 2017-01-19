@@ -1,10 +1,11 @@
-var explorationManager = require('explorationManager');
+var explorationRepository = require('explorationRepository');
+var explorationUtils = require('explorationUtils');
 var behaviorEnum = require('behaviorEnum');
 var watch = require('behavior.watch');
 
 function findRoomToScout(creep)
 {
-    var roomToScout = explorationManager.getNextRoomToExplore(creep);
+    var roomToScout = explorationUtils.getNextRoomToExplore(creep);
 
     if (!roomToScout)
     {
@@ -12,7 +13,7 @@ function findRoomToScout(creep)
     }
 
     creep.memory.ScoutRoomName = roomToScout;
-    explorationManager.reserveRoom(creep, roomToScout);
+    explorationRepository.reserveRoom(creep, roomToScout);
     return true;
 }
 
@@ -31,8 +32,8 @@ function checkForScoutableRoom(creep)
     var inScoutingRoom = creep.memory.ScoutRoomName === creep.room.name;
     if (inScoutingRoom)
     {
-        explorationManager.onRoomExplored(creep.room);
-        explorationManager.unReserveRoom(creep.name);
+        explorationUtils.addRoomExplored(creep.room);
+        explorationRepository.unReserveRoom(creep.name);
         creep.memory.ScoutRoomName = null;
         var findRoomToScoutResult = findRoomToScout(creep);
         if (!findRoomToScoutResult)

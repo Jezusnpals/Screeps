@@ -4,7 +4,8 @@ var mapUtils = require('mapUtils');
 var creepManager = require('creepManager');
 var pathRepository = require('pathRepository');
 var flagDrawer = require('flagDrawer');
-var explorationManager = require('explorationManager');
+var explorationRepository = require('explorationRepository');
+var explorationUtils = require('explorationUtils');
 
 module.exports.loop = function ()
 {
@@ -13,9 +14,9 @@ module.exports.loop = function ()
     if (!Memory.initialized)
     {
         pathRepository.initialize();
-        explorationManager.initialize();
-        Memory.startRoomName = Object.keys(Game.rooms)[0];
-        explorationManager.onRoomExplored(Game.rooms[Memory.startRoomName]);
+        var startRoomName = Object.keys(Game.rooms)[0];
+        explorationRepository.initialize(startRoomName);
+        explorationUtils.addRoomExplored(Game.rooms[startRoomName]);
         Memory.frame = 0;
         Memory.initialized = true;
     }

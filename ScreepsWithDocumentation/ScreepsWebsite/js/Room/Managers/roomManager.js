@@ -1,6 +1,6 @@
 var creepManager = require('creepManager');
 var roleEnum = require('roleEnum');
-var explorationManager = require('explorationManager');
+var explorationRepository = require('explorationRepository');
 var collectionInfoManager = require('collectionInfoManager');
 
 var roomManager =
@@ -57,7 +57,7 @@ var roomManager =
             }
             else if (creepMemory.role === roleEnum.SCOUT)
             {
-                explorationManager.unReserveRoom(name);
+                explorationRepository.unReserveRoom(name);
             }
 
             delete Memory.creeps[name];
