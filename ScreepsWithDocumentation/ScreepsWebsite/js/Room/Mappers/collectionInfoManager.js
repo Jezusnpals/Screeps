@@ -2,11 +2,12 @@
 var infoEnum = require('infoEnum');
 var roleEnum = require('roleEnum');
 var mapUtils = require('mapUtils');
-var pathManager = require('pathManager');
+var pathRepository = require('pathRepository');
 var extensionInfoManager = require('extensionInfoManager');
 var sourceMapper = require('sourceMapper');
 var spawnMapper = require('spawnMapper');
 var controlMapper = require('controlMapper');
+var pathUtils = require('pathUtils');
 
 function calculateCost(info, room)
 {
@@ -17,11 +18,11 @@ function calculateCost(info, room)
 
 function calculatePercentUsage(info, creepInfo)
 {
-    var toTerrainPath = pathManager.getTerrainPath(info.pathToKey);
-    var fromTerrainPath = info.pathFromKey ? pathManager.getTerrainPath(info.pathFromKey) : null;
+    var toTerrainPath = pathRepository.getTerrainPath(info.pathToKey);
+    var fromTerrainPath = info.pathFromKey ? pathRepository.getTerrainPath(info.pathFromKey) : null;
 
-    var moveToSourceFrames = toTerrainPath ? pathManager.calculateTerrainPathCostToSource(toTerrainPath, creepInfo): 0;
-    var moveFromSourceFrames = fromTerrainPath ? pathManager.calculateTerrainPathCostFromSource(fromTerrainPath, creepInfo) : 0;
+    var moveToSourceFrames = toTerrainPath ? pathUtils.calculateTerrainPathCostToSource(toTerrainPath, creepInfo): 0;
+    var moveFromSourceFrames = fromTerrainPath ? pathUtils.calculateTerrainPathCostFromSource(fromTerrainPath, creepInfo) : 0;
     var transferFrames = info.type === infoEnum.CONTROL ? creepInfo.upgradeFrames : 1; //1 frame for spwan transfer
     var totalFrames = transferFrames + moveToSourceFrames + moveFromSourceFrames + creepInfo.harvestFrames;
     return creepInfo.harvestFrames / totalFrames;

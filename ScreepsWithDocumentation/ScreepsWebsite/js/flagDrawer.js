@@ -1,4 +1,4 @@
-var pathManager = require('pathManager');
+var pathRepository = require('pathRepository');
 var mapUtils = require('mapUtils');
 var infoEnum = require('infoEnum');
 var behaviorEnum = require('behaviorEnum');
@@ -12,9 +12,9 @@ var flagDrawer = {
     showFlags: function(room)
     {
         if (showAllPointsForAllPaths) {
-            var keys = Object.keys(Memory.pathManager.terrainPathDictonary);
+            var keys = Object.keys(Memory.pathRepository.terrainPathDictonary);
             keys.forEach(function(key, i) {
-                var path = mapUtils.refreshRoomPositionArray(Memory.pathManager.terrainPathDictonary[key].path);
+                var path = mapUtils.refreshRoomPositionArray(Memory.pathRepository.terrainPathDictonary[key].path);
                 path.forEach(function (pos, j)
                 {
                     var colors = [
@@ -31,7 +31,7 @@ var flagDrawer = {
             Object.keys(room.memory.Infos[behaviorEnum.HARVESTER]).forEach(function (key, i)
             {
                 var info = room.memory.Infos[behaviorEnum.HARVESTER][key];
-                pathManager.getPath(info.pathToKey).forEach(function (pointOnPath, j)
+                pathRepository.getPath(info.pathToKey).forEach(function (pointOnPath, j)
                 {
                     var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
                     room.createFlag(pointOnPath, 't' +i + j, colors[1]);
@@ -47,7 +47,7 @@ var flagDrawer = {
             Object.keys(room.memory.Infos[behaviorEnum.UPGRADER]).forEach(function (key, i)
             {
                 var info = room.memory.Infos[behaviorEnum.UPGRADER][key];
-                pathManager.getPath(info.pathToKey).forEach(function (pointOnPath, j) {
+                pathRepository.getPath(info.pathToKey).forEach(function (pointOnPath, j) {
                     var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
                     room.createFlag(pointOnPath, 'ct' + i + j, colors[4]);
                 });
@@ -71,10 +71,10 @@ var flagDrawer = {
         if (showFlagsForFromPaths)
         {
 
-            var spawnIndexs = Object.keys(Memory.pathManager.pathFromSourceDictionary)
-                .map(k => k.includes(infoEnum.SPAWN) ? Memory.pathManager.pathFromSourceDictionary[k] : -1)
+            var spawnIndexs = Object.keys(Memory.pathRepository.pathFromSourceDictionary)
+                .map(k => k.includes(infoEnum.SPAWN) ? Memory.pathRepository.pathFromSourceDictionary[k] : -1)
                 .filter(index => index != -1);
-            Memory.pathManager.pathFromList.forEach(function (path, i) {
+            Memory.pathRepository.pathFromList.forEach(function (path, i) {
                 mapUtils.refreshRoomPositionArray(path).forEach(function (pointOnPath, j) {
                     var color = spawnIndexs.includes(i) ? COLOR_ORANGE : COLOR_GREY;
                     room.createFlag(pointOnPath, 'f' + i + j, color);

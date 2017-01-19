@@ -1,5 +1,5 @@
 var mapUtils = require('mapUtils');
-var pathManager = require('pathManager');
+var pathUtils = require('pathUtils');
 var collectionInfoMapper = require('collectionInfoMapper');
 var infoEnum = require('infoEnum');
 
@@ -9,7 +9,7 @@ var extensionMapper = {
     mapExtension: function (collectionPositionInfo, sourceId)
     {
         var possibleExtensionPositions = mapUtils.getAdjacentRoomPositions(collectionPositionInfo.originalPos, extensionSearchRange, 2);
-        var relatedPathPositions = pathManager.getRelatedPathPositions(collectionPositionInfo.originalPos);
+        var relatedPathPositions = pathUtils.getRelatedPathPositions(collectionPositionInfo.originalPos);
         possibleExtensionPositions = possibleExtensionPositions.filter(pos => mapUtils.isWalkableTerrain(pos));
         possibleExtensionPositions = mapUtils.filterPositionsFromArray(possibleExtensionPositions, relatedPathPositions);
         var currentLowestCost = -1;

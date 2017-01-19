@@ -1,5 +1,5 @@
 var mapUtils = require('mapUtils');
-var pathManager = require('pathManager');
+var pathUtils = require('pathUtils');
 
 var collectionInfoMapper = {
     calculateMappedInfo: function (startPosition, collectionPositionInfo, returnRange, infoType, sourceId)
@@ -24,7 +24,7 @@ var collectionInfoMapper = {
         {
             var pathToWithStartPosition = pathToResults.path;
             pathToWithStartPosition.unshift(startPosition);
-            mappedInfo.pathToKey = pathManager.addPath(pathToWithStartPosition, collectionPosition);
+            mappedInfo.pathToKey = pathUtils.addPath(pathToWithStartPosition, collectionPosition);
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
@@ -32,7 +32,7 @@ var collectionInfoMapper = {
             {
                 var pathFromGoal = pathToWithStartPosition.slice().reverse();
                 pathFromGoal.splice(pathToWithStartPosition.length - returnRange - 1, returnRange); //remove the elements closer than the range
-                mappedInfo.pathFromKey = pathManager.addPath(pathFromGoal, startPosition);
+                mappedInfo.pathFromKey = pathUtils.addPath(pathFromGoal, startPosition);
             }
         }
 
@@ -50,7 +50,7 @@ var collectionInfoMapper = {
             pathWithStartPosition.unshift(pos);
             if (!pathToResults.incomplete)
             {
-                pathManager.addPath(pathWithStartPosition, goalPosition);
+                pathUtils.addPath(pathWithStartPosition, goalPosition);
             }
         });
     }

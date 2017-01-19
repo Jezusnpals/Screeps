@@ -2,7 +2,7 @@ var behavior = require('behavior');
 var roomManager = require('roomManager');
 var mapUtils = require('mapUtils');
 var creepManager = require('creepManager');
-var pathManager = require('pathManager');
+var pathRepository = require('pathRepository');
 var flagDrawer = require('flagDrawer');
 var explorationManager = require('explorationManager');
 
@@ -12,7 +12,7 @@ module.exports.loop = function ()
 
     if (!Memory.initialized)
     {
-        pathManager.initialize();
+        pathRepository.initialize();
         explorationManager.initialize();
         Memory.startRoomName = Object.keys(Game.rooms)[0];
         explorationManager.onRoomExplored(Game.rooms[Memory.startRoomName]);
@@ -57,7 +57,7 @@ module.exports.loop = function ()
         });
 
     var percentUsed = Game.cpu.getUsed() / Game.cpu.limit * 100;
-    //console.log(`cpu percentUsed ${percentUsed}`); TEST
+    //console.log(`cpu percentUsed ${percentUsed}`);
     
     Memory.frame++;
 }

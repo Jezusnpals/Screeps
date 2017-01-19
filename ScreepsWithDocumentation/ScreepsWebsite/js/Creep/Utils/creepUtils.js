@@ -1,5 +1,6 @@
-var pathManager = require('pathManager');
+var pathRepository = require('pathRepository');
 var mapUtils = require('mapUtils');
+var pathUtils = require('pathUtils');
 
 const NO_NEXT_POSITION = -6;
 const NEXT_POSITION_TAKEN = -7;
@@ -101,7 +102,7 @@ var creepUtils =
             creep.memory.knownReservedSources.push(stringCollectionPosition);
             return false;
         }
-        var terrainPathCost = pathManager.calculateTerrainPathCostToSource(terrainPath, creep.memory.creepInfo);
+        var terrainPathCost = pathUtils.calculateTerrainPathCostToSource(terrainPath, creep.memory.creepInfo);
         if (creep.room.memory.reservedSources[stringCollectionPosition] && creep.room.memory.reservedSources[stringCollectionPosition].frames < terrainPathCost)
         {
             creepUtils.resetSavedPathToSource(creep, true);
@@ -119,7 +120,7 @@ var creepUtils =
     },
     tryMoveByPath: function(creep, path)
     {
-        var moveToPosition = pathManager.getNextPathPosition(creep.pos, path);
+        var moveToPosition = pathUtils.getNextPathPosition(creep.pos, path);
         if(!moveToPosition)
         {
             return NO_NEXT_POSITION;
@@ -155,8 +156,8 @@ var creepUtils =
         {
             var pathWithStartPosition = pathToLinkedHarvestPosition.path;
             pathWithStartPosition.unshift(creep.pos);
-            creep.memory.pathToKey = pathManager.addPath(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
-            var terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
+            creep.memory.pathToKey = pathUtils.addPath(pathWithStartPosition, pathWithStartPosition[pathWithStartPosition.length - 1]);
+            var terrainPath = pathRepository.getTerrainPath(creep.memory.pathToKey);
             if (terrainPath)
             {
                 var collectionPosition = terrainPath.path[terrainPath.path.length - 1];
@@ -178,13 +179,13 @@ var creepUtils =
     {
         mappedInfo.linkedCollectionPositions.forEach(function(linkedPos)
         {
-            creep.memory.pathToKey = pathManager.getKey(creep.pos, linkedPos);
+            creep.memory.pathToKey = pathUtils.getKey(creep.pos, linkedPos);
             if (creep.memory.pathToKey)
             {
                 var comparableLinkedPosition = mapUtils.getComparableRoomPosition(linkedPos);
                 if (!creep.memory.knownReservedSources.includes(comparableLinkedPosition))
                 {
-                    var terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
+                    var terrainPath = pathRepository.getTerrainPath(creep.memory.pathToKey);
                     var reservedPath = terrainPath && creepUtils.reserve_Source(creep, terrainPath, comparableLinkedPosition)
                                        collectionPositionWillBeOpen(creep, linkedPos);
                     if (reservedPath)
@@ -202,11 +203,11 @@ var creepUtils =
         var stringCollectionPosition = '';
         if (!creep.memory.pathToKey)
         {
-            creep.memory.pathToKey = pathManager.getKey(creep.pos, position);
+            creep.memory.pathToKey = pathUtils.getKey(creep.pos, position);
         }
         if (creep.memory.pathToKey)
         {
-            terrainPath = pathManager.getTerrainPath(creep.memory.pathToKey);
+            terrainPath = pathRepository.getTerrainPath(creep.memory.pathToKey);
             if (terrainPath)
             {
                 path =  terrainPath.path;
@@ -299,12 +300,12 @@ var creepUtils =
     {
         if (!creep.memory.pathFromKey)
         {
-            creep.memory.pathFromKey = pathManager.getKey(creep.pos, structure.pos);
+            creep.memory.pathFromKey = pathUtils.getKey(creep.pos, structure.pos);
         }
         var creepFollowPathFromResult = NO_PATH;
         if (creep.memory.pathFromKey)
         {
-            creepFollowPathFromResult = creepUtils.tryMoveByPath(creep, pathManager.getPath(creep.memory.pathFromKey));
+            creepFollowPathFromResult = creepUtils.tryMoveByPath(creep, pathRepository.getPath(creep.memory.pathFromKey));
         }
         
         if (creepUtils.recalculate_path_errors.includes(creepFollowPathFromResult))
