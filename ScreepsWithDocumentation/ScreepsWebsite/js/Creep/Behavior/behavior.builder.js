@@ -1,11 +1,12 @@
 var creepUtils = require('creepUtils');
 var mapUtils = require('mapUtils');
 var behaviorEnum = require('behaviorEnum');
-var creepManager = require('creepManager');
+var events = require('events');
+var collectionInfoRepository = require('collectionInfoRepository');
 
 function completedBuilding(creep, newStructure)
 {
-    creepManager.OnStructureComplete(creep, newStructure.id);
+    events.onStructureComplete(creep, newStructure.id);
 }
 
 function transferEnergy(creep, creepBuildInfo)
@@ -56,7 +57,6 @@ function transferEnergy(creep, creepBuildInfo)
 
 var builder = {
 
-    /** @param {Creep} creep **/
     run: function (creep)
     {
         if (creep.memory.building && creep.carry.energy === 0)
@@ -69,7 +69,7 @@ var builder = {
         }
 
         var infoKey = creep.memory.infoKeys[behaviorEnum.BUILDER];
-        var creepBuildInfo = infoKey ? creep.room.memory.Infos[behaviorEnum.BUILDER][infoKey] : null;
+        var creepBuildInfo = infoKey ? collectionInfoRepository.getInfo(creep.room, behaviorEnum.BUILDER, infoKey ): null;
         if (creep.memory.building)
         {
             transferEnergy(creep, creepBuildInfo);

@@ -41,7 +41,8 @@ module.exports.loop = function ()
                 return;
             }
 
-            if (Memory.creeps) {
+            if (Memory.creeps)
+            {
                 var deadCreepNames = Object.keys(Memory.creeps)
                     .filter
                     (n => !Object.keys(Game.creeps).includes(n));

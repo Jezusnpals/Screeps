@@ -1,6 +1,7 @@
 var creepUtils = require('creepUtils');
 var behaviorEnum = require('behaviorEnum');
 var mapUtils = require('mapUtils');
+var collectionInfoRepository = require('collectionInfoRepository');
 
 function transferEnergy(creep, creepHarvestInfo)
 {
@@ -12,9 +13,9 @@ function transferEnergy(creep, creepHarvestInfo)
     if (!structureNeedsEnergy)
     {
         var openExtensions = creep.room.memory.extensionHarvestKeys
-        .filter(ek => creep.room.memory.Infos[behaviorEnum.HARVESTER][ek] &&
-            creep.room.memory.Infos[behaviorEnum.HARVESTER][ek].creepNames.length === 0)
-        .map(ek => Game.getObjectById(creep.room.memory.Infos[behaviorEnum.HARVESTER][ek].structureId))
+        .filter(ek => collectionInfoRepository.getInfo(creep.room, behaviorEnum.HARVESTER, ek ) &&
+            collectionInfoRepository.getInfo(creep.room, behaviorEnum.HARVESTER, ek).creepNames.length === 0)
+        .map(ek => Game.getObjectById(collectionInfoRepository.getInfo(creep.room, behaviorEnum.HARVESTER, ek).structureId))
         .filter(e => e.energy < e.energyCapacity);
 
         if (openExtensions.length > 0)
@@ -71,7 +72,7 @@ var harvester =
     {
         var creepNeedsEnergy = creep.carry.energy < creep.carryCapacity;
         var infoKey = creep.memory.infoKeys[behaviorEnum.HARVESTER];
-        var creepHarvestInfo = infoKey ? creep.room.memory.Infos[behaviorEnum.HARVESTER][infoKey] : null;
+        var creepHarvestInfo = infoKey ? collectionInfoRepository.getInfo(creep.room, behaviorEnum.HARVESTER, infoKey ): null;
         if (creepNeedsEnergy)
         {
             creepUtils.harvestEnergy(creep, creepHarvestInfo);

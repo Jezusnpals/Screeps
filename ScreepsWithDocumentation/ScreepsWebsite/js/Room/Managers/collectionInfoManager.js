@@ -8,6 +8,7 @@ var sourceMapper = require('sourceMapper');
 var spawnMapper = require('spawnMapper');
 var controlMapper = require('controlMapper');
 var pathUtils = require('pathUtils');
+var collectionInfoRepository = require('collectionInfoRepository');
 
 function calculateCost(info, room)
 {
@@ -40,13 +41,10 @@ var collectionInfoManager =
 {
     initialize: function (room)
     {
+        collectionInfoRepository.initialize(room);
         room.memory.mappedSources = [];
         room.memory.collectionUsageDictonary = {};
-        room.memory.Infos = {};
-        room.memory.Infos[behaviorEnum.HARVESTER] = {};
-        room.memory.Infos[behaviorEnum.UPGRADER] = {};
-        room.memory.Infos[behaviorEnum.BUILDER] = {};
-
+        
         var sources = room.find(FIND_SOURCES);
         for (var index in sources) {
             var mappedSource = sourceMapper.mapSource(sources[index]);
@@ -77,13 +75,18 @@ var collectionInfoManager =
     },
     resetCreepInfos: function(room)
     {
-        Object.keys(room.memory.Infos[behaviorEnum.HARVESTER]).forEach(function (key)
+        
+        collectionInfoRepository.getInfoKeys(room, behaviorEnum.HARVESTER).forEach(function (key)
         {
-            room.memory.Infos[behaviorEnum.HARVESTER][key].creepNames = [];
+            collectionInfoRepository.getInfo(room, behaviorEnum.HARVESTER, key).creepNames = [];
         });
-        Object.keys(room.memory.Infos[behaviorEnum.UPGRADER]).forEach(function (key)
+        collectionInfoRepository.getInfoKeys(room, behaviorEnum.UPGRADER).forEach(function (key)
         {
-            room.memory.Infos[behaviorEnum.UPGRADER][key].creepNames = [];
+            collectionInfoRepository.getInfo(room, behaviorEnum.UPGRADER, key).creepNames = [];
+        });
+        collectionInfoRepository.getInfoKeys(room, behaviorEnum.BUILDER).forEach(function (key)
+        {
+            collectionInfoRepository.getInfo(room, behaviorEnum.BUILDER, key).creepNames = [];
         });
         Object.keys(room.memory.collectionUsageDictonary).forEach(function (key)
         {
@@ -96,7 +99,7 @@ var collectionInfoManager =
                                 && c.memory.role === roleEnum.WORKER);
         workersInThisRoom.forEach(function (creep)
         {
-            var infos = room.memory.Infos[creep.memory.behavior];
+            var infos = collectionInfoRepository.getInfos(room, creep.memory.behavior);
             var bestInfo = collectionInfoManager.calculateBestSource(infos, room, creep.memory.creepInfo);
             if (bestInfo != null)
             {
@@ -117,7 +120,7 @@ var collectionInfoManager =
                     var mappedSource = room.memory.mappedSources[room.memory.currentMappingIndex[0]];
                     var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentMappingIndex[1]];
                     var harvestInfo = spawnMapper.mapSingleCollectionPosition(spawn, collectionPositionInfo, mappedSource.sourceId);
-                    room.memory.Infos[behaviorEnum.HARVESTER][harvestInfo.key] = harvestInfo;
+                    collectionInfoRepository.setInfo(room, behaviorEnum.HARVESTER, harvestInfo);
                 });
                 room.memory.currentMappingType = infoEnum.CONTROL;
             }
@@ -126,7 +129,7 @@ var collectionInfoManager =
                 var mappedSource = room.memory.mappedSources[room.memory.currentMappingIndex[0]];
                 var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentMappingIndex[1]];
                 var controlInfo = controlMapper.mapSingleCollectionPosition(room.controller, collectionPositionInfo, mappedSource.sourceId);
-                room.memory.Infos[behaviorEnum.UPGRADER][controlInfo.key] = controlInfo;
+                collectionInfoRepository.setInfo(room, behaviorEnum.UPGRADER, controlInfo);
 
                 room.memory.currentMappingIndex[1]++;
                 if (room.memory.currentMappingIndex[1] >= mappedSource.collectionPositionInfos.length)
@@ -189,8 +192,52 @@ var collectionInfoManager =
         var percentAddingUnit = calculatePercentUsage(info, creepInfo);
         room.memory.collectionUsageDictonary[mapUtils
             .getComparableRoomPosition(info.collectionPosition)] -= percentAddingUnit;
-    }
+    },
+    onStructureComplete: function (creep, newStructureId)
+    {
+        var behavior = creep.memory.behavior;
+        if (behavior !== behaviorEnum.BUILDER) {
+            console.log(`Error: OnStructureComplete but not builder, creep: ${creep.name}`);
+            return;
+        }
 
+        var info = collectionInfoRepository.getInfo(creep.room, behavior, creep.memory.infoKeys[behavior]);
+        info.type = infoEnum.HARVESTER;
+        info.structureId = newStructureId;
+
+        var extensionKeyIndex = creep.room.memory.extensionBuildKeys.indexOf(creep.memory.infoKeys[behavior]);
+        var isAnExtensionKey = extensionKeyIndex >= 0;
+        if (isAnExtensionKey) {
+            creep.room.memory.extensionBuildKeys.splice(extensionKeyIndex, 1);
+            creep.room.memory.extensionHarvestKeys.push(creep.memory.infoKeys[behavior]);
+        }
+
+        collectionInfoRepository.removeInfo(creep.room, behavior, info.key);
+        delete creep.memory.infoKeys[behavior];
+
+        collectionInfoRepository.setInfo(creep.room, behaviorEnum.HARVESTER, info);
+        creep.memory.infoKeys[behaviorEnum.HARVESTER] = info.key;
+        creep.memory.behavior = behaviorEnum.HARVESTER;
+    },
+    cleanUp: function (room, name)
+    {
+        var creepMemory = Memory.creeps[name];
+
+        if (creepMemory.role === roleEnum.WORKER)
+        {
+            var infoKey = creepMemory.infoKeys[creepMemory.behavior];
+            var currentInfo = collectionInfoRepository.getInfo(room, creepMemory.behavior, infoKey);
+
+            if (!currentInfo)
+            {
+                return;
+            }
+
+            var infoCreepNameIndex = currentInfo.creepNames.indexOf(name);
+            currentInfo.creepNames.splice(infoCreepNameIndex, 1);
+            collectionInfoManager.removeUsageFromInfo(room, currentInfo, creepMemory.creepInfo);
+        }
+    }
 }
 
 module.exports = collectionInfoManager;

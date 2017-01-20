@@ -14,13 +14,18 @@ var explorationRepository =
     {
         return Memory.explorationRepository.roomsToExplore;
     },
-    getMappedRoomDictonary: function ()
+    getMappedRoom: function (key)
     {
-        return Memory.explorationRepository.mappedRoomDictonary;
+        return Memory.explorationRepository.mappedRoomDictonary[key];
     },
-    getReservedRoomDictonary: function() 
+    getReservedRoomNames: function() 
     {
-        return Memory.explorationRepository.reservedRoomDictonary;
+        return Object.keys(Memory.explorationRepository.reservedRoomDictonary)
+            .map(key => Memory.explorationRepository.reservedRoomDictonary[key]);
+    },
+    getMappedRoomNames: function() 
+    {
+        return Object.keys(Memory.explorationRepository.mappedRoomDictonary);
     },
     getStartRoomName: function() 
     {

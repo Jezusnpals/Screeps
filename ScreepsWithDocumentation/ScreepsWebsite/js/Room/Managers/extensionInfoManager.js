@@ -1,6 +1,7 @@
 ﻿var behaviorEnum = require('behaviorEnum');
 var mapUtils = require('mapUtils');
 var extensionMapper = require('extensionMapper');
+var collectionInfoRepository = require('collectionInfoRepository');
 
 var extensionInfoManager =
 {
@@ -15,21 +16,23 @@ var extensionInfoManager =
     calculateNextExtensionInfo: function (room)
     {
         var possibleCollectionPositionInfos = room.memory.mappedSources.map(s => s.collectionPositionInfos).reduce((c1, c2) => c1.concat(c2));
-        var extentionInfos = room.memory.extensionBuildKeys.map(key => room.memory.Infos[behaviorEnum.BUILDER][key]);
+        var extentionInfos = room.memory.extensionBuildKeys.map(key => collectionInfoRepository.getInfo(room, behaviorEnum.BUILDER, key));
         var currentExtensionComparablePositions = extentionInfos.map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
         possibleCollectionPositionInfos = possibleCollectionPositionInfos.filter(pes => !currentExtensionComparablePositions
                                                                          .includes(mapUtils.getComparableRoomPosition(pes.originalPos)));
+
+        var harvestInfoArray = collectionInfoRepository.getInfoKeys(room, behaviorEnum.HARVESTER)
+                .map(key => collectionInfoRepository.getInfo(room, behaviorEnum.HARVESTER, key));
+        var controlInfoArray = collectionInfoRepository.getInfoKeys(room, behaviorEnum.UPGRADER)
+               .map(key => collectionInfoRepository.getInfo(room, behaviorEnum.UPGRADER, key));
         var collectionPositionCosts = possibleCollectionPositionInfos.map(function (collectionPositionInfo) {
             var comparableCollectionPosition = mapUtils.getComparableRoomPosition(collectionPositionInfo.originalPos);
-            var harvestInfoArray = Object.keys(room.memory.Infos[behaviorEnum.HARVESTER])
-                .map(key => room.memory.Infos[behaviorEnum.HARVESTER][key]);
             var relatedHarvestInfo = harvestInfoArray
                 .filter(hi => mapUtils
                     .getComparableRoomPosition(hi.collectionPosition) ===
                     comparableCollectionPosition);
             var harvestCost = relatedHarvestInfo.length === 1 ? relatedHarvestInfo[0].costTo : 0;
-            var controlInfoArray = Object.keys(room.memory.Infos[behaviorEnum.UPGRADER])
-                .map(key => room.memory.Infos[behaviorEnum.UPGRADER][key]);
+           
             var relatedControlInfo = controlInfoArray
                 .filter(ci => mapUtils
                     .getComparableRoomPosition(ci.collectionPosition) ===
@@ -66,9 +69,8 @@ var extensionInfoManager =
             var currentExtensionId = extensionConstructionSite.constructionSite ? extensionConstructionSite.constructionSite.id : null;
             if (currentExtensionId) {
                 pendingExtensionInfo.structureId = currentExtensionId;
-                var extentionKey = pendingExtensionInfo.key;
-                room.memory.Infos[behaviorEnum.BUILDER][extentionKey] = pendingExtensionInfo;
-                room.memory.extensionBuildKeys.push(extentionKey);
+                collectionInfoRepository.setInfo(room, behaviorEnum.BUILDER, pendingExtensionInfo);
+                room.memory.extensionBuildKeys.push(pendingExtensionInfo.key);
                 room.memory.pendingExtensionInfos.splice(i, 1);
                 i--;
             }

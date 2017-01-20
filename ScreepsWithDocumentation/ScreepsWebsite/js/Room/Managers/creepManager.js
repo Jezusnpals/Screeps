@@ -3,13 +3,14 @@ var roleEnum = require('roleEnum');
 var collectionInfoManager = require('collectionInfoManager');
 var infoEnum = require('infoEnum');
 var explorationUtils = require('explorationUtils');
-var creepUtils = require('creepUtils');
+var reservedCollectionPositionManager = require('reservedCollectionPositionManager');
+var collectionInfoRepository = require('collectionInfoRepository');
 
 var creepManager =
 {
     initialize: function (room)
     {
-        room.memory.reservedSources = {};
+        reservedCollectionPositionManager.initialize(room);
     },
     calculateCreepInfo: function (creepBodies)
     {
@@ -50,7 +51,7 @@ var creepManager =
     },
     tryCreateWorker(room, behaviorType) 
     {
-        var infos = room.memory.Infos[behaviorType];
+        var infos = collectionInfoRepository.getInfos(room, behaviorType);
         var creepBodies = [WORK, CARRY, MOVE];
         var startMemory = {
             behavior: behaviorType,
@@ -110,11 +111,10 @@ var creepManager =
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
     },
-    run: function (room)
+    createCreeps: function(room) 
     {
         var createdCreep = false;
-        creepManager.cleanUpReservedSources(room);
-
+        
         if (room.energyAvailable >= 200)
         {
             var creeps = Object.keys(Game.creeps).map(key => Game.creeps[key]);
@@ -164,65 +164,17 @@ var creepManager =
                 {
                     this.createScout(room, behaviorEnum.WATCH);
                 }
-                
             }
         }
     },
-    cleanUpReservedSources: function (room)
+    run: function (room)
     {
-        Object.keys(room.memory.reservedSources)
-            .forEach(function (stringCollectionPosition)
-            {
-                if (room.memory.reservedSources[stringCollectionPosition])
-                {
-                    var creep = Game.creeps[room.memory.reservedSources[stringCollectionPosition].name];
-                    if (creep)
-                    {
-                        if (creep.memory.framesToSource !==
-                            room.memory.reservedSources[stringCollectionPosition].frames)
-                        {
-                            if (creep.memory.reservedSourceKey === stringCollectionPosition)
-                            {
-                                creepUtils.resetSavedPathToSource(creep);
-                            }
-
-                            room.memory.reservedSources[stringCollectionPosition] = null;
-                        }
-                    } else
-                    {
-                        room
-                            .memory.reservedSources[stringCollectionPosition] = null;
-                    }
-                }
-            });
+        reservedCollectionPositionManager.run(room);
+        creepManager.createCreeps(room);;
     },
-    OnStructureComplete: function (creep, newStructureId)
+    cleanUp: function (room, name)
     {
-        var behavior = creep.memory.behavior;
-        if (behavior !== behaviorEnum.BUILDER)
-        {
-            console.log(`Error: OnStructureComplete but not builder, creep: ${creep.name}`);
-            return;
-        }
-
-        var info = creep.room.memory.Infos[behavior][creep.memory.infoKeys[behavior]];
-        info.type = infoEnum.HARVESTER;
-        info.structureId = newStructureId;
-
-        var extensionKeyIndex = creep.room.memory.extensionBuildKeys.indexOf(creep.memory.infoKeys[behavior]);
-        var isAnExtensionKey = extensionKeyIndex >= 0;
-        if (isAnExtensionKey)
-        {
-            creep.room.memory.extensionBuildKeys.splice(extensionKeyIndex, 1);
-            creep.room.memory.extensionHarvestKeys.push(creep.memory.infoKeys[behavior]);
-        }
-
-        delete creep.room.memory.Infos[behavior][info.key];
-        delete creep.memory.infoKeys[behavior];
-
-        creep.room.memory.Infos[behaviorEnum.HARVESTER][info.key] = info;
-        creep.memory.infoKeys[behaviorEnum.HARVESTER] = info.key;
-        creep.memory.behavior = behaviorEnum.HARVESTER;
+        reservedCollectionPositionManager.cleanUp(room, name);
     }
 }
 module.exports = creepManager;

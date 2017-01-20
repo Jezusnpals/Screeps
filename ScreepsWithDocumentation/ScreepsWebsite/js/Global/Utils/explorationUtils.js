@@ -5,9 +5,7 @@ var explorationUtils =
 {
     getAvailableRoomsToExplore: function ()
     {
-        var reservedRoomDictonary = explorationRepository.getReservedRoomDictonary();
-        var reservedRoomNames = Object.keys(reservedRoomDictonary)
-                                .map(key => reservedRoomDictonary[key]);
+        var reservedRoomNames = explorationRepository.getReservedRoomNames();
         return explorationRepository.getRoomsToExplore().filter(rte => !reservedRoomNames.includes(rte));
     },
     checkExistAvailableRoomToExplore: function ()
@@ -32,13 +30,10 @@ var explorationUtils =
     },
     getAvailableRoomsToWatch: function ()
     {
-        var reservedRoomDictonary = explorationRepository.getReservedRoomDictonary();
-        var mappedRoomDictonary = explorationRepository.getMappedRoomDictonary();
-        var reservedRoomNames = Object.keys(reservedRoomDictonary)
-                                .map(key => reservedRoomDictonary[key]);
-        var mappedRoomNames = Object.keys(mappedRoomDictonary);
-        var exploredRoomsWithAttackers = mappedRoomNames
-            .filter(mrn => mappedRoomDictonary[mrn].numberOfAttackers > 0)
+        var reservedRoomNames = explorationRepository.getReservedRoomNames();
+        var exploredRoomNames = explorationRepository.getMappedRoomNames();
+        var exploredRoomsWithAttackers = exploredRoomNames
+            .filter(mrn => explorationRepository.getMappedRoom(mrn).numberOfAttackers > 0)
             .filter(mrn => !reservedRoomNames.includes(mrn));
         return exploredRoomsWithAttackers;
     },
@@ -68,7 +63,7 @@ var explorationUtils =
     },
     addRoomExplored: function (room)
     {
-        var exploredRoomNames = Object.keys(explorationRepository.getMappedRoomDictonary());
+        var exploredRoomNames = explorationRepository.getMappedRoomNames();
 
         var exits = Game.map.describeExits(room.name);
         exits = Object.keys(exits).map(key => exits[key]);

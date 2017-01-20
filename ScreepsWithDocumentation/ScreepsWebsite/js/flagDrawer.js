@@ -2,6 +2,7 @@ var pathRepository = require('pathRepository');
 var mapUtils = require('mapUtils');
 var infoEnum = require('infoEnum');
 var behaviorEnum = require('behaviorEnum');
+var collectionInfoRepository = require('collectionInfoRepository');
 
 var showFlagsForToPaths = false;
 var showFlagsForSourcePoints = false;
@@ -28,9 +29,9 @@ var flagDrawer = {
         if (showFlagsForToPaths)
         {
 
-            Object.keys(room.memory.Infos[behaviorEnum.HARVESTER]).forEach(function (key, i)
+            collectionInfoRepository.getInfoKeys(room, behaviorEnum.HARVESTER).forEach(function (key, i)
             {
-                var info = room.memory.Infos[behaviorEnum.HARVESTER][key];
+                var info = collectionInfoRepository.getInfo(room, behaviorEnum.HARVESTER, key);
                 pathRepository.getPath(info.pathToKey).forEach(function (pointOnPath, j)
                 {
                     var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
@@ -44,9 +45,9 @@ var flagDrawer = {
                     room.createFlag(pointOnPath, 'f' +i + j, colors[0]);
                 });
             });
-            Object.keys(room.memory.Infos[behaviorEnum.UPGRADER]).forEach(function (key, i)
+            collectionInfoRepository.getInfoKeys(room, behaviorEnum.UPGRADER).forEach(function (key, i)
             {
-                var info = room.memory.Infos[behaviorEnum.UPGRADER][key];
+                var info = collectionInfoRepository.getInfo(room, behaviorEnum.UPGRADER, key);
                 pathRepository.getPath(info.pathToKey).forEach(function (pointOnPath, j) {
                     var colors = [COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_ORANGE, COLOR_WHITE, COLOR_GREEN, COLOR_PURPLE];
                     room.createFlag(pointOnPath, 'ct' + i + j, colors[4]);

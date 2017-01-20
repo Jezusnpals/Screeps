@@ -1,5 +1,6 @@
 var creepUtils = require('creepUtils');
 var behaviorEnum = require('behaviorEnum');
+var collectionInfoRepository = require('collectionInfoRepository');
 
 function transferEnergy(creep, creepControlInfo) {
     var controller = creep.room.controller;
@@ -41,7 +42,7 @@ var upgrader =
         }
 
         var infoKey = creep.memory.infoKeys[behaviorEnum.UPGRADER];
-        var creepControlInfo = infoKey ? creep.room.memory.Infos[behaviorEnum.UPGRADER][infoKey] : null;
+        var creepControlInfo = infoKey ? collectionInfoRepository.getInfo(creep.room, behaviorEnum.UPGRADER, infoKey ): null;
         if (creep.memory.upgrading)
         {
             transferEnergy(creep, creepControlInfo);
