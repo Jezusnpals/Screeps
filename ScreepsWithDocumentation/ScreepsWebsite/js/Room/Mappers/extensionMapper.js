@@ -36,7 +36,7 @@ var extensionMapper = {
         }
         else
         {
-            var mappedInfo = collectionInfoMapper.calculateMappedInfo(currentBestPosition, collectionPositionInfo, 3, infoEnum.EXTENSION, sourceId);
+            var mappedInfo = collectionInfoMapper.calculateMappedInfo(currentBestPosition, collectionPositionInfo, 3, infoEnum.BUILD, sourceId);
             mappedInfo.extensionPosition = currentBestPosition;
             return mappedInfo;
         }

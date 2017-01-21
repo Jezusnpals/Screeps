@@ -10,32 +10,6 @@ var controlMapper = require('controlMapper');
 var pathUtils = require('pathUtils');
 var collectionInfoRepository = require('collectionInfoRepository');
 
-function calculateCost(info, room)
-{
-    var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
-                        getComparableRoomPosition(info.collectionPosition)];
-    return info.costTo + (info.costTo * percentFilled);
-}
-
-function calculatePercentUsage(info, creepInfo)
-{
-    var toTerrainPath = pathRepository.getTerrainPath(info.pathToKey);
-    var fromTerrainPath = info.pathFromKey ? pathRepository.getTerrainPath(info.pathFromKey) : null;
-
-    var moveToSourceFrames = toTerrainPath ? pathUtils.calculateTerrainPathCostToSource(toTerrainPath, creepInfo): 0;
-    var moveFromSourceFrames = fromTerrainPath ? pathUtils.calculateTerrainPathCostFromSource(fromTerrainPath, creepInfo) : 0;
-    var transferFrames = info.type === infoEnum.CONTROL ? creepInfo.upgradeFrames : 1; //1 frame for spwan transfer
-    var totalFrames = transferFrames + moveToSourceFrames + moveFromSourceFrames + creepInfo.harvestFrames;
-    return creepInfo.harvestFrames / totalFrames;
-}
-
-function checkOpenInfo(info, room, creepInfo)
-{
-    var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
-                        getComparableRoomPosition(info.collectionPosition)];
-    var percentAddingUnit = calculatePercentUsage(info, creepInfo);
-    return percentFilled + percentAddingUnit <= 1;
-}
 
 var collectionInfoManager =
 {
@@ -64,13 +38,58 @@ var collectionInfoManager =
 
         extensionInfoManager.initialize(room);
     },
+    getMaxEnergyForInfo(info) 
+    {
+        return Game.getObjectById(info.structureId).energyCapacity;
+    },
+    calculateTotalFrames(info, creepInfo)
+    {
+        var pathTo = pathRepository.getTerrainPath(info.pathToKey);
+        var costTo = pathUtils.calculateTerrainPathCostToSource(pathTo, creepInfo);
+        var pathFrom = pathRepository.getTerrainPath(info.pathFromKey);
+        var costFrom = pathUtils.calculateTerrainPathCostFromSource(pathFrom, creepInfo);
+
+        
+        
+        switch (info.type)
+        {
+            case infoEnum.HARVEST:
+                return creepInfo.harvestFrames + costTo + costFrom;
+            case infoEnum.UPGRADE:
+                return creepInfo.harvestFrames + costTo + costFrom + creepInfo.upgradeFrames;
+            case infoEnum.BUILD:
+                return creepInfo.harvestFrames + costTo + costFrom + creepInfo.buildFrames;
+            default:
+                return costTo + costFrom + creepInfo.harvestFrames + creepInfo.upgradeFrames + creepInfo.buildFrames;
+        }
+        
+    },
+    calculatePercentUsage(info, creepInfo)
+    {
+        var totalFrames = collectionInfoManager.calculateTotalFrames(info, creepInfo);
+        return creepInfo.harvestFrames / totalFrames;
+    },
+    checkOpenInfo(info, room, creepInfo)
+    {
+        var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
+                            getComparableRoomPosition(info.collectionPosition)];
+        var percentAddingUnit = collectionInfoManager.calculatePercentUsage(info, creepInfo);
+        return percentFilled + percentAddingUnit <= 1;
+    },
+    calculateCost(info, creepInfo, room)
+    {
+        var percentFilled = room.memory.collectionUsageDictonary[mapUtils.
+                            getComparableRoomPosition(info.collectionPosition)];
+        var totalFrames = collectionInfoManager.calculateTotalFrames(info, creepInfo);
+        return totalFrames + (totalFrames * (percentFilled / 2));
+    },
     startMappingInfos: function(room) 
     {
         if (!room.memory.startedMapping)
         {
             room.memory.startedMapping = true;
             room.memory.currentMappingIndex = [0, 0];
-            room.memory.currentMappingType = infoEnum.SPAWN;
+            room.memory.currentMappingType = infoEnum.HARVEST;
         }
     },
     resetCreepInfos: function(room)
@@ -100,7 +119,7 @@ var collectionInfoManager =
         workersInThisRoom.forEach(function (creep)
         {
             var infos = collectionInfoRepository.getInfos(room, creep.memory.behavior);
-            var bestInfo = collectionInfoManager.calculateBestSource(infos, room, creep.memory.creepInfo);
+            var bestInfo = collectionInfoManager.calculateBestCollectionInfo(infos, room, creep.memory.creepInfo);
             if (bestInfo != null)
             {
                 creep.memory.infoKeys[creep.memory.behavior] = bestInfo.key;
@@ -113,7 +132,7 @@ var collectionInfoManager =
     {
         if (!room.memory.finishedMapping)
         {
-            if (room.memory.currentMappingType === infoEnum.SPAWN)
+            if (room.memory.currentMappingType === infoEnum.HARVEST)
             {
                 spawns.forEach(function (spawn)
                 {
@@ -122,9 +141,9 @@ var collectionInfoManager =
                     var harvestInfo = spawnMapper.mapSingleCollectionPosition(spawn, collectionPositionInfo, mappedSource.sourceId);
                     collectionInfoRepository.setInfo(room, behaviorEnum.HARVESTER, harvestInfo);
                 });
-                room.memory.currentMappingType = infoEnum.CONTROL;
+                room.memory.currentMappingType = infoEnum.UPGRADE;
             }
-            else if (room.memory.currentMappingType === infoEnum.CONTROL)
+            else if (room.memory.currentMappingType === infoEnum.UPGRADE)
             {
                 var mappedSource = room.memory.mappedSources[room.memory.currentMappingIndex[0]];
                 var collectionPositionInfo = mappedSource.collectionPositionInfos[room.memory.currentMappingIndex[1]];
@@ -143,7 +162,7 @@ var collectionInfoManager =
                     room.memory.finishedMapping = true;
                     collectionInfoManager.resetCreepInfos(room);
                 }
-                room.memory.currentMappingType = infoEnum.SPAWN;
+                room.memory.currentMappingType = infoEnum.HARVEST;
             }
         }
     },
@@ -162,23 +181,24 @@ var collectionInfoManager =
     },
     addPercentFilled: function(info, room, creepInfo)
     {
-        var percentAddingUnit = calculatePercentUsage(info, creepInfo);
+        var percentAddingUnit = collectionInfoManager.calculatePercentUsage(info, creepInfo);
         room.memory.collectionUsageDictonary[mapUtils.
                             getComparableRoomPosition(info.collectionPosition)] += percentAddingUnit;
     },
-    calculateBestSource: function (infos, room, creepInfo)
+    calculateBestCollectionInfo: function (infos, room, creepInfo)
     {
         infos = Object.keys(infos).map(key => infos[key]);
-        var openInfos = infos.filter(info => checkOpenInfo(info, room, creepInfo)); //maxCreeps
-        if (openInfos.length === 0) {
+        var openInfos = infos.filter(info => collectionInfoManager.checkOpenInfo(info, room, creepInfo)); //maxCreeps
+        if (openInfos.length === 0)
+        {
             return null;
         }
 
-        var lowestCost = calculateCost(openInfos[0], room);
+        var lowestCost = collectionInfoManager.calculateCost(openInfos[0],creepInfo, room);
         var lowestCostIndex = 0;
 
         for (var i = 1; i < openInfos.length; i++) {
-            var currentCost = calculateCost(openInfos[i], room);
+            var currentCost = collectionInfoManager.calculateCost(openInfos[i],creepInfo, room);
             if (currentCost < lowestCost) {
                 lowestCost = currentCost;
                 lowestCostIndex = i;
@@ -189,7 +209,7 @@ var collectionInfoManager =
     },
     removeUsageFromInfo: function (room, info, creepInfo)
     {
-        var percentAddingUnit = calculatePercentUsage(info, creepInfo);
+        var percentAddingUnit = collectionInfoManager.calculatePercentUsage(info, creepInfo);
         room.memory.collectionUsageDictonary[mapUtils
             .getComparableRoomPosition(info.collectionPosition)] -= percentAddingUnit;
     },
@@ -202,8 +222,12 @@ var collectionInfoManager =
         }
 
         var info = collectionInfoRepository.getInfo(creep.room, behavior, creep.memory.infoKeys[behavior]);
-        info.type = infoEnum.HARVESTER;
+        console.log('Start Info: ' + JSON.stringify(info));
+        info.type = infoEnum.HARVEST;
         info.structureId = newStructureId;
+        
+        console.log('Saved Info: ' + JSON.stringify(info));
+        collectionInfoRepository.setInfo(creep.room, behaviorEnum.HARVESTER, info);
 
         var extensionKeyIndex = creep.room.memory.extensionBuildKeys.indexOf(creep.memory.infoKeys[behavior]);
         var isAnExtensionKey = extensionKeyIndex >= 0;
@@ -212,10 +236,11 @@ var collectionInfoManager =
             creep.room.memory.extensionHarvestKeys.push(creep.memory.infoKeys[behavior]);
         }
 
+        console.log('Removed Info: ' + JSON.stringify(info) + 'Removed Behavior' + behavior);
         collectionInfoRepository.removeInfo(creep.room, behavior, info.key);
         delete creep.memory.infoKeys[behavior];
 
-        collectionInfoRepository.setInfo(creep.room, behaviorEnum.HARVESTER, info);
+        
         creep.memory.infoKeys[behaviorEnum.HARVESTER] = info.key;
         creep.memory.behavior = behaviorEnum.HARVESTER;
     },

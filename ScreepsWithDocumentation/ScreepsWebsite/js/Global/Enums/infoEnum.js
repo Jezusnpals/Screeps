@@ -1,15 +1,15 @@
 var behaviorEnum = require('behaviorEnum');
 var infoEnum =
 {
-    SPAWN: 'spawn',
-    CONTROL: 'control',
-    EXTENSION: 'extension',
+    HARVEST: 'harvest',
+    UPGRADE: 'upgrade',
+    BUILD: 'build',
     IndexNameDictonary: {}
 };
 
-infoEnum.IndexNameDictonary[infoEnum.SPAWN] = behaviorEnum.HARVESTER;
-infoEnum.IndexNameDictonary[infoEnum.CONTROL] = behaviorEnum.UPGRADER;
-infoEnum.IndexNameDictonary[infoEnum.EXTENSION] = behaviorEnum.BUILDER;
+infoEnum.IndexNameDictonary[infoEnum.HARVEST] = behaviorEnum.HARVESTER;
+infoEnum.IndexNameDictonary[infoEnum.UPGRADE] = behaviorEnum.UPGRADER;
+infoEnum.IndexNameDictonary[infoEnum.BUILD] = behaviorEnum.BUILDER;
 
 
 module.exports = infoEnum;

@@ -18,6 +18,10 @@ module.exports.loop = function ()
         explorationRepository.initialize(startRoomName);
         explorationUtils.addRoomExplored(Game.rooms[startRoomName]);
         Memory.frame = 0;
+        Memory.bodyCount = 0;
+        Memory.totalTimeIUsed = 0;
+        Memory.totalTimeTownsendUsed = 0;
+
         Memory.initialized = true;
     }
 

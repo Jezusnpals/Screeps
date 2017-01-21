@@ -34,7 +34,10 @@ function transferEnergy(creep, creepBuildInfo)
         return;
     }
 
-    if (buildResult === ERR_NOT_IN_RANGE || creep.energy <= creep.memory.creepInfo.buildRate)
+    var creepOnCollectionPosition = creepBuildInfo.linkedCollectionPositions
+        .map(c => mapUtils.getComparableRoomPosition(c))
+        .includes(mapUtils.getComparableRoomPosition(creep.pos));
+    if (buildResult === ERR_NOT_IN_RANGE || creepOnCollectionPosition)
     {
         creep.memory.isMoving = creep.fatigue === 0;
         if (creep.memory.isMoving)

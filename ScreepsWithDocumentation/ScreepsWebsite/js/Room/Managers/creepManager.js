@@ -1,10 +1,11 @@
 var behaviorEnum = require('behaviorEnum');
 var roleEnum = require('roleEnum');
 var collectionInfoManager = require('collectionInfoManager');
-var infoEnum = require('infoEnum');
 var explorationUtils = require('explorationUtils');
 var reservedCollectionPositionManager = require('reservedCollectionPositionManager');
 var collectionInfoRepository = require('collectionInfoRepository');
+var pathUtils = require('pathUtils');
+var pathRepository = require('pathRepository');
 
 var creepManager =
 {
@@ -35,7 +36,7 @@ var creepManager =
         var maxCarryAmount = (resourcesPerCarry * numberOfCarryParts);
         var harvestFrames = Math.ceil(maxCarryAmount / (harvestRatePerWork * numberOfWorkParts));
         var buildFrames = Math.ceil(maxCarryAmount / buildRate);
-        var upgradeFrames = Math.ceil(maxCarryAmount / (upgradeRatePerWork * numberOfWorkParts));
+        var upgradeFrames = Math.ceil(maxCarryAmount / (upgradeRatePerWork * numberOfWorkParts));   
 
         return  {
             harvestFrames: harvestFrames,
@@ -49,10 +50,109 @@ var creepManager =
             maxCarryAmount: maxCarryAmount
         }
     },
+    calculatePossibleBodies(energyAvalible) 
+    {
+        var workerBodyTypes = [WORK, CARRY, MOVE];
+        var possibleBodies = [];
+
+        var moveToMiddle = function (v) 
+        {
+            v[0]--;
+            v[1]++;
+        }
+
+        var moveToEnd = function (v) 
+        {
+            v[0]--;
+            v[2]++;
+        }
+
+        var maxParts = Math.floor(energyAvalible / 50);
+
+        var start = [maxParts, 0, 0];
+
+        var possibleNumbersOfEachBodyType = [[maxParts, 0, 0]];
+        var n1 = start;
+        var n2;
+        while (n1[0] > 0)
+        {
+            n2 = n1.slice(0);
+            while (n2[0] > 0)
+            {
+                moveToEnd(n2);
+                possibleNumbersOfEachBodyType.push(n2.slice(0));
+            }
+            moveToMiddle(n1);
+            possibleNumbersOfEachBodyType.push(n1.slice(0));
+        }
+
+        possibleNumbersOfEachBodyType.forEach(function (numbersOfEachBodyType)
+        {
+            if (numbersOfEachBodyType[0] % 2 === 0)
+            {
+                numbersOfEachBodyType[0] /= 2; //Divide workers by 2 because they cost twice as much.
+                var currentBodies = [];
+                for (let i = 0; i < numbersOfEachBodyType.length; i++)
+                {
+                    for (let j = 0; j < numbersOfEachBodyType[i]; j++)
+                    {
+                        currentBodies.push(workerBodyTypes[i]);
+                    }
+                }
+                possibleBodies.push(currentBodies);
+            }
+            
+        });
+        return possibleBodies;
+    },
+    calculateBestCreepCollectionInfoAndParts(room, behavior, infos)
+    {
+        var startBody = [WORK, CARRY, MOVE];
+
+        var getCollectionInfoAndParts = function (bodyParts)
+        {
+            var creepInfo = creepManager.calculateCreepInfo(bodyParts);
+            var bestCollectionInfo = collectionInfoManager.calculateBestCollectionInfo(infos, room, creepInfo);
+            if (!bestCollectionInfo) {
+                return {
+                    bodyParts: bodyParts,
+                    creepInfo: creepInfo,
+                    collectionInfo: bestCollectionInfo,
+                    totalTime: Number.MAX_VALUE
+                }
+            }
+            var totalTime = collectionInfoManager.calculateTotalFrames( bestCollectionInfo, creepInfo);
+            return {
+                bodyParts: bodyParts,
+                creepInfo: creepInfo,
+                collectionInfo: bestCollectionInfo,
+                totalTime: totalTime
+            }
+        }
+
+        if (room.energyAvailable > 200)
+        {
+            var possibleExtraBodyParts = creepManager.calculatePossibleBodies(room.energyAvailable - 200);
+            //collectionInfoManager.calculateBestCollectionInfo(infos, room, startMemory.creepInfo
+            var possibleCollectionInfoAndParts = possibleExtraBodyParts.map(function (bodyParts)
+            {
+                bodyParts = bodyParts.concat(startBody);
+                return getCollectionInfoAndParts(bodyParts);
+            });
+            var fastestCollectionInfoAndParts = possibleCollectionInfoAndParts
+                .reduce((c1, c2) => c1.totalTime < c2.totalTime ? c1 : c2);
+            return fastestCollectionInfoAndParts;
+        }
+        else
+        {
+            return getCollectionInfoAndParts(startBody);
+        }
+
+    },
     tryCreateWorker(room, behaviorType) 
     {
         var infos = collectionInfoRepository.getInfos(room, behaviorType);
-        var creepBodies = [WORK, CARRY, MOVE];
+        var creepCollectionInfoAndParts = creepManager.calculateBestCreepCollectionInfoAndParts(room, behaviorType, infos);
         var startMemory = {
             behavior: behaviorType,
             pathFromKey: '',
@@ -61,18 +161,18 @@ var creepManager =
             framesToSource: -1,
             knownReservedSources: [],
             infoKeys: {},
-            role: roleEnum.WORKER
+            role: roleEnum.WORKER,
+            creepInfo: creepCollectionInfoAndParts.creepInfo
         };
-        startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
 
-        var bestInfo = collectionInfoManager.calculateBestSource(infos, room, startMemory.creepInfo);
-        if (bestInfo != null)
+        var bestInfo = creepCollectionInfoAndParts.collectionInfo;
+        
+        if (bestInfo)
         {
             var creepName = 'cW' + new Date().getTime();
-            
             startMemory.infoKeys[behaviorType] = bestInfo.key;
-            var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
-            if (creepResult == creepName) 
+            var creepResult = Game.spawns['Spawn1'].createCreep(creepCollectionInfoAndParts.bodyParts, creepName, startMemory);
+            if (creepResult === creepName) 
             {
                 bestInfo.creepNames.push(creepName);
                 collectionInfoManager.addPercentFilled(bestInfo, room, startMemory.creepInfo);
@@ -94,7 +194,7 @@ var creepManager =
             role: roleEnum.WORKER
         };
         var creepName = 'cW' + new Date().getTime();
-        var creepBodies = [WORK, CARRY, MOVE];
+        var creepBodies = [CARRY, MOVE, WORK, CARRY, MOVE];
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
     },
@@ -115,7 +215,7 @@ var creepManager =
     {
         var createdCreep = false;
         
-        if (room.energyAvailable >= 200)
+        if (room.energyAvailable >= room.energyCapacityAvailable)
         {
             var creeps = Object.keys(Game.creeps).map(key => Game.creeps[key]);
             var numHarvestors = creeps.filter(c => c.memory.behavior === behaviorEnum.HARVESTER).length;
@@ -170,7 +270,7 @@ var creepManager =
     run: function (room)
     {
         reservedCollectionPositionManager.run(room);
-        creepManager.createCreeps(room);;
+        creepManager.createCreeps(room);
     },
     cleanUp: function (room, name)
     {

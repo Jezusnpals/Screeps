@@ -73,7 +73,7 @@ var flagDrawer = {
         {
 
             var spawnIndexs = Object.keys(Memory.pathRepository.pathFromSourceDictionary)
-                .map(k => k.includes(infoEnum.SPAWN) ? Memory.pathRepository.pathFromSourceDictionary[k] : -1)
+                .map(k => k.includes(infoEnum.HARVEST) ? Memory.pathRepository.pathFromSourceDictionary[k] : -1)
                 .filter(index => index != -1);
             Memory.pathRepository.pathFromList.forEach(function (path, i) {
                 mapUtils.refreshRoomPositionArray(path).forEach(function (pointOnPath, j) {

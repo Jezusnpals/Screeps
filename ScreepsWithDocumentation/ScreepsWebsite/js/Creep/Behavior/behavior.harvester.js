@@ -3,6 +3,53 @@ var behaviorEnum = require('behaviorEnum');
 var mapUtils = require('mapUtils');
 var collectionInfoRepository = require('collectionInfoRepository');
 
+
+function getNewHarvestStructure(creep)
+{
+    if (creep.memory.lastAssignedHarvestStructureid)
+    {
+        var possibleStructure = Game.getObjectById(creep.memory.lastAssignedHarvestStructureid);
+        var structureNeedsEnergy = possibleStructure.energy < possibleStructure.energyCapacity;
+        if (structureNeedsEnergy)
+        {
+            return possibleStructure;
+        }
+    }
+
+    var extenions = creep.room.find(FIND_MY_STRUCTURES, {
+        filter: { structureType: STRUCTURE_EXTENSION }
+    });
+
+    var extenionsThatNeedEnergy = extenions
+    .filter(e => e.energy < e.energyCapacity);
+
+    if (extenionsThatNeedEnergy.length > 0)
+    {
+        var clostestExtensionThatNeedsEnergy = extenionsThatNeedEnergy.reduce(function (e1, e2) {
+            var distanceToE1 = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, e1.pos);
+            var distanceToE2 = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, e2.pos);
+            return distanceToE1 < distanceToE2 ? e1 : e2;
+        });
+        return clostestExtensionThatNeedsEnergy;
+    }
+    else
+    {
+        var spawnsThatNeedEnergy = creep.room.find(FIND_MY_SPAWNS)
+                         .filter(s => s.energy < s.energyCapacity);
+        if (spawnsThatNeedEnergy.length > 0)
+        {
+            var closestOpenSpawn = spawnsThatNeedEnergy.reduce(function (s1, s2) {
+                var distanceToS1 = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, s1.pos);
+                var distanceToS2 = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, s2.pos);
+                return distanceToS1 < distanceToS2 ? s1 : s2;
+            });
+            return closestOpenSpawn;
+        }
+    }
+
+    return null;
+}
+
 function transferEnergy(creep, creepHarvestInfo)
 {
     var structure = creepHarvestInfo ? Game.getObjectById(creepHarvestInfo.structureId) :
@@ -12,34 +59,15 @@ function transferEnergy(creep, creepHarvestInfo)
 
     if (!structureNeedsEnergy)
     {
-        var openExtensions = creep.room.memory.extensionHarvestKeys
-        .filter(ek => collectionInfoRepository.getInfo(creep.room, behaviorEnum.HARVESTER, ek ) &&
-            collectionInfoRepository.getInfo(creep.room, behaviorEnum.HARVESTER, ek).creepNames.length === 0)
-        .map(ek => Game.getObjectById(collectionInfoRepository.getInfo(creep.room, behaviorEnum.HARVESTER, ek).structureId))
-        .filter(e => e.energy < e.energyCapacity);
-
-        if (openExtensions.length > 0)
+        structure = getNewHarvestStructure(creep);
+        if (structure)
         {
-            var closestOpenExtension = openExtensions.reduce(function(e1, e2) {
-                var distanceToE1 = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, e1.pos);
-                var distanceToE2 = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, e2.pos);
-                return distanceToE1 < distanceToE2 ? e1 : e2;
-            });
-            structure = closestOpenExtension;
+            creep.memory.lastAssignedHarvestStructureid = structure.id;
         }
         else
         {
-            var openSpawns = creep.room.find(FIND_MY_SPAWNS)
-                             .filter(s => s.energy < s.energyCapacity);
-            if (openSpawns.length > 0)
-            {
-                var closestOpenSpawn = openSpawns.reduce(function (s1, s2) {
-                    var distanceToS1 = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, s1.pos);
-                    var distanceToS2 = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, s2.pos);
-                    return distanceToS1 < distanceToS2 ? s1 : s2;
-                });
-                structure = closestOpenSpawn;
-            }
+            creep.memory.harvesting = false;
+            return;
         }
     }
 
@@ -60,8 +88,10 @@ function transferEnergy(creep, creepHarvestInfo)
             }
         }
     }
-    else
+    else if (creep.carry.energy === 0)
     {
+        creep.memory.lastAssignedHarvestStructureid = null;
+        creep.memory.harvesting = true;
         creepUtils.harvestEnergy(creep, creepHarvestInfo); //we should be able to start moving to source and transfer on the same frame
     }
 }
@@ -70,10 +100,20 @@ var harvester =
 {
     run: function (creep)
     {
-        var creepNeedsEnergy = creep.carry.energy < creep.carryCapacity;
+        if (creep.memory.harvesting && creep.carry.energy === creep.carryCapacity)
+        {
+            creep.memory.harvesting = false;
+        }
+        if (!creep.memory.harvesting && creep.carry.energy === 0)
+        {
+            creep.memory.lastAssignedHarvestStructureid = null;
+            creep.memory.harvesting = true;
+        }
+        
+
         var infoKey = creep.memory.infoKeys[behaviorEnum.HARVESTER];
         var creepHarvestInfo = infoKey ? collectionInfoRepository.getInfo(creep.room, behaviorEnum.HARVESTER, infoKey ): null;
-        if (creepNeedsEnergy)
+        if (creep.memory.harvesting)
         {
             creepUtils.harvestEnergy(creep, creepHarvestInfo);
         }
