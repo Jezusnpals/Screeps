@@ -6,12 +6,16 @@ var infoEnum = require('infoEnum');
 const extensionSearchRange = 8;
 
 var extensionMapper = {
-    mapExtension: function (collectionPositionInfo, sourceId)
+    mapExtension: function(collectionPositionInfo, sourceId, allCollectionPositions)
     {
+
         var possibleExtensionPositions = mapUtils.getAdjacentRoomPositions(collectionPositionInfo.originalPos, extensionSearchRange, 2);
         var relatedPathPositions = pathUtils.getRelatedPathPositions(collectionPositionInfo.originalPos);
         possibleExtensionPositions = possibleExtensionPositions.filter(pos => mapUtils.isWalkableTerrain(pos));
         possibleExtensionPositions = mapUtils.filterPositionsFromArray(possibleExtensionPositions, relatedPathPositions);
+        possibleExtensionPositions = mapUtils.filterPositionsFromArray(possibleExtensionPositions, allCollectionPositions);
+        possibleExtensionPositions.filter(pep => mapUtils.getAdjacentRoomPositions(pep)
+            .every(pos => mapUtils.isWalkableTerrain(pos)));;
         var currentLowestCost = -1;
         var currentBestPosition = null;
         var refreshedOriginalPos = mapUtils.refreshRoomPosition(collectionPositionInfo.originalPos);

@@ -247,7 +247,7 @@ var creepUtils =
     },
     moveToSourceByMappedInfo: function (creep, source, mappedInfo)
     {
-        var moveResults = creepUtils.moveToPositionBySavedPath(creep, mappedInfo.collectionPosition)
+        var moveResults = creepUtils.moveToPositionBySavedPath(creep, mappedInfo.collectionPosition);
         
         if (creepUtils.recalculate_path_errors.includes(moveResults))
         {
@@ -260,15 +260,26 @@ var creepUtils =
             creep.moveTo(source.pos);
         }
     },
-    harvestEnergy: function (creep, mappedInfo)
-    {
-        var source = mappedInfo ? Game.getObjectById(mappedInfo.sourceId) :
+    harvestEnergy: function (creep, mappedInfo) {
+        var adjacentSources = mapUtils.getAdjacentRoomPositions(creep.pos)
+            .map(pos => creep.room.lookAt(pos))
+            .filter(objectArray => objectArray[0].type === 'source')
+            .map(objectArray => objectArray[0].source);
+        var source;
+        if (adjacentSources.length >= 1)
+        {
+            source = adjacentSources[0];
+        }
+        else
+        {
+            source = mappedInfo ? Game.getObjectById(mappedInfo.sourceId) :
             creep.room.find(FIND_SOURCES).reduce(function (s1, s2) {
                 var s1Distance = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, s1.pos);
                 var s2Distance = mapUtils.calculateDistanceBetweenTwoPointsSq(creep.pos, s2.pos);
                 return s1Distance < s2Distance ? s1 : s2;
             });
-        var harvestResult = creep.harvest(source)
+        }
+        var harvestResult = creep.harvest(source);
         creep.memory.pathFromKey = '';
 
         if (harvestResult === ERR_NOT_IN_RANGE)
@@ -312,19 +323,12 @@ var creepUtils =
         if (creep.memory.pathFromKey)
         {
             creepFollowPathFromResult = creepUtils.tryMoveByPath(creep, pathRepository.getPath(creep.memory.pathFromKey));
-            if (creep.name === 'cW1485014165855') {
-                console.log('move results1: ' + creepFollowPathFromResult);
-            }
         }
         
         if (creepUtils.recalculate_path_errors.includes(creepFollowPathFromResult))
         {
             creep.memory.pathFromKey = '';
             creep.moveTo(structure);
-            if (creep.name === 'cW1485014165855')
-            {
-                console.log('moving to : ' + JSON.stringify(structure.pos));
-            }
         }
     }
 };

@@ -28,12 +28,9 @@ var collectionInfoMapper = {
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
-            if (pathToWithStartPosition.length > returnRange)
-            {
-                var pathFromGoal = pathToWithStartPosition.slice().reverse();
-                pathFromGoal.splice(pathToWithStartPosition.length - returnRange - 1, returnRange); //remove the elements closer than the range
-                mappedInfo.pathFromKey = pathUtils.addPath(pathFromGoal, startPosition);
-            }
+            var pathFromGoal = pathToWithStartPosition.slice().reverse();
+            pathFromGoal.splice(pathToWithStartPosition.length - returnRange - 1, returnRange); //remove the elements closer than the range
+            mappedInfo.pathFromKey = pathUtils.addPath(pathFromGoal, startPosition);
         }
 
         return mappedInfo;

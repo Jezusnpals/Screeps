@@ -117,7 +117,7 @@ var harvester =
         {
             creepUtils.harvestEnergy(creep, creepHarvestInfo);
         }
-        else 
+        else
         {
             transferEnergy(creep, creepHarvestInfo);
         }

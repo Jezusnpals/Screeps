@@ -26,7 +26,7 @@ var sourceMapper =
                     .filter(lp => mapUtils.getComparableRoomPosition(lp) !== comparableOriginalPos)
                     .filter(function(lp) {
                         var linkPathResults = mapUtils.findPath(collectionPositionInfo.originalPos, lp);
-                        return linkPathResults.incomplete && linkPathResults.cost < linkingMaxCost;
+                        return !linkPathResults.incomplete && linkPathResults.cost < linkingMaxCost;
                     });
             }));
         }

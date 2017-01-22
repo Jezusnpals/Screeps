@@ -27,8 +27,7 @@ function transferEnergy(creep, creepBuildInfo)
 
     var buildResult = creep.build(structure);
 
-    if (creep.name === 'cW1485014165855')
-        console.log('build result: ' + buildResult);
+
 
     if (buildResult === ERR_INVALID_TARGET)
     {
@@ -42,20 +41,11 @@ function transferEnergy(creep, creepBuildInfo)
                                    .map(pos => mapUtils.getComparableRoomPosition(pos))
                                    .includes(mapUtils.getComparableRoomPosition(creep.pos));
 
-    if (creep.name === 'cW1485014165855')
-    {
-        console.log('is on a collectionPosition : ' + onACollectionPosition);
-        console.log('collectionPositions' +
-            JSON.stringify(creepBuildInfo.linkedCollectionPositions
-                .concat([creepBuildInfo.collectionPosition])));
-    }
+   
     if (buildResult === ERR_NOT_IN_RANGE || onACollectionPosition)
     {
         creep.memory.isMoving = creep.fatigue === 0;
-        if (creep.name === 'cW1485014165855')
-        {
-            console.log('is moving : ' + creep.memory.isMoving);
-        }
+       
         if (creep.memory.isMoving)
         {
             creepUtils.moveToStructureByMappedInfo(creep, structure, creepBuildInfo);
@@ -77,10 +67,6 @@ var builder = {
         }
         if (!creep.memory.building && creep.carry.energy === creep.carryCapacity)
         {
-            if (creep.name === 'cW1485014165855')
-            {
-                console.log('started building');
-            }
             creep.memory.building = true;
         }
 
@@ -88,10 +74,6 @@ var builder = {
         var creepBuildInfo = infoKey ? collectionInfoRepository.getInfo(creep.room, behaviorEnum.BUILDER, infoKey ): null;
         if (creep.memory.building)
         {
-            if (creep.name === 'cW1485014165855')
-            {
-                console.log('building');
-            }
             transferEnergy(creep, creepBuildInfo);
         }
         else

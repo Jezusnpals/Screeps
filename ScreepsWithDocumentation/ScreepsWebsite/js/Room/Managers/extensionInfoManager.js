@@ -15,6 +15,7 @@ var extensionInfoManager =
     calculateNextExtensionInfo: function (room)
     {
         var possibleCollectionPositionInfos = room.memory.mappedSources.map(s => s.collectionPositionInfos).reduce((c1, c2) => c1.concat(c2));
+        var collectionPositions = possibleCollectionPositionInfos.map(cpi => cpi.originalPos);
         var extentionInfos = room.memory.extensionBuildKeys.map(key => collectionInfoRepository.getInfo(room, behaviorEnum.BUILDER, key));
         var currentExtensionComparablePositions = extentionInfos.map(ei => mapUtils.getComparableRoomPosition(ei.collectionPosition));
         possibleCollectionPositionInfos = possibleCollectionPositionInfos.filter(pes => !currentExtensionComparablePositions
@@ -54,7 +55,7 @@ var extensionInfoManager =
             return null;
         }
 
-        return extensionMapper.mapExtension(bestExtensionPositionInfo, bestExtensionPositionInfo.sourceId);
+        return extensionMapper.mapExtension(bestExtensionPositionInfo, bestExtensionPositionInfo.sourceId, collectionPositions);
     },
     completePendingExtensionInfos: function (room)
     {
