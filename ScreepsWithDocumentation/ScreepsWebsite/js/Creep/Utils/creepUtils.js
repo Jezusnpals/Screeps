@@ -312,12 +312,19 @@ var creepUtils =
         if (creep.memory.pathFromKey)
         {
             creepFollowPathFromResult = creepUtils.tryMoveByPath(creep, pathRepository.getPath(creep.memory.pathFromKey));
+            if (creep.name === 'cW1485014165855') {
+                console.log('move results1: ' + creepFollowPathFromResult);
+            }
         }
         
         if (creepUtils.recalculate_path_errors.includes(creepFollowPathFromResult))
         {
             creep.memory.pathFromKey = '';
             creep.moveTo(structure);
+            if (creep.name === 'cW1485014165855')
+            {
+                console.log('moving to : ' + JSON.stringify(structure.pos));
+            }
         }
     }
 };

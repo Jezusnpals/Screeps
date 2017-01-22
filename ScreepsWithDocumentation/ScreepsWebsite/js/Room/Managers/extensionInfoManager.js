@@ -10,7 +10,6 @@ var extensionInfoManager =
         room.memory.pendingExtensionInfos = [];
         room.memory.extensionsCount = 0;
         room.memory.extensionBuildKeys = [];
-        room.memory.extensionHarvestKeys = [];
         room.memory.addedFirstExtension = false;
     },
     calculateNextExtensionInfo: function (room)

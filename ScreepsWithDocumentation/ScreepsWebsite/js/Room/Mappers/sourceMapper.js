@@ -1,44 +1,35 @@
 var mapUtils = require('mapUtils');
 
-var linkingMaxCost = 4;
+var linkingMaxCost = 10; //Need to link across sources, possibly later step
 
-var sourceMapper = {
-    mapSource: function (originalSource) {
+var sourceMapper =
+    {
+        mapSource: function (originalSource)
+        {
         var mappedSource = {}
         mappedSource.sourceId = originalSource.id;
-        var collectionPositions = [];
         var possiblePositions = mapUtils.getAdjacentRoomPositions(originalSource.pos);
-        for (var index in possiblePositions) {
-            if (mapUtils.isWalkableTerrain(possiblePositions[index])) {
-                collectionPositions.push(possiblePositions[index]);
-            }
-        }
-        mappedSource.collectionPositionInfos = [];
-
-        collectionPositions.forEach(function (originalPos)
-        {
-            var linkedCollectionPositions = [];
-            collectionPositions.forEach(function (linkPos)
-            {
-                if (mapUtils.getComparableRoomPosition(originalPos) != mapUtils.getComparableRoomPosition(linkPos))
-                {
-                    var linkPathResults = mapUtils.findPath(originalPos, linkPos);
-                    if (!linkPathResults.incomplete && linkPathResults.cost <= linkingMaxCost)
-                    {
-                        linkedCollectionPositions.push(linkPos);
-                    }
-                }
-            });
-
-            mappedSource.collectionPositionInfos.push({
-                originalPos: originalPos,
-                linkedCollectionPositions: linkedCollectionPositions,
-                sourceId: originalSource.id
-            });
-        });
-
+        var collectionPositions = possiblePositions.filter(pp => mapUtils.isWalkableTerrain(pp));
+        mappedSource.collectionPositionInfos = collectionPositions
+                    .map(function (cp) { return { originalPos: cp, sourceId: originalSource.id}});
         return mappedSource;
-    }
+        },
+        calculateLinkedCollectionPositions: function(mappedSources) 
+        {
+            var allCollectionPositions = mappedSources.map(ms => ms.collectionPositionInfos
+                                         .map(cpi => cpi.originalPos))
+                                         .reduce((positions1, positions2) => positions1.concat(positions2));
+            mappedSources.forEach(ms => ms.collectionPositionInfos.forEach(function (collectionPositionInfo)
+            {
+                var comparableOriginalPos = mapUtils.getComparableRoomPosition(collectionPositionInfo.originalPos);
+                collectionPositionInfo.linkedCollectionPositions = allCollectionPositions
+                    .filter(lp => mapUtils.getComparableRoomPosition(lp) !== comparableOriginalPos)
+                    .filter(function(lp) {
+                        var linkPathResults = mapUtils.findPath(collectionPositionInfo.originalPos, lp);
+                        return linkPathResults.incomplete && linkPathResults.cost < linkingMaxCost;
+                    });
+            }));
+        }
 };
 
 module.exports = sourceMapper;
