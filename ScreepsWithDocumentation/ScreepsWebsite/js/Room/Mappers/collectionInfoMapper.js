@@ -24,13 +24,13 @@ var collectionInfoMapper = {
         {
             var pathToWithStartPosition = pathToResults.path;
             pathToWithStartPosition.unshift(startPosition);
-            mappedInfo.pathToKey = pathUtils.addPath(pathToWithStartPosition, collectionPosition);
+            mappedInfo.pathToKey = pathUtils.addPathTerrainPath(pathToWithStartPosition, collectionPosition);
             mappedInfo.costTo = pathToResults.cost;
             mappedInfo.canGetTo = true;
 
             var pathFromGoal = pathToWithStartPosition.slice().reverse();
             pathFromGoal.splice(pathToWithStartPosition.length - returnRange - 1, returnRange); //remove the elements closer than the range
-            mappedInfo.pathFromKey = pathUtils.addPath(pathFromGoal, startPosition);
+            mappedInfo.pathFromKey = pathUtils.addPathTerrainPath(pathFromGoal, startPosition);
         }
 
         return mappedInfo;
@@ -47,7 +47,7 @@ var collectionInfoMapper = {
             pathWithStartPosition.unshift(pos);
             if (!pathToResults.incomplete)
             {
-                pathUtils.addPath(pathWithStartPosition, goalPosition);
+                pathUtils.addPathTerrainPath(pathWithStartPosition, goalPosition);
             }
         });
     }

@@ -5,10 +5,19 @@ var pathRepository =
     initialize:function()
     {
         Memory.pathRepository = {
-            terrainPathDictonary: {} 
+            terrainPathDictonary: {},
+            roomPathDictonary: {}
         };                        
     },
-    addPath: function (path, pathKey)
+    addRoomPath: function (path, key)
+    {
+        Memory.pathRepository.roomPathDictonary[key] = path;
+    },
+    getRoomPath: function (key)
+    {
+        return Memory.pathRepository.roomPathDictonary[key];
+    },
+    addPathTerrainPath: function (path, pathKey)
     {
         Memory.pathRepository.terrainPathDictonary[pathKey] = path;
     },

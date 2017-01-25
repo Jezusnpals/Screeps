@@ -1,3 +1,4 @@
+var explorationRepository = require('explorationRepository');
 var mapUtils = {
     checkInBounds: function (x, y) {
         var roomSize = 50;
@@ -37,16 +38,21 @@ var mapUtils = {
         var currentTerrain = Game.map.getTerrainAt(roomPos);
         return walkableTerrain.includes(currentTerrain);
     },
-    findPath: function (startPos, goals, ignorePositions, avoidPositions, maxOperations)
+    findPath: function (startPos, goals, ignorePositions, avoidPositions, maxOperations, flee)
     {
         if (!maxOperations)
         {
             maxOperations = 1000;
         }
+        if (!flee)
+        {
+            flee = false;
+        }
         var pathResults = PathFinder.search(startPos, goals,
         {
             maxRooms: 1,
             maxOps: maxOperations,
+            flee: flee,
 
             roomCallback: function (roomName) {
                 var costs = new PathFinder.CostMatrix;
@@ -114,6 +120,29 @@ var mapUtils = {
     calculateDistanceBetweenTwoPointsSq: function(pos1, pos2)
     {
         return Math.pow((pos1.x - pos2.x), 2) + Math.pow((pos1.y - pos2.y), 2);
+    },
+    findRoomPositionTowardsTargetRoom: function (startRoom, targetRoom)
+    {
+        console.log('finding route');
+        var route = Game.map.findRoute(startRoom, targetRoom, {routeCallback:function(roomTo, roomFrom) {
+            var mappedroom = explorationRepository.getMappedRoom(roomTo);
+            if (mappedroom)
+            {
+                if (mappedroom.numberOfHostileCreeps > 1)
+                {
+                    console.log('avoiding room: ' + roomTo);
+                }
+                return mappedroom.numberOfHostileCreeps;
+            }
+            return 1;
+        }});
+        route = route.map(r => r.room);
+        route.unshift(startRoom);
+        if (route[route.length - 1] !== targetRoom)
+        {
+            route.push(targetRoom);
+        }
+        return route;
     }
 };
 

@@ -45,7 +45,6 @@ var collectionInfoManager =
     {
         var pathTo = pathRepository.getTerrainPath(info.pathToKey);
         var costTo = pathUtils.calculateTerrainPathCostToSource(pathTo, creepInfo);
-        console.log(info.pathFromKey);
         var pathFrom = pathRepository.getTerrainPath(info.pathFromKey);
         var costFrom = pathUtils.calculateTerrainPathCostFromSource(pathFrom, creepInfo);
 

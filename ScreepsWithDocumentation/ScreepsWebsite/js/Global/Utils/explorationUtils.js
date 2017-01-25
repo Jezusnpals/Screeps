@@ -33,7 +33,7 @@ var explorationUtils =
         var reservedRoomNames = explorationRepository.getReservedRoomNames();
         var exploredRoomNames = explorationRepository.getMappedRoomNames();
         var exploredRoomsWithAttackers = exploredRoomNames
-            .filter(mrn => explorationRepository.getMappedRoom(mrn).numberOfAttackers > 0)
+            .filter(mrn => explorationRepository.getMappedRoom(mrn).numberOfHostileCreeps > 0)
             .filter(mrn => !reservedRoomNames.includes(mrn));
         return exploredRoomsWithAttackers;
     },

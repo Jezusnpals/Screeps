@@ -14,6 +14,10 @@ var explorationRepository =
     {
         return Memory.explorationRepository.roomsToExplore;
     },
+    getMappedRooms : function() {
+        return Object.keys(Memory.explorationRepository.mappedRoomDictonary)
+            .map(key => Memory.explorationRepository.mappedRoomDictonary[key]);
+    },
     getMappedRoom: function (key)
     {
         return Memory.explorationRepository.mappedRoomDictonary[key];

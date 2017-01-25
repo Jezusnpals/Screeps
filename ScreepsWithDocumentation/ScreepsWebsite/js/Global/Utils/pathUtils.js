@@ -28,16 +28,16 @@ var pathUtils =
             plainsCount: numberOfPlains
         }
     },
-    addPath: function (path, goalPosition)
+    addPathTerrainPath: function (path, goalPosition)
     {
         var pathKey = pathUtils.getKey(path[0], goalPosition);
-        pathRepository.addPath(pathUtils.calculatePathTerrain(path), pathKey);
+        pathRepository.addPathTerrainPath(pathUtils.calculatePathTerrain(path), pathKey);
         return pathKey;
     },
     getNextPathPosition: function (pos, path)
     {
         var comparablePos = mapUtils.getComparableRoomPosition(pos);
-        var nextPos = path[0];
+        var nextPos = null;
         for (var i = 0; i < path.length; i++)
         {
             if (mapUtils.getComparableRoomPosition(path[i]) === comparablePos)

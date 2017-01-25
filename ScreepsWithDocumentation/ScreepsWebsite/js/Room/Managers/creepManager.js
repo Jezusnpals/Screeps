@@ -4,8 +4,7 @@ var collectionInfoManager = require('collectionInfoManager');
 var explorationUtils = require('explorationUtils');
 var reservedCollectionPositionManager = require('reservedCollectionPositionManager');
 var collectionInfoRepository = require('collectionInfoRepository');
-var pathUtils = require('pathUtils');
-var pathRepository = require('pathRepository');
+var militaryUtils = require('militaryUtils');
 
 var creepManager =
 {
@@ -202,7 +201,6 @@ var creepManager =
     {
         var startMemory = {
             behavior: behaviorType,
-            pathToKey: '',
             isMoving: true,
             role: roleEnum.SCOUT
         };
@@ -211,9 +209,48 @@ var creepManager =
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
         Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
     },
+    tryCreateRanger: function(room, behaviorType) 
+    {
+        var roomToAttack = militaryUtils.getStrongestRoom();
+        if (!roomToAttack)
+        {
+            console.log('no room to attack');
+            return false;
+        }
+        var startMemory = {
+            behavior: behaviorType,
+            isMoving: true,
+            role: roleEnum.FIGHTER,
+            roomToAttack: roomToAttack
+        };
+        var creepName = 'cR' + new Date().getTime();
+        const energyForRangedMove = 150 + 50;
+        const energyForToughMove = 50 + 10;
+        var numberOfRangedMoveParts = Math.floor(room.energyAvailable / energyForRangedMove);
+        var numberOfToughMoveParts = Math.floor((room.energyAvailable - (numberOfRangedMoveParts * energyForRangedMove)) / energyForToughMove);
+        var creepBodies = [];
+        for (let i = 0; i < numberOfToughMoveParts; i++)
+        {
+            creepBodies.push(TOUGH);
+            creepBodies.push(MOVE);
+        }
+        for (let i = 0; i < numberOfRangedMoveParts; i++)
+        {
+            creepBodies.push(RANGED_ATTACK);
+            creepBodies.push(MOVE);
+        }
+            
+        startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
+
+        var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
+        console.log('created ranger: body: '+ JSON.stringify(creepBodies) + creepResult);
+        return true;
+    },
     createCreeps: function(room) 
     {
         var createdCreep = false;
+        const maxHarvestors = 4;
+        const maxUpgraders = 4;
         
         if (room.energyAvailable >= room.energyCapacityAvailable)
         {
@@ -223,46 +260,52 @@ var creepManager =
             var atLeastOneUpgraderAndHarvester = numHarvestors > 0 && numUpgraders > 0;
             if (room.memory.finishedMapping && room.memory.extensionBuildKeys.length > 0 && atLeastOneUpgraderAndHarvester)
             {
-                createdCreep = this.tryCreateWorker(room, behaviorEnum.BUILDER);
+                createdCreep = creepManager.tryCreateWorker(room, behaviorEnum.BUILDER);
 
                 if (createdCreep)
                 {
                     return;
                 }
             }
-            if (numHarvestors <= numUpgraders)
+            if (numHarvestors <= numUpgraders && numHarvestors < maxHarvestors)
             {
                 if (room.memory.finishedMapping)
                 {
-                    createdCreep = this.tryCreateWorker(room, behaviorEnum.HARVESTER);
+                    createdCreep = creepManager.tryCreateWorker(room, behaviorEnum.HARVESTER);
                 }
-                else
+                else 
                 {
-                    this.createWorkerWithoutInfo(room, behaviorEnum.HARVESTER);
+                    creepManager.createWorkerWithoutInfo(room, behaviorEnum.HARVESTER);
                     createdCreep = true;
                 }
             }
-            else
+            else if(numUpgraders < maxUpgraders)
             {
                 if (room.memory.finishedMapping)
                 {
-                    createdCreep = this.tryCreateWorker(room, behaviorEnum.UPGRADER);
+                    createdCreep = creepManager.tryCreateWorker(room, behaviorEnum.UPGRADER);
                 }
                 else
                 {
-                    this.createWorkerWithoutInfo(room, behaviorEnum.UPGRADER);
+                    creepManager.createWorkerWithoutInfo(room, behaviorEnum.UPGRADER);
                     createdCreep = true;
                 }
             }
+
+            if (!createdCreep)
+            {
+                //createdCreep = creepManager.tryCreateRanger(room, behaviorEnum.RANGER);
+            }
+
             if (!createdCreep)
             {
                 if (explorationUtils.checkExistAvailableRoomToExplore())
                 {
-                    this.createScout(room, behaviorEnum.EXPLORER);
+                    creepManager.createScout(room, behaviorEnum.EXPLORER);
                 }
                 else if (explorationUtils.checkExistAvailableRoomToWatch())
                 {
-                    this.createScout(room, behaviorEnum.WATCH);
+                    creepManager.createScout(room, behaviorEnum.WATCH);
                 }
             }
         }

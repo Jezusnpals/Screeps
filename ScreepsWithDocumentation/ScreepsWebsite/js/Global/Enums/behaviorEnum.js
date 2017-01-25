@@ -4,7 +4,8 @@ var behaviorEnum =
     UPGRADER: 'upgrader',
     BUILDER: 'builder',
     EXPLORER: 'explorer',
-    WATCH: 'watch'
+    WATCH: 'watch',
+    RANGER: 'ranger'
 };
 
 module.exports = behaviorEnum;

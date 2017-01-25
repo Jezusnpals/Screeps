@@ -1,29 +1,35 @@
 var explorationRepository = require('explorationRepository');
 var explorationUtils = require('explorationUtils');
+var creepUtils = require('creepUtils');
+var behaviorEnum = require('behaviorEnum');
+
+function switchToScout(creep)
+{
+    creep.memory.behavior = behaviorEnum.EXPLORER;
+    creep.memory.roomToWatch = null;
+    creep.memory.roomPathKey = null;
+    creep.memory.pathToExitKey = null;
+}
 
 var watch =
 {
     run: function (creep)
     {
-        if (!creep.memory.RoomToWatch)
+        if (!creep.memory.roomToWatch)
         {
             if (!explorationUtils.checkExistAvailableRoomToWatch())
             {
-                console.log('WARNING: watcher without room to watch');
+                switchToScout(creep);
                 return;
             }
             var roomToWatch = explorationUtils.getNextRoomToWatch();
-            creep.memory.RoomToWatch = roomToWatch;
+            creep.memory.roomToWatch = roomToWatch;
             explorationRepository.reserveRoom(creep, roomToWatch);
         }
 
-        if (creep.memory.RoomToWatch === creep.room.name)
+        if (creep.memory.roomToWatch !== creep.room.name)
         {
-            explorationUtils.mapRoom(creep.room);
-        }
-        else
-        {
-            creep.moveTo(new RoomPosition(25, 25, creep.memory.RoomToWatch));
+            creepUtils.followRoomPath(creep, creep.memory.roomToWatch);
         }
     }
 };

@@ -1,7 +1,7 @@
 var explorationRepository = require('explorationRepository');
 var explorationUtils = require('explorationUtils');
 var behaviorEnum = require('behaviorEnum');
-var watch = require('behavior.watch');
+var creepUtils = require('creepUtils');
 
 function findRoomToScout(creep)
 {
@@ -12,14 +12,15 @@ function findRoomToScout(creep)
         return false;
     }
 
-    creep.memory.ScoutRoomName = roomToScout;
+    creep.memory.scoutRoomName = roomToScout;
+    creep.memory.roomPathKey = null;
     explorationRepository.reserveRoom(creep, roomToScout);
     return true;
 }
 
 function checkForScoutableRoom(creep)
 {
-    var hasScoutRoom = creep.memory.ScoutRoomName;
+    var hasScoutRoom = creep.memory.scoutRoomName;
     if (!hasScoutRoom)
     {
         var findRoomToScoutResult = findRoomToScout(creep);
@@ -29,12 +30,14 @@ function checkForScoutableRoom(creep)
         }
     }
 
-    var inScoutingRoom = creep.memory.ScoutRoomName === creep.room.name;
+    var inScoutingRoom = creep.memory.scoutRoomName === creep.room.name;
     if (inScoutingRoom)
     {
         explorationUtils.addRoomExplored(creep.room);
         explorationRepository.unReserveRoom(creep.name);
-        creep.memory.ScoutRoomName = null;
+        creep.memory.scoutRoomName = null;
+        creep.memory.roomPathKey = null;
+        creep.pathToExitKey = null;
         var findRoomToScoutResult = findRoomToScout(creep);
         if (!findRoomToScoutResult)
         {
@@ -48,8 +51,9 @@ function checkForScoutableRoom(creep)
 function switchToWatch(creep)
 {
     creep.memory.behavior = behaviorEnum.WATCH;
-    delete creep.memory.ScoutRoomName;
-    watch.run(creep);
+    creep.memory.scoutRoomName = null;
+    creep.memory.roomPathKey = null;
+    creep.memory.pathToExitKey = null;
 }
 
 var explorer =
@@ -58,12 +62,17 @@ var explorer =
     {
         if (!checkForScoutableRoom(creep))
         {
+            if (creep.name === 'cS1485193491466') {
+                console.log('no scout  ' + creep.memory.scoutRoomName);
+            }
+            switchToWatch(creep);
             return;
         }
-
-        var scoutPosition = new RoomPosition(25, 25, creep.memory.ScoutRoomName);
-
-        creep.moveTo(scoutPosition);
+        if (creep.name === 'cS1485193491466')
+        {
+            console.log('scouting room: ' + creep.memory.scoutRoomName);
+        }
+        creepUtils.followRoomPath(creep, creep.memory.scoutRoomName);
     }
 };
 

@@ -1,7 +1,8 @@
 var roleEnum =
 {
     WORKER: 'worker',
-    SCOUT: 'scout'
+    SCOUT: 'scout',
+    FIGHTER: 'fighter'
 };
 
 module.exports = roleEnum;

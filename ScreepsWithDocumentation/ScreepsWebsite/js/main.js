@@ -9,7 +9,7 @@ var explorationUtils = require('explorationUtils');
 
 module.exports.loop = function ()
 {
-    PathFinder.use(true);
+    //PathFinder.use(true);
 
     if (!Memory.initialized)
     {
@@ -42,6 +42,7 @@ module.exports.loop = function ()
 
             if (!room.controller || !room.controller.my) //skip unowned rooms
             {
+                explorationUtils.mapRoom(room);
                 return;
             }
 
