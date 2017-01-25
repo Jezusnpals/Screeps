@@ -5,10 +5,10 @@ var militaryUtils =
     getStrongestRoom: function ()
     {
         var mappedRooms = explorationRepository.getMappedRooms();
-        var roomsWithHostileCreeps = mappedRooms.filter(mr => mr.numberOfHostileCreeps > 0);
-        if (roomsWithHostileCreeps.length > 0)
+        var roomsToAttack = mappedRooms.filter(mr => mr.numberOfHostileCreeps > 0 && !mr.isInSafeMode);
+        if (roomsToAttack.length > 0)
         {
-            var strongestRoom = roomsWithHostileCreeps
+            var strongestRoom = roomsToAttack
                 .reduce((r1, r2) => r1.numberOfHostileCreeps > r2.numberOfHostileCreeps ? r1 : r2);
             return strongestRoom;
         }

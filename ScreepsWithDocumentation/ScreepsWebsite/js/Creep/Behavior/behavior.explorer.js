@@ -13,7 +13,7 @@ function findRoomToScout(creep)
     }
 
     creep.memory.scoutRoomName = roomToScout;
-    creep.memory.roomPathKey = null;
+    creep.memory.roomPath = null;
     explorationRepository.reserveRoom(creep, roomToScout);
     return true;
 }
@@ -36,8 +36,8 @@ function checkForScoutableRoom(creep)
         explorationUtils.addRoomExplored(creep.room);
         explorationRepository.unReserveRoom(creep.name);
         creep.memory.scoutRoomName = null;
-        creep.memory.roomPathKey = null;
-        creep.pathToExitKey = null;
+        creep.memory.roomPath = null;
+        creep.pathToExit = null;
         var findRoomToScoutResult = findRoomToScout(creep);
         if (!findRoomToScoutResult)
         {
@@ -52,8 +52,8 @@ function switchToWatch(creep)
 {
     creep.memory.behavior = behaviorEnum.WATCH;
     creep.memory.scoutRoomName = null;
-    creep.memory.roomPathKey = null;
-    creep.memory.pathToExitKey = null;
+    creep.memory.roomPath = null;
+    creep.memory.pathToExit = null;
 }
 
 var explorer =

@@ -9,8 +9,12 @@ var behaviorEnum = require('behaviorEnum');
 var behavior =
 {
     Dictonary: {},
-    run: function (creep) {
-        this.Dictonary[creep.memory.behavior].run(creep);
+    run: function (creep)
+    {
+        if (!creep.spawning)
+        {
+            this.Dictonary[creep.memory.behavior].run(creep);
+        }
     }
 
 };

@@ -7,8 +7,8 @@ function switchToScout(creep)
 {
     creep.memory.behavior = behaviorEnum.EXPLORER;
     creep.memory.roomToWatch = null;
-    creep.memory.roomPathKey = null;
-    creep.memory.pathToExitKey = null;
+    creep.memory.roomPath = null;
+    creep.memory.pathToExit = null;
 }
 
 var watch =

@@ -123,15 +123,10 @@ var mapUtils = {
     },
     findRoomPositionTowardsTargetRoom: function (startRoom, targetRoom)
     {
-        console.log('finding route');
         var route = Game.map.findRoute(startRoom, targetRoom, {routeCallback:function(roomTo, roomFrom) {
             var mappedroom = explorationRepository.getMappedRoom(roomTo);
             if (mappedroom)
             {
-                if (mappedroom.numberOfHostileCreeps > 1)
-                {
-                    console.log('avoiding room: ' + roomTo);
-                }
                 return mappedroom.numberOfHostileCreeps;
             }
             return 1;

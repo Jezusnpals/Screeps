@@ -254,6 +254,7 @@ var creepManager =
         
         if (room.energyAvailable >= room.energyCapacityAvailable)
         {
+            
             var creeps = Object.keys(Game.creeps).map(key => Game.creeps[key]);
             var numHarvestors = creeps.filter(c => c.memory.behavior === behaviorEnum.HARVESTER).length;
             var numUpgraders = creeps.filter(c => c.memory.behavior === behaviorEnum.UPGRADER).length;
@@ -294,19 +295,21 @@ var creepManager =
 
             if (!createdCreep)
             {
-                //createdCreep = creepManager.tryCreateRanger(room, behaviorEnum.RANGER);
-            }
-
-            if (!createdCreep)
-            {
                 if (explorationUtils.checkExistAvailableRoomToExplore())
                 {
+                    createdCreep = true;
                     creepManager.createScout(room, behaviorEnum.EXPLORER);
                 }
                 else if (explorationUtils.checkExistAvailableRoomToWatch())
                 {
+                    createdCreep = true;
                     creepManager.createScout(room, behaviorEnum.WATCH);
                 }
+            }
+
+            if (!createdCreep)
+            {
+                createdCreep = creepManager.tryCreateRanger(room, behaviorEnum.RANGER);
             }
         }
     },

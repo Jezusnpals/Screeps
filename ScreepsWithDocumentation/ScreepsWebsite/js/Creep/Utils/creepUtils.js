@@ -52,6 +52,27 @@ function collectionPositionWillBeOpen(creep, goalPos)
     return creep.memory.framesToSource > Game.creeps[myNonMovingCreeps[0].creep.name].memory.harvestFramesLeft;
 }
 
+function logRoomPathWarning(warningText, creep, targetRoom)
+{
+    let exits = Game.map.describeExits(creep.room.name);
+    exits = Object.keys(exits).map(key => exits[key]);
+    console.log(warningText +
+    `behavior ${creep.memory.behavior}  roomPath ${creep.memory.roomPath} path ${creep.memory.pathToExit} room ${creep.room.name} targetRoom ${targetRoom} exits ${exits}`);
+}
+
+function findPathAvoidingBlockedPositions(creep, goalPositions, comparableGoalPositions, maxOperations)
+{
+    var allMyCreepsInTheRoom = creep.room.find(FIND_MY_CREEPS);
+    var nonGoalNonMovingCreepPositions = allMyCreepsInTheRoom.filter(c => c.id !== creep.id && (!c.memory.isMoving && c.fatigue == 0) &&
+                                                        !comparableGoalPositions.includes(mapUtils.getComparableRoomPosition(c.pos)))
+                                       .map(c => c.pos);
+    var structurePositions = creep.room.find(FIND_STRUCTURES).map(s => s.pos);
+    var constructionSitePositions = creep.room.find(FIND_CONSTRUCTION_SITES).map(s => s.pos);
+    var ignorePositions = structurePositions.concat(nonGoalNonMovingCreepPositions).concat(constructionSitePositions);
+    
+    return mapUtils.findPath(creep.pos, goalPositions, ignorePositions, [], maxOperations);
+}
+
 var creepUtils =
 {
     recalculate_path_errors: [NEXT_POSITION_TAKEN, NO_NEXT_POSITION, NO_PATH, ALL_PATHS_RESERVED, ERR_NOT_FOUND],
@@ -145,17 +166,13 @@ var creepUtils =
             goalPositions = goalPositions.filter(pos => !alreadyTriedGoals.includes(mapUtils.getComparableRoomPosition(pos)));
         }
         var comparableGoalPositions = goalPositions.map(gp => mapUtils.getComparableRoomPosition(gp));;
-        var allCreeps = Object.keys(Game.creeps).map(key => Game.creeps[key]);
-        var nonGoalNonMovingCreepPositions = allCreeps.filter(c => c.id !== creep.id && (!c.memory.isMoving && c.fatigue == 0) &&
-                                                            !comparableGoalPositions.includes(mapUtils.getComparableRoomPosition(c.pos)))
-                                           .map(c => c.pos);
         
         if (goalPositions.length === 0)
         {
             return ALL_PATHS_RESERVED;
         }
-        var pathToLinkedHarvestPosition = mapUtils.findPath(creep.pos,
-                                          mapUtils.refreshRoomPositionArray(goalPositions), nonGoalNonMovingCreepPositions, [], 50);
+        var refreshedGoalPositions = mapUtils.refreshRoomPositionArray(goalPositions);
+        var pathToLinkedHarvestPosition = findPathAvoidingBlockedPositions(creep, refreshedGoalPositions, comparableGoalPositions, 50);
         if (!pathToLinkedHarvestPosition.incomplete && pathToLinkedHarvestPosition.path.length > 0)
         {
             var pathWithStartPosition = pathToLinkedHarvestPosition.path;
@@ -335,100 +352,85 @@ var creepUtils =
     {
         if (!targetRoom)
         {
-            console.log('WARNING: No Target');
+            logRoomPathWarning('WARNING: No Target Room ', creep, targetRoom);
             return;
         }
         if (creep.room.name === targetRoom)
         {
-            creep.moveTo(new RoomPosition(25, 25, targetRoom));
+            logRoomPathWarning('WARNING: Following room path while in target room. ', creep, targetRoom);
             return;
         }
-        if (!creep.memory.roomPathKey)
+        if (!creep.memory.roomPath)
         {
-            var pathKey = creep.room.name + targetRoom;
-            
-            pathRepository.addRoomPath(mapUtils.findRoomPositionTowardsTargetRoom(creep.room.name, targetRoom), pathKey);
-            creep.memory.roomPathKey = pathKey;
+            creep.memory.roomPath = mapUtils.findRoomPositionTowardsTargetRoom(creep.room.name, targetRoom);
         }
         var movedSuccessfully = false;
-        if (creep.memory.pathToExitKey)
+        if (creep.memory.pathToExit)
         {
-            var pathToExit = pathRepository.getPath(creep.memory.pathToExitKey);
-            if (!pathToExit || pathToExit[0].roomName !== creep.room.name)
+            if (creep.memory.pathToExit[0].roomName !== creep.room.name)
             {
-                creep.memory.pathToExitKey = null;
+                creep.memory.pathToExit = null;
             }
             else
             {
-                
-                var moveResult = creepUtils.tryMoveByPath(creep, pathToExit);
+                let moveResult = creepUtils.tryMoveByPath(creep, mapUtils.refreshRoomPositionArray(creep.memory.pathToExit));
                 if (creepUtils.recalculate_path_errors.includes(moveResult))
                 {
-                    creep.moveTo(pathToExit[pathToExit.length - 1]);;
+                    creep.memory.pathToExit = null;
                 }
-                movedSuccessfully = true;
+                else
+                {
+                    movedSuccessfully = true;
+                }
             }
         }
 
         if (!movedSuccessfully)
         {
-            var roomPath = pathRepository.getRoomPath(creep.memory.roomPathKey);
-            if (roomPath.includes(creep.room.name))
+            if (creep.memory.roomPath.includes(creep.room.name))
             {
-                var indexOfCurrentRoom = roomPath.indexOf(creep.room.name);
-                if (indexOfCurrentRoom + 1 < roomPath.length) {
-                    var exitDirection = creep.room.findExitTo(roomPath[indexOfCurrentRoom + 1]);
+                var indexOfCurrentRoom = creep.memory.roomPath.indexOf(creep.room.name);
+                if (indexOfCurrentRoom + 1 < creep.memory.roomPath.length)
+                {
+                    var exitDirection = creep.room.findExitTo(creep.memory.roomPath[indexOfCurrentRoom + 1]);
                     var exitPositions = creep.room.find(exitDirection);
                     if (mapUtils.getComparableRoomPositionArray(exitPositions)
                         .includes(mapUtils.getComparableRoomPosition(creep.pos)))
                     {
-                        creep.moveTo(new RoomPosition(25, 25, roomPath[indexOfCurrentRoom + 1]));
-                        creep.memory.pathToExitKey = null;
+                        creep.moveTo(new RoomPosition(25, 25, creep.memory.roomPath[indexOfCurrentRoom + 1]));
+                        creep.memory.pathToExit = null;
                         return;
                     }
-                    var pathResults = mapUtils.findPath(creep.pos, exitPositions, [], [], 50000);
+                    var pathResults = findPathAvoidingBlockedPositions(creep, exitPositions, exitPositions.map(ep => mapUtils.getComparableRoomPosition(ep)), 2000);;
                     if (pathResults.incomplete || pathResults.path.length < 1) 
                     {
-                        var exits = Game.map.describeExits(creep.room.name);
-                        exits = Object.keys(exits).map(key => exits[key]);
-                        console.log('WARNING: CANT FIND PATH TO EXIT' +
-                            `behavior ${creep.memory
-                            .behavior} pathKey ${creep.memory
-                            .roomPathKey} path ${roomPath} room ${creep.room.name} targetRoom ${targetRoom} exits ${exits
-                            } pathResults ${JSON.stringify(pathResults)} exitPositions ${exitPositions}`);
-                        creep.moveTo(new RoomPosition(25, 25, targetRoom));
+                        logRoomPathWarning('WARNING: Can\'t Find Path To Exit ', creep, targetRoom);
                     }
                     else
                     {
                         pathResults.path.unshift(creep.pos);
-                        creep.memory.pathToExitKey = pathUtils
-                            .addPathTerrainPath(pathResults.path, pathResults.path[pathResults.path.length - 1]);
-                        var moveResult = creepUtils.tryMoveByPath(creep, pathResults.path);
+                        creep.memory.pathToExit = pathResults.path;
+                        let moveResult = creepUtils.tryMoveByPath(creep, creep.memory.pathToExit);
                         if (creepUtils.recalculate_path_errors.includes(moveResult))
                         {
+                            logRoomPathWarning('WARNING: Can\'t move by path just calculated ', creep, targetRoom);
                             creep.moveTo(pathResults.path[pathResults.path.length - 1]);;
+                            creep.memory.pathToExit = null;
                         }
                     }
                 }
                 else
                 {
-                    var exits = Game.map.describeExits(creep.room.name);
-                    exits = Object.keys(exits).map(key => exits[key]);
-                    console.log('WARNING : Next Room Out Of Bounds ' + `behavior ${creep.memory.behavior} pathKey ${creep.memory.roomPathKey} path ${roomPath} room ${creep.room.name} targetRoom ${targetRoom} exits ${exits}`);
-                    creep.memory.roomPathKey = null;
-                    creep.moveTo(new RoomPosition(25, 25, targetRoom));
+                    logRoomPathWarning('WARNING : Next Room Out Of Bounds ', creep, targetRoom);
+                    creep.memory.roomPath = null;
                 }
             }
             else
             {
-                var exits = Game.map.describeExits(creep.room.name);
-                exits = Object.keys(exits).map(key => exits[key]);
-                console.log('WARNING: INVALID ROOM PATH ' + `behavior ${creep.memory.behavior} pathKey ${creep.memory.roomPathKey} path ${roomPath} room ${creep.room.name} targetRoom ${targetRoom} exits ${exits}`);
-                creep.memory.roomPathKey = null;
-                creep.moveTo(new RoomPosition(25, 25, targetRoom));
+                logRoomPathWarning('WARNING: Invalid Room Path ', creep, targetRoom);
+                creep.memory.roomPath = null;
             }
         }
-        
     }
 };
 
