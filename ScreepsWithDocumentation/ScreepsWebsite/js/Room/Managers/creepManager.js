@@ -216,7 +216,6 @@ var creepManager =
         var roomToAttack = militaryUtils.getStrongestRoom();
         if (!roomToAttack)
         {
-            console.log('no room to attack');
             return false;
         }
         var startMemory = {
@@ -245,14 +244,13 @@ var creepManager =
         startMemory.creepInfo = creepManager.calculateCreepInfo(creepBodies);
 
         var creepResult = Game.spawns['Spawn1'].createCreep(creepBodies, creepName, startMemory);
-        console.log('created ranger: body: '+ JSON.stringify(creepBodies) + creepResult);
-        return true;
+        return creepResult === creepName;
     },
     createCreeps: function(room) 
     {
         var createdCreep = false;
-        const maxHarvestors = 4;
-        const maxUpgraders = 4;
+        const maxHarvestors = 10;
+        const maxUpgraders = 10;
         
         if (room.energyAvailable >= room.energyCapacityAvailable)
         {

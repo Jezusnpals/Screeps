@@ -21,9 +21,7 @@ var collectionInfoManager =
         room.memory.sourceUsageDictonary = {};
         
         var sources = room.find(FIND_SOURCES);
-        var mappedSources = sources.map(s => sourceMapper.mapSource(s));
-        sourceMapper.calculateLinkedCollectionPositions(mappedSources);
-        room.memory.mappedSources = mappedSources;
+        room.memory.mappedSources = sources.map(s => sourceMapper.mapSource(s));
 
         room.memory.mappedSources.forEach(function (mappedSource)
         {
