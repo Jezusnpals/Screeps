@@ -11,7 +11,7 @@ var sourceMapper =
         var possiblePositions = mapUtils.getAdjacentRoomPositions(originalSource.pos);
         var collectionPositions = possiblePositions.filter(pp => mapUtils.isWalkableTerrain(pp));
         mappedSource.collectionPositionInfos = collectionPositions
-                    .map(function (cp) { return { originalPos: cp, sourceId: originalSource.id}});
+                    .map(function (cp) { return { originalPos: cp, sourceId: originalSource.id} });
         return mappedSource;
         },
         calculateLinkedCollectionPositions: function(mappedSources) 

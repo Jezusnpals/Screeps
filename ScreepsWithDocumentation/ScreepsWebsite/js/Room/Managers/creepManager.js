@@ -12,7 +12,7 @@ var creepManager =
     {
         reservedCollectionPositionManager.initialize(room);
     },
-    calculateCreepInfo: function (creepBodies)
+    calculateCreepInfo: function (creepBodies, behavior)
     {
         var resourcesPerCarry = 50;
         var harvestRatePerWork = 2;
@@ -33,11 +33,13 @@ var creepManager =
         var numberOfWorkParts = creepBodies.filter(cb => cb === WORK).length;
         var buildRate = (structureRatePerWork * numberOfWorkParts);
         var maxCarryAmount = (resourcesPerCarry * numberOfCarryParts);
-        var harvestFrames = Math.ceil(maxCarryAmount / (harvestRatePerWork * numberOfWorkParts));
+        var harvestRate = harvestRatePerWork * numberOfWorkParts;
+        var harvestFrames = Math.ceil(maxCarryAmount / harvestRate);
         var buildFrames = Math.ceil(maxCarryAmount / buildRate);
         var upgradeFrames = Math.ceil(maxCarryAmount / (upgradeRatePerWork * numberOfWorkParts));   
 
-        return  {
+        return {
+            harvestRate: harvestRate,
             harvestFrames: harvestFrames,
             buildFrames: buildFrames,
             upgradeFrames: upgradeFrames,
